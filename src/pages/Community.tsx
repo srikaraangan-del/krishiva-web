@@ -28,6 +28,8 @@ import {
   Tractor,
   UserPlus,
   Check,
+  TrendingUp,
+  Zap,
 } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card } from '@/components/ui/card';
@@ -35,6 +37,28 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+
+/* ───────── Points System Constants ───────── */
+const POINTS_LIKE = 5;
+const POINTS_COMMENT = 10;
+const POINTS_SHARE = 15;
+const POINTS_NEW_POST = 20;
+const POINTS_DAILY_LOGIN = 2;
+
+/* ───────── Toast Helper ───────── */
+const showToast = (message: string) => {
+  const toast = document.createElement('div');
+  toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
+};
 
 /* ───────── mock data ───────── */
 
@@ -249,6 +273,8 @@ const leaders = [
   { id: 6, name: 'Priya Sharma', points: 1320, contributions: 121, avatar: 'PS', color: 'bg-[#6366F1]', badge: null },
   { id: 7, name: 'Ramesh Yadav', points: 1190, contributions: 108, avatar: 'RY', color: 'bg-soil-brown', badge: null },
   { id: 8, name: 'Savitri Devi', points: 980, contributions: 89, avatar: 'SV', color: 'bg-[#EF4444]', badge: null },
+  { id: 9, name: 'Arjun Mehta', points: 870, contributions: 76, avatar: 'AM', color: 'bg-[#3B82F6]', badge: null },
+  { id: 10, name: 'Kavita Nair', points: 720, contributions: 65, avatar: 'KN', color: 'bg-[#8D6E63]', badge: null },
 ];
 
 /* ───────── animation helpers ───────── */
@@ -275,8 +301,58 @@ export default function Community() {
   const [postText, setPostText] = useState('');
   const [expandedComposer, setExpandedComposer] = useState(false);
 
+  /* ── Points System State ── */
+  const [userPoints, setUserPoints] = useState(245);
+  const [shareCounts, setShareCounts] = useState<Record<number, number>>({});
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
+  const [activeCommentPostId, setActiveCommentPostId] = useState<number | null>(null);
+  const [commentText, setCommentText] = useState('');
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const posts = feedPosts;
+
   const toggleLike = (postId: number) => {
-    setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
+    setLikedPosts((prev) => {
+      const wasLiked = prev[postId];
+      if (!wasLiked) {
+        setUserPoints((p) => p + POINTS_LIKE);
+        showToast(`+${POINTS_LIKE} points! Post liked`);
+      }
+      return { ...prev, [postId]: !prev[postId] };
+    });
+  };
+
+  const handleShare = (postId: number) => {
+    setShareCounts((prev) => {
+      const current = prev[postId] || 0;
+      setUserPoints((p) => p + POINTS_SHARE);
+      showToast(`+${POINTS_SHARE} points! Post shared`);
+      return { ...prev, [postId]: current + 1 };
+    });
+  };
+
+  const openCommentModal = (postId: number) => {
+    setActiveCommentPostId(postId);
+    setCommentText('');
+    setCommentModalOpen(true);
+  };
+
+  const submitComment = () => {
+    if (activeCommentPostId && commentText.trim()) {
+      setUserPoints((p) => p + POINTS_COMMENT);
+      showToast(`+${POINTS_COMMENT} points! Comment added`);
+    }
+    setCommentModalOpen(false);
+    setCommentText('');
+    setActiveCommentPostId(null);
+  };
+
+  const handleCreatePost = () => {
+    if (postText.trim()) {
+      setUserPoints((p) => p + POINTS_NEW_POST);
+      showToast(`+${POINTS_NEW_POST} points! New post created`);
+      setPostText('');
+      setExpandedComposer(false);
+    }
   };
 
   const toggleGroup = (groupId: number) => {
@@ -294,6 +370,8 @@ export default function Community() {
     return <span className="w-5 h-5 flex items-center justify-center text-sm font-bold text-text-muted font-inter">{rank}</span>;
   };
 
+  const topThree = leaders.slice(0, 3);
+
   return (
     <DashboardLayout>
       <div className="max-w-[1000px] mx-auto space-y-6 pb-8">
@@ -307,28 +385,64 @@ export default function Community() {
           <div className="absolute inset-0 bg-[url('/community-hero.jpg')] bg-cover bg-center opacity-30" />
           <div className="absolute inset-0 bg-gradient-to-r from-krishiva-green/90 to-leaf-green/70" />
           <div className="relative z-10 px-6 py-8 sm:px-10 sm:py-10">
-            <div className="flex items-center gap-2 mb-2">
-              <Users className="w-5 h-5 text-white/90" />
-              <span className="text-white/80 text-sm font-medium font-inter">50,000+ Members Strong</span>
-            </div>
-            <h1 className="font-poppins font-bold text-[32px] text-white leading-tight mb-2">
-              Farmer Community
-            </h1>
-            <p className="text-white/85 text-base font-inter max-w-lg">
-              Connect, share, and grow together. No farmer should feel alone in their journey.
-            </p>
-            <div className="flex flex-wrap items-center gap-6 mt-6">
-              {[
-                { label: '50,000+', sub: 'Members' },
-                { label: '1,200+', sub: 'Daily Posts' },
-                { label: '98%', sub: 'Helpful Responses' },
-              ].map((stat) => (
-                <div key={stat.sub} className="text-center">
-                  <p className="font-poppins font-bold text-xl text-white font-inter">{stat.label}</p>
-                  <p className="text-white/70 text-xs font-inter">{stat.sub}</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-5 h-5 text-white/90" />
+                  <span className="text-white/80 text-sm font-medium font-inter">50,000+ Members Strong</span>
                 </div>
-              ))}
+                <h1 className="font-poppins font-bold text-[32px] text-white leading-tight mb-2">
+                  Farmer Community
+                </h1>
+                <p className="text-white/85 text-base font-inter max-w-lg">
+                  Connect, share, and grow together. No farmer should feel alone in their journey.
+                </p>
+                <div className="flex flex-wrap items-center gap-6 mt-6">
+                  {[
+                    { label: '50,000+', sub: 'Members' },
+                    { label: '1,200+', sub: 'Daily Posts' },
+                    { label: '98%', sub: 'Helpful Responses' },
+                  ].map((stat) => (
+                    <div key={stat.sub} className="text-center">
+                      <p className="font-poppins font-bold text-xl text-white font-inter">{stat.label}</p>
+                      <p className="text-white/70 text-xs font-inter">{stat.sub}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* User Points Badge */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+                className="hidden sm:flex flex-col items-center bg-white/20 backdrop-blur-sm rounded-2xl px-5 py-4 border border-white/30"
+              >
+                <Zap className="w-6 h-6 text-harvest-gold mb-1" />
+                <p className="text-white font-poppins font-bold text-2xl font-inter">{userPoints}</p>
+                <p className="text-white/80 text-xs font-inter">Your Points</p>
+              </motion.div>
             </div>
+          </div>
+        </motion.div>
+
+        {/* ─── Mobile User Points ─── */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="sm:hidden flex items-center justify-between bg-white rounded-2xl p-4 border border-border-light shadow-card"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-harvest-gold/10 flex items-center justify-center">
+              <Zap className="w-5 h-5 text-harvest-gold" />
+            </div>
+            <div>
+              <p className="font-poppins font-bold text-lg text-text-primary font-inter">{userPoints}</p>
+              <p className="text-text-muted text-xs font-inter">Your Points</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 text-success-green text-sm font-medium font-inter">
+            <TrendingUp className="w-4 h-4" /> +{POINTS_LIKE} per like
           </div>
         </motion.div>
 
@@ -371,6 +485,79 @@ export default function Community() {
               transition={{ duration: 0.3, ease: easeOut }}
               className="space-y-4"
             >
+              {/* Leaderboard Preview */}
+              <Card className="rounded-2xl border-border-light p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Trophy className="w-5 h-5 text-harvest-gold" />
+                    <h3 className="font-poppins font-semibold text-base text-text-primary">Top Contributors</h3>
+                  </div>
+                  <button
+                    onClick={() => setLeaderboardOpen(true)}
+                    className="text-krishiva-green text-sm font-medium hover:underline flex items-center gap-1 font-inter"
+                  >
+                    View Full Leaderboard <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex items-end justify-center gap-4 pb-2">
+                  {/* 2nd Place */}
+                  {topThree[1] && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="flex flex-col items-center pb-2"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-[#9CA3AF]/20 flex items-center justify-center mb-1.5 border-2 border-[#9CA3AF]">
+                        <span className="text-[#9CA3AF] font-bold text-sm">{topThree[1].avatar}</span>
+                      </div>
+                      <Medal className="w-4 h-4 text-[#9CA3AF] mb-0.5" />
+                      <p className="text-text-primary text-xs font-medium font-inter">{topThree[1].name}</p>
+                      <p className="text-text-muted text-[10px] font-inter">{topThree[1].points.toLocaleString()} pts</p>
+                    </motion.div>
+                  )}
+                  {/* 1st Place */}
+                  {topThree[0] && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0 }}
+                      className="flex flex-col items-center -mt-3"
+                    >
+                      <div className="w-16 h-16 rounded-full bg-[#F59E0B]/20 flex items-center justify-center mb-1.5 border-3 border-[#F59E0B]">
+                        <span className="text-[#F59E0B] font-bold text-lg">{topThree[0].avatar}</span>
+                      </div>
+                      <Crown className="w-5 h-5 text-[#F59E0B] mb-0.5" />
+                      <p className="text-text-primary text-sm font-bold font-inter">{topThree[0].name}</p>
+                      <p className="text-harvest-gold text-xs font-bold font-inter">{topThree[0].points.toLocaleString()} pts</p>
+                    </motion.div>
+                  )}
+                  {/* 3rd Place */}
+                  {topThree[2] && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="flex flex-col items-center pb-2"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-[#8D6E63]/20 flex items-center justify-center mb-1.5 border-2 border-[#8D6E63]">
+                        <span className="text-[#8D6E63] font-bold text-sm">{topThree[2].avatar}</span>
+                      </div>
+                      <Award className="w-4 h-4 text-[#8D6E63] mb-0.5" />
+                      <p className="text-text-primary text-xs font-medium font-inter">{topThree[2].name}</p>
+                      <p className="text-text-muted text-[10px] font-inter">{topThree[2].points.toLocaleString()} pts</p>
+                    </motion.div>
+                  )}
+                </div>
+                {/* Points Info */}
+                <div className="mt-3 pt-3 border-t border-border-light flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-text-muted font-inter">
+                  <span className="flex items-center gap-1"><Heart className="w-3 h-3 text-error-red" /> Like +{POINTS_LIKE}pts</span>
+                  <span className="flex items-center gap-1"><MessageCircle className="w-3 h-3 text-blue-500" /> Comment +{POINTS_COMMENT}pts</span>
+                  <span className="flex items-center gap-1"><Share2 className="w-3 h-3 text-krishiva-green" /> Share +{POINTS_SHARE}pts</span>
+                  <span className="flex items-center gap-1"><Star className="w-3 h-3 text-harvest-gold" /> Post +{POINTS_NEW_POST}pts</span>
+                </div>
+              </Card>
+
               {/* Create Post */}
               <Card className="rounded-2xl border-border-light p-4">
                 <div className="flex items-start gap-3">
@@ -419,9 +606,10 @@ export default function Community() {
                               </Button>
                               <Button
                                 size="sm"
+                                onClick={handleCreatePost}
                                 className="bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-lg font-inter"
                               >
-                                Post
+                                Post (+{POINTS_NEW_POST}pts)
                               </Button>
                             </div>
                           </div>
@@ -458,7 +646,7 @@ export default function Community() {
                 animate="show"
                 className="space-y-4"
               >
-                {feedPosts.map((post) => (
+                {posts.map((post) => (
                   <motion.div key={post.id} variants={cardVariants}>
                     <Card className="rounded-2xl border-border-light p-5 hover:shadow-card-hover transition-all">
                       {/* Post Header */}
@@ -518,13 +706,19 @@ export default function Community() {
                           <Heart className={`w-4 h-4 ${likedPosts[post.id] ? 'fill-error-red' : ''}`} />
                           <span>{post.likes + (likedPosts[post.id] ? 1 : 0)}</span>
                         </button>
-                        <button className="flex items-center gap-1.5 text-sm text-text-muted hover:text-krishiva-green transition-colors font-inter">
+                        <button
+                          onClick={() => openCommentModal(post.id)}
+                          className="flex items-center gap-1.5 text-sm text-text-muted hover:text-krishiva-green transition-colors font-inter"
+                        >
                           <MessageCircle className="w-4 h-4" />
                           <span>{post.comments}</span>
                         </button>
-                        <button className="flex items-center gap-1.5 text-sm text-text-muted hover:text-krishiva-green transition-colors font-inter">
+                        <button
+                          onClick={() => handleShare(post.id)}
+                          className="flex items-center gap-1.5 text-sm text-text-muted hover:text-krishiva-green transition-colors font-inter"
+                        >
                           <Share2 className="w-4 h-4" />
-                          <span>{post.shares}</span>
+                          <span>{post.shares + (shareCounts[post.id] || 0)}</span>
                         </button>
                         <button className="flex items-center gap-1.5 text-sm text-text-muted hover:text-krishiva-green transition-colors font-inter">
                           <Bookmark className="w-4 h-4" />
@@ -860,6 +1054,135 @@ export default function Community() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* ── Comment Dialog ── */}
+      <Dialog open={commentModalOpen} onOpenChange={setCommentModalOpen}>
+        <DialogContent className="sm:max-w-[420px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
+              <MessageCircle className="w-5 h-5 text-krishiva-green" /> Add Comment
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-2">
+            <textarea
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Write your comment..."
+              className="w-full p-3 rounded-xl border border-border-light bg-bg-primary text-sm text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:border-krishiva-green font-inter"
+              rows={4}
+              autoFocus
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setCommentModalOpen(false)}
+              className="text-text-secondary font-inter"
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={submitComment}
+              className="bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-lg font-inter"
+            >
+              Comment (+{POINTS_COMMENT}pts)
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Full Leaderboard Dialog ── */}
+      <Dialog open={leaderboardOpen} onOpenChange={setLeaderboardOpen}>
+        <DialogContent className="sm:max-w-[520px] rounded-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-harvest-gold" /> Full Leaderboard
+            </DialogTitle>
+          </DialogHeader>
+          {/* Top 3 Podium */}
+          <div className="pb-4 bg-gradient-to-b from-krishiva-green/5 to-transparent rounded-xl">
+            <div className="flex items-end justify-center gap-4 pt-2">
+              {leaders[1] && (
+                <div className="flex flex-col items-center pb-2">
+                  <div className="w-14 h-14 rounded-full bg-[#9CA3AF]/20 flex items-center justify-center mb-2 border-2 border-[#9CA3AF]">
+                    <span className="text-[#9CA3AF] font-bold text-lg">{leaders[1].avatar}</span>
+                  </div>
+                  <Medal className="w-5 h-5 text-[#9CA3AF] mb-1" />
+                  <p className="font-poppins font-semibold text-sm text-text-primary font-inter">{leaders[1].name}</p>
+                  <p className="text-text-muted text-xs font-inter">{leaders[1].points.toLocaleString()} pts</p>
+                  <p className="text-text-muted text-[10px] font-inter">{leaders[1].contributions} contributions</p>
+                </div>
+              )}
+              {leaders[0] && (
+                <div className="flex flex-col items-center -mt-3">
+                  <div className="w-20 h-20 rounded-full bg-[#F59E0B]/20 flex items-center justify-center mb-2 border-3 border-[#F59E0B]">
+                    <span className="text-[#F59E0B] font-bold text-xl">{leaders[0].avatar}</span>
+                  </div>
+                  <Crown className="w-6 h-6 text-[#F59E0B] mb-1" />
+                  <p className="font-poppins font-bold text-base text-text-primary font-inter">{leaders[0].name}</p>
+                  <p className="text-harvest-gold text-sm font-bold font-inter">{leaders[0].points.toLocaleString()} pts</p>
+                  <p className="text-text-muted text-[10px] font-inter">{leaders[0].contributions} contributions</p>
+                </div>
+              )}
+              {leaders[2] && (
+                <div className="flex flex-col items-center pb-2">
+                  <div className="w-14 h-14 rounded-full bg-[#8D6E63]/20 flex items-center justify-center mb-2 border-2 border-[#8D6E63]">
+                    <span className="text-[#8D6E63] font-bold text-lg">{leaders[2].avatar}</span>
+                  </div>
+                  <Award className="w-5 h-5 text-[#8D6E63] mb-1" />
+                  <p className="font-poppins font-semibold text-sm text-text-primary font-inter">{leaders[2].name}</p>
+                  <p className="text-text-muted text-xs font-inter">{leaders[2].points.toLocaleString()} pts</p>
+                  <p className="text-text-muted text-[10px] font-inter">{leaders[2].contributions} contributions</p>
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Full Table */}
+          <div className="divide-y divide-border-light border border-border-light rounded-xl overflow-hidden">
+            <div className="flex items-center gap-3 px-4 py-2.5 bg-bg-primary text-text-muted text-xs font-inter font-medium">
+              <span className="w-8 text-center">Rank</span>
+              <span className="flex-1">Farmer</span>
+              <span className="w-20 text-right">Points</span>
+              <span className="w-24 text-right hidden sm:block">Contributions</span>
+            </div>
+            {leaders.map((leader, i) => (
+              <div
+                key={leader.id}
+                className="flex items-center gap-3 px-4 py-3 hover:bg-bg-primary/50 transition-colors"
+              >
+                <div className="w-8 flex items-center justify-center shrink-0">
+                  {getRankIcon(i + 1, leader.badge)}
+                </div>
+                <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                  <div className={`w-8 h-8 rounded-full ${leader.color} flex items-center justify-center shrink-0`}>
+                    <span className="text-white font-bold text-[10px]">{leader.avatar}</span>
+                  </div>
+                  <span className="text-sm text-text-primary font-inter truncate">{leader.name}</span>
+                </div>
+                <div className="w-20 text-right shrink-0">
+                  <span className="font-poppins font-bold text-sm text-harvest-gold font-inter">{leader.points.toLocaleString()}</span>
+                </div>
+                <div className="w-24 text-right hidden sm:block shrink-0">
+                  <span className="text-text-muted text-xs font-inter">{leader.contributions}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Points Legend */}
+          <div className="mt-4 p-3 bg-bg-primary rounded-xl">
+            <p className="text-xs font-medium text-text-secondary mb-2 font-inter">How to earn points:</p>
+            <div className="grid grid-cols-2 gap-1.5 text-[11px] text-text-muted font-inter">
+              <span className="flex items-center gap-1"><Heart className="w-3 h-3 text-error-red" /> Post Like: +{POINTS_LIKE} pts</span>
+              <span className="flex items-center gap-1"><MessageCircle className="w-3 h-3 text-blue-500" /> Comment: +{POINTS_COMMENT} pts</span>
+              <span className="flex items-center gap-1"><Share2 className="w-3 h-3 text-krishiva-green" /> Share: +{POINTS_SHARE} pts</span>
+              <span className="flex items-center gap-1"><Star className="w-3 h-3 text-harvest-gold" /> New Post: +{POINTS_NEW_POST} pts</span>
+              <span className="flex items-center gap-1 col-span-2"><Zap className="w-3 h-3 text-warning-amber" /> Daily Login: +{POINTS_DAILY_LOGIN} pts</span>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }
