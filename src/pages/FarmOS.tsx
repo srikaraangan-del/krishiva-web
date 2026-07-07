@@ -18,6 +18,7 @@ import {
   Tractor,
   Package,
   Users,
+  FileText,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -36,6 +37,33 @@ import {
   AreaChart,
 } from 'recharts';
 import DashboardLayout from '@/components/DashboardLayout';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+
+/* ─────────────────────── Toast Helper ─────────────────────── */
+const showToast = (message: string) => {
+  const toast = document.createElement('div');
+  toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
+};
 
 /* ─────────────────────── Animation Helpers ─────────────────────── */
 const cardVariant = {
@@ -69,8 +97,8 @@ type TabKey = 'overview' | 'fields' | 'crops' | 'activity' | 'analytics';
 const overviewStats = [
   { icon: MapPin, value: '25', unit: 'acres', label: 'Total Land', color: 'text-krishiva-green', bg: 'bg-krishiva-green/10' },
   { icon: Sprout, value: '12', unit: '', label: 'Active Crops', color: 'text-blue-500', bg: 'bg-blue-500/10' },
-  { icon: IndianRupee, value: '₹2,50,000', unit: '', label: 'Expected Revenue', color: 'text-success-green', bg: 'bg-success-green/10' },
-  { icon: TrendingDown, value: '₹1,60,000', unit: '', label: 'Expenses', color: 'text-error-red', bg: 'bg-error-red/10' },
+  { icon: IndianRupee, value: '\u20b92,50,000', unit: '', label: 'Expected Revenue', color: 'text-success-green', bg: 'bg-success-green/10' },
+  { icon: TrendingDown, value: '\u20b91,60,000', unit: '', label: 'Expenses', color: 'text-error-red', bg: 'bg-error-red/10' },
 ];
 
 const revenueData = [
@@ -82,7 +110,21 @@ const revenueData = [
   { name: 'Jun', revenue: 50000, expenses: 30000 },
 ];
 
-function OverviewTab() {
+function OverviewTab({
+  onAddField,
+  onAddCrop,
+  onLogExpense,
+}: {
+  onAddField: () => void;
+  onAddCrop: () => void;
+  onLogExpense: () => void;
+}) {
+  const actionMap: Record<string, () => void> = {
+    'Add Field': onAddField,
+    'Add Crop': onAddCrop,
+    'Log Expense': onLogExpense,
+  };
+
   return (
     <motion.div variants={tabContentVariant} initial="hidden" animate="visible" exit="exit" className="space-y-5">
       {/* Stat Cards Row */}
@@ -159,6 +201,7 @@ function OverviewTab() {
             ].map((action) => (
               <button
                 key={action.label}
+                onClick={actionMap[action.label]}
                 className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-border-light hover:border-krishiva-green hover:bg-krishiva-green/5 transition-all duration-200 text-left"
               >
                 <div className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center shrink-0`}>
@@ -181,10 +224,10 @@ function OverviewTab() {
 /* ═══════════════════════ FIELDS TAB ═══════════════════════ */
 
 const fields = [
-  { name: 'Field A', size: 8, crop: 'Cotton', cropColor: '#2E7D32', status: 'Healthy', statusColor: 'bg-success-green', x: 0, y: 0, w: 60, h: 45 },
-  { name: 'Field B', size: 6, crop: 'Chili', cropColor: '#F9A825', status: 'Needs Water', statusColor: 'bg-warning-amber', x: 60, y: 0, w: 40, h: 45 },
-  { name: 'Field C', size: 5, crop: 'Paddy', cropColor: '#66BB6A', status: 'Harvest Ready', statusColor: 'bg-blue-500', x: 0, y: 45, w: 40, h: 55 },
-  { name: 'Field D', size: 6, crop: 'Tomato', cropColor: '#EC4899', status: 'Growing', statusColor: 'bg-krishiva-green', x: 40, y: 45, w: 60, h: 55 },
+  { name: 'Field A', size: 8, crop: 'Cotton', cropColor: '#2E7D32', status: 'Healthy', statusColor: 'bg-success-green', soilType: 'Loamy', waterSource: 'Drip Irrigation', x: 0, y: 0, w: 60, h: 45 },
+  { name: 'Field B', size: 6, crop: 'Chili', cropColor: '#F9A825', status: 'Needs Water', statusColor: 'bg-warning-amber', soilType: 'Sandy Loam', waterSource: 'Sprinkler', x: 60, y: 0, w: 40, h: 45 },
+  { name: 'Field C', size: 5, crop: 'Paddy', cropColor: '#66BB6A', status: 'Harvest Ready', statusColor: 'bg-blue-500', soilType: 'Clay', waterSource: 'Flood Irrigation', x: 0, y: 45, w: 40, h: 55 },
+  { name: 'Field D', size: 6, crop: 'Tomato', cropColor: '#EC4899', status: 'Growing', statusColor: 'bg-krishiva-green', soilType: 'Silt Loam', waterSource: 'Drip Irrigation', x: 40, y: 45, w: 60, h: 55 },
 ];
 
 const statusBadgeColors: Record<string, string> = {
@@ -194,7 +237,13 @@ const statusBadgeColors: Record<string, string> = {
   Growing: 'bg-krishiva-green/10 text-krishiva-green',
 };
 
-function FieldsTab() {
+function FieldsTab({
+  onViewDetails,
+  onLogActivity,
+}: {
+  onViewDetails: (field: typeof fields[0]) => void;
+  onLogActivity: () => void;
+}) {
   return (
     <motion.div variants={tabContentVariant} initial="hidden" animate="visible" exit="exit" className="space-y-5">
       {/* Field Map Placeholder */}
@@ -276,17 +325,27 @@ function FieldsTab() {
                   <span className="text-text-primary text-sm font-medium">{field.crop}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-text-secondary text-sm">Planted</span>
-                  <span className="text-text-primary text-sm font-medium">45 days ago</span>
+                  <span className="text-text-secondary text-sm">Soil Type</span>
+                  <span className="text-text-primary text-sm font-medium">{field.soilType}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-text-secondary text-sm">Irrigation</span>
-                  <span className="text-text-primary text-sm font-medium">8 done</span>
+                  <span className="text-text-secondary text-sm">Water Source</span>
+                  <span className="text-text-primary text-sm font-medium">{field.waterSource}</span>
                 </div>
               </div>
               <div className="flex items-center gap-3 mt-4 pt-3 border-t border-border-light">
-                <button className="text-krishiva-green text-sm font-medium hover:underline">View Details</button>
-                <button className="text-text-muted text-sm hover:text-text-primary">Log Activity</button>
+                <button
+                  onClick={() => onViewDetails(field)}
+                  className="text-krishiva-green text-sm font-medium hover:underline"
+                >
+                  View Details
+                </button>
+                <button
+                  onClick={onLogActivity}
+                  className="text-text-muted text-sm hover:text-text-primary"
+                >
+                  Log Activity
+                </button>
               </div>
             </div>
           </motion.div>
@@ -321,7 +380,19 @@ const crops: CropData[] = [
 
 const growthStages = ['Sowing', 'Germination', 'Vegetative', 'Flowering', 'Fruiting', 'Harvest'];
 
-function CropCard({ crop, idx }: { crop: CropData; idx: number }) {
+function CropCard({
+  crop,
+  idx,
+  onViewDetails,
+  onAddNote,
+  onMarkIssue,
+}: {
+  crop: CropData;
+  idx: number;
+  onViewDetails: (crop: CropData) => void;
+  onAddNote: (crop: CropData) => void;
+  onMarkIssue: (crop: CropData) => void;
+}) {
   return (
     <motion.div
       custom={idx}
@@ -397,9 +468,24 @@ function CropCard({ crop, idx }: { crop: CropData; idx: number }) {
 
           {/* Actions */}
           <div className="flex items-center gap-3 pt-3 border-t border-border-light">
-            <button className="text-krishiva-green text-sm font-medium hover:underline">View Details</button>
-            <button className="text-text-muted text-sm hover:text-text-primary">Add Note</button>
-            <button className="text-error-red text-sm hover:text-error-red/80 ml-auto">Mark Issue</button>
+            <button
+              onClick={() => onViewDetails(crop)}
+              className="text-krishiva-green text-sm font-medium hover:underline"
+            >
+              View Details
+            </button>
+            <button
+              onClick={() => onAddNote(crop)}
+              className="text-text-muted text-sm hover:text-text-primary"
+            >
+              Add Note
+            </button>
+            <button
+              onClick={() => onMarkIssue(crop)}
+              className="text-error-red text-sm hover:text-error-red/80 ml-auto"
+            >
+              Mark Issue
+            </button>
           </div>
         </div>
       </div>
@@ -407,12 +493,27 @@ function CropCard({ crop, idx }: { crop: CropData; idx: number }) {
   );
 }
 
-function CropsTab() {
+function CropsTab({
+  onViewDetails,
+  onAddNote,
+  onMarkIssue,
+}: {
+  onViewDetails: (crop: CropData) => void;
+  onAddNote: (crop: CropData) => void;
+  onMarkIssue: (crop: CropData) => void;
+}) {
   return (
     <motion.div variants={tabContentVariant} initial="hidden" animate="visible" exit="exit" className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {crops.map((crop, idx) => (
-          <CropCard key={crop.name} crop={crop} idx={idx} />
+          <CropCard
+            key={crop.name}
+            crop={crop}
+            idx={idx}
+            onViewDetails={onViewDetails}
+            onAddNote={onAddNote}
+            onMarkIssue={onMarkIssue}
+          />
         ))}
       </div>
     </motion.div>
@@ -668,17 +769,146 @@ function AnalyticsTab() {
 }
 
 /* ═══════════════════════ MAIN PAGE ═══════════════════════ */
+
 export default function FarmOS() {
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
 
+  /* ── Dialog States ── */
+  const [addFieldOpen, setAddFieldOpen] = useState(false);
+  const [addCropOpen, setAddCropOpen] = useState(false);
+  const [logExpenseOpen, setLogExpenseOpen] = useState(false);
+  const [viewDetailsOpen, setViewDetailsOpen] = useState(false);
+  const [logActivityOpen, setLogActivityOpen] = useState(false);
+  const [addNoteOpen, setAddNoteOpen] = useState(false);
+  const [markIssueOpen, setMarkIssueOpen] = useState(false);
+
+  /* ── Selected Data ── */
+  const [selectedField, setSelectedField] = useState<typeof fields[0] | null>(null);
+  const [selectedCrop, setSelectedCrop] = useState<CropData | null>(null);
+
+  /* ── Form States: Add Field ── */
+  const [fieldName, setFieldName] = useState('');
+  const [fieldArea, setFieldArea] = useState('');
+  const [fieldCropType, setFieldCropType] = useState('');
+  const [fieldSoilType, setFieldSoilType] = useState('');
+  const [fieldWaterSource, setFieldWaterSource] = useState('');
+
+  /* ── Form States: Add Crop ── */
+  const [cropName, setCropName] = useState('');
+  const [cropField, setCropField] = useState('');
+  const [cropArea, setCropArea] = useState('');
+  const [cropPlantingDate, setCropPlantingDate] = useState('');
+  const [cropHarvestDate, setCropHarvestDate] = useState('');
+
+  /* ── Form States: Log Expense ── */
+  const [expenseType, setExpenseType] = useState('');
+  const [expenseAmount, setExpenseAmount] = useState('');
+  const [expenseDate, setExpenseDate] = useState('');
+  const [expenseNotes, setExpenseNotes] = useState('');
+
+  /* ── Form States: Log Activity ── */
+  const [activityType, setActivityType] = useState('');
+  const [activityField, setActivityField] = useState('');
+  const [activityDescription, setActivityDescription] = useState('');
+  const [activityDate, setActivityDate] = useState('');
+
+  /* ── Form States: Add Note ── */
+  const [noteContent, setNoteContent] = useState('');
+
+  /* ── Form States: Mark Issue ── */
+  const [issueType, setIssueType] = useState('');
+  const [issueSeverity, setIssueSeverity] = useState('');
+  const [issueDescription, setIssueDescription] = useState('');
+
+  /* ── Handlers ── */
+  const openAddField = () => setAddFieldOpen(true);
+  const openAddCrop = () => setAddCropOpen(true);
+  const openLogExpense = () => setLogExpenseOpen(true);
+
+  const openViewDetailsField = (field: typeof fields[0]) => {
+    setSelectedField(field);
+    setSelectedCrop(null);
+    setViewDetailsOpen(true);
+  };
+
+  const openViewDetailsCrop = (crop: CropData) => {
+    setSelectedCrop(crop);
+    setSelectedField(null);
+    setViewDetailsOpen(true);
+  };
+
+  const openLogActivity = () => setLogActivityOpen(true);
+
+  const openAddNote = (crop: CropData) => {
+    setSelectedCrop(crop);
+    setAddNoteOpen(true);
+  };
+
+  const openMarkIssue = (crop: CropData) => {
+    setSelectedCrop(crop);
+    setMarkIssueOpen(true);
+  };
+
+  const handleAddField = () => {
+    showToast(`Field "${fieldName || 'New Field'}" added successfully!`);
+    setAddFieldOpen(false);
+    setFieldName('');
+    setFieldArea('');
+    setFieldCropType('');
+    setFieldSoilType('');
+    setFieldWaterSource('');
+  };
+
+  const handleAddCrop = () => {
+    showToast(`Crop "${cropName || 'New Crop'}" added successfully!`);
+    setAddCropOpen(false);
+    setCropName('');
+    setCropField('');
+    setCropArea('');
+    setCropPlantingDate('');
+    setCropHarvestDate('');
+  };
+
+  const handleLogExpense = () => {
+    showToast(`Expense of ₹${expenseAmount || '0'} logged!`);
+    setLogExpenseOpen(false);
+    setExpenseType('');
+    setExpenseAmount('');
+    setExpenseDate('');
+    setExpenseNotes('');
+  };
+
+  const handleLogActivity = () => {
+    showToast('Activity logged successfully!');
+    setLogActivityOpen(false);
+    setActivityType('');
+    setActivityField('');
+    setActivityDescription('');
+    setActivityDate('');
+  };
+
+  const handleAddNote = () => {
+    showToast('Note added successfully!');
+    setAddNoteOpen(false);
+    setNoteContent('');
+  };
+
+  const handleMarkIssue = () => {
+    showToast('Issue reported successfully!');
+    setMarkIssueOpen(false);
+    setIssueType('');
+    setIssueSeverity('');
+    setIssueDescription('');
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'overview': return <OverviewTab />;
-      case 'fields': return <FieldsTab />;
-      case 'crops': return <CropsTab />;
+      case 'overview': return <OverviewTab onAddField={openAddField} onAddCrop={openAddCrop} onLogExpense={openLogExpense} />;
+      case 'fields': return <FieldsTab onViewDetails={openViewDetailsField} onLogActivity={openLogActivity} />;
+      case 'crops': return <CropsTab onViewDetails={openViewDetailsCrop} onAddNote={openAddNote} onMarkIssue={openMarkIssue} />;
       case 'activity': return <ActivityTab />;
       case 'analytics': return <AnalyticsTab />;
-      default: return <OverviewTab />;
+      default: return <OverviewTab onAddField={openAddField} onAddCrop={openAddCrop} onLogExpense={openLogExpense} />;
     }
   };
 
@@ -696,7 +926,10 @@ export default function FarmOS() {
             <h1 className="font-poppins font-bold text-2xl sm:text-3xl text-text-primary">Farm OS</h1>
             <p className="text-text-secondary text-sm mt-1">Manage your farm</p>
           </div>
-          <button className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors self-start sm:self-auto shadow-button">
+          <button
+            onClick={openAddField}
+            className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors self-start sm:self-auto shadow-button"
+          >
             <Plus className="w-4 h-4" />
             Add Field
           </button>
@@ -750,6 +983,499 @@ export default function FarmOS() {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* ═══════════ DIALOGS ═══════════ */}
+
+      {/* ── Add Field Dialog ── */}
+      <Dialog open={addFieldOpen} onOpenChange={setAddFieldOpen}>
+        <DialogContent className="sm:max-w-[460px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
+              <Plus className="w-5 h-5 text-krishiva-green" /> Add New Field
+            </DialogTitle>
+            <DialogDescription className="text-text-muted text-sm font-inter">
+              Register a new field on your farm with its details.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label className="text-sm font-medium font-inter">Field Name</Label>
+              <Input
+                value={fieldName}
+                onChange={(e) => setFieldName(e.target.value)}
+                placeholder="e.g., Field E"
+                className="mt-1.5 rounded-xl font-inter"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Area (acres)</Label>
+              <Input
+                value={fieldArea}
+                onChange={(e) => setFieldArea(e.target.value)}
+                placeholder="e.g., 5"
+                type="number"
+                className="mt-1.5 rounded-xl font-inter"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Crop Type</Label>
+              <Select value={fieldCropType} onValueChange={setFieldCropType}>
+                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
+                  <SelectValue placeholder="Select crop type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cotton">Cotton</SelectItem>
+                  <SelectItem value="chili">Chili</SelectItem>
+                  <SelectItem value="paddy">Paddy</SelectItem>
+                  <SelectItem value="tomato">Tomato</SelectItem>
+                  <SelectItem value="wheat">Wheat</SelectItem>
+                  <SelectItem value="sugarcane">Sugarcane</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Soil Type</Label>
+              <Select value={fieldSoilType} onValueChange={setFieldSoilType}>
+                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
+                  <SelectValue placeholder="Select soil type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="loamy">Loamy</SelectItem>
+                  <SelectItem value="sandy">Sandy Loam</SelectItem>
+                  <SelectItem value="clay">Clay</SelectItem>
+                  <SelectItem value="silt">Silt Loam</SelectItem>
+                  <SelectItem value="black">Black Soil</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Water Source</Label>
+              <Select value={fieldWaterSource} onValueChange={setFieldWaterSource}>
+                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
+                  <SelectValue placeholder="Select water source" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="drip">Drip Irrigation</SelectItem>
+                  <SelectItem value="sprinkler">Sprinkler</SelectItem>
+                  <SelectItem value="flood">Flood Irrigation</SelectItem>
+                  <SelectItem value=" borewell">Borewell</SelectItem>
+                  <SelectItem value="canal">Canal Water</SelectItem>
+                  <SelectItem value="rain">Rain Fed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <button
+              onClick={handleAddField}
+              className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
+            >
+              <Plus className="w-4 h-4" /> Add Field
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Add Crop Dialog ── */}
+      <Dialog open={addCropOpen} onOpenChange={setAddCropOpen}>
+        <DialogContent className="sm:max-w-[460px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
+              <Sprout className="w-5 h-5 text-blue-500" /> Add New Crop
+            </DialogTitle>
+            <DialogDescription className="text-text-muted text-sm font-inter">
+              Track a new crop planting on your farm.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label className="text-sm font-medium font-inter">Crop Name</Label>
+              <Input
+                value={cropName}
+                onChange={(e) => setCropName(e.target.value)}
+                placeholder="e.g., Cotton"
+                className="mt-1.5 rounded-xl font-inter"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Field</Label>
+              <Select value={cropField} onValueChange={setCropField}>
+                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
+                  <SelectValue placeholder="Select field" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Field A">Field A</SelectItem>
+                  <SelectItem value="Field B">Field B</SelectItem>
+                  <SelectItem value="Field C">Field C</SelectItem>
+                  <SelectItem value="Field D">Field D</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Area (acres)</Label>
+              <Input
+                value={cropArea}
+                onChange={(e) => setCropArea(e.target.value)}
+                placeholder="e.g., 5"
+                type="number"
+                className="mt-1.5 rounded-xl font-inter"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Planting Date</Label>
+              <Input
+                value={cropPlantingDate}
+                onChange={(e) => setCropPlantingDate(e.target.value)}
+                type="date"
+                className="mt-1.5 rounded-xl font-inter"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Expected Harvest Date</Label>
+              <Input
+                value={cropHarvestDate}
+                onChange={(e) => setCropHarvestDate(e.target.value)}
+                type="date"
+                className="mt-1.5 rounded-xl font-inter"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <button
+              onClick={handleAddCrop}
+              className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
+            >
+              <Sprout className="w-4 h-4" /> Add Crop
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Log Expense Dialog ── */}
+      <Dialog open={logExpenseOpen} onOpenChange={setLogExpenseOpen}>
+        <DialogContent className="sm:max-w-[460px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
+              <IndianRupee className="w-5 h-5 text-error-red" /> Log Expense
+            </DialogTitle>
+            <DialogDescription className="text-text-muted text-sm font-inter">
+              Record a farm expense for your records.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label className="text-sm font-medium font-inter">Expense Type</Label>
+              <Select value={expenseType} onValueChange={setExpenseType}>
+                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
+                  <SelectValue placeholder="Select expense type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="seeds">Seeds</SelectItem>
+                  <SelectItem value="fertilizer">Fertilizer</SelectItem>
+                  <SelectItem value="labor">Labor</SelectItem>
+                  <SelectItem value="equipment">Equipment</SelectItem>
+                  <SelectItem value="pesticide">Pesticide</SelectItem>
+                  <SelectItem value="irrigation">Irrigation</SelectItem>
+                  <SelectItem value="transport">Transport</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Amount (₹)</Label>
+              <Input
+                value={expenseAmount}
+                onChange={(e) => setExpenseAmount(e.target.value)}
+                placeholder="e.g., 5000"
+                type="number"
+                className="mt-1.5 rounded-xl font-inter"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Date</Label>
+              <Input
+                value={expenseDate}
+                onChange={(e) => setExpenseDate(e.target.value)}
+                type="date"
+                className="mt-1.5 rounded-xl font-inter"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Notes</Label>
+              <Textarea
+                value={expenseNotes}
+                onChange={(e) => setExpenseNotes(e.target.value)}
+                placeholder="Any additional details..."
+                className="mt-1.5 rounded-xl font-inter"
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <button
+              onClick={handleLogExpense}
+              className="flex items-center gap-2 bg-error-red hover:bg-red-700 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
+            >
+              <IndianRupee className="w-4 h-4" /> Log Expense
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── View Details Dialog ── */}
+      <Dialog open={viewDetailsOpen} onOpenChange={setViewDetailsOpen}>
+        <DialogContent className="sm:max-w-[460px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
+              <FileText className="w-5 h-5 text-krishiva-green" /> Details
+            </DialogTitle>
+          </DialogHeader>
+          {selectedField && (
+            <div className="space-y-3 py-2">
+              <div className="bg-krishiva-green/5 rounded-xl p-4">
+                <h4 className="font-poppins font-semibold text-base text-text-primary">{selectedField.name}</h4>
+                <p className="text-text-muted text-sm font-inter">{selectedField.crop} cultivation</p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-bg-primary rounded-xl p-3">
+                  <p className="text-text-muted text-xs font-inter">Size</p>
+                  <p className="text-text-primary text-sm font-medium font-inter">{selectedField.size} acres</p>
+                </div>
+                <div className="bg-bg-primary rounded-xl p-3">
+                  <p className="text-text-muted text-xs font-inter">Status</p>
+                  <p className="text-text-primary text-sm font-medium font-inter">{selectedField.status}</p>
+                </div>
+                <div className="bg-bg-primary rounded-xl p-3">
+                  <p className="text-text-muted text-xs font-inter">Soil Type</p>
+                  <p className="text-text-primary text-sm font-medium font-inter">{selectedField.soilType}</p>
+                </div>
+                <div className="bg-bg-primary rounded-xl p-3">
+                  <p className="text-text-muted text-xs font-inter">Water Source</p>
+                  <p className="text-text-primary text-sm font-medium font-inter">{selectedField.waterSource}</p>
+                </div>
+              </div>
+              <div className="bg-bg-primary rounded-xl p-3">
+                <p className="text-text-muted text-xs font-inter mb-1">Crop Color Code</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded" style={{ backgroundColor: selectedField.cropColor }} />
+                  <span className="text-text-primary text-sm font-inter">{selectedField.crop}</span>
+                </div>
+              </div>
+            </div>
+          )}
+          {selectedCrop && (
+            <div className="space-y-3 py-2">
+              <div className="rounded-xl p-4" style={{ backgroundColor: `${selectedCrop.color}10` }}>
+                <h4 className="font-poppins font-semibold text-base text-text-primary">{selectedCrop.name}</h4>
+                <p className="text-text-muted text-sm font-inter">{selectedCrop.variety} • {selectedCrop.field}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-bg-primary rounded-xl p-3">
+                  <p className="text-text-muted text-xs font-inter">Growth</p>
+                  <p className="text-text-primary text-sm font-medium font-inter">{selectedCrop.growthPercent}%</p>
+                </div>
+                <div className="bg-bg-primary rounded-xl p-3">
+                  <p className="text-text-muted text-xs font-inter">Stage</p>
+                  <p className="text-text-primary text-sm font-medium font-inter">{selectedCrop.stage}</p>
+                </div>
+                <div className="bg-bg-primary rounded-xl p-3">
+                  <p className="text-text-muted text-xs font-inter">Health</p>
+                  <p className="text-text-primary text-sm font-medium font-inter">{selectedCrop.health}</p>
+                </div>
+                <div className="bg-bg-primary rounded-xl p-3">
+                  <p className="text-text-muted text-xs font-inter">Days Remaining</p>
+                  <p className="text-text-primary text-sm font-medium font-inter">{selectedCrop.daysRemaining}</p>
+                </div>
+              </div>
+              <div className="bg-bg-primary rounded-xl p-3">
+                <p className="text-text-muted text-xs font-inter mb-1">Growth Progress</p>
+                <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${selectedCrop.growthPercent}%`, backgroundColor: selectedCrop.color }}
+                  />
+                </div>
+                <p className="text-text-muted text-xs mt-1 font-inter">{selectedCrop.plantedDays} of {selectedCrop.totalDays} days planted</p>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Log Activity Dialog ── */}
+      <Dialog open={logActivityOpen} onOpenChange={setLogActivityOpen}>
+        <DialogContent className="sm:max-w-[460px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
+              <ClipboardList className="w-5 h-5 text-krishiva-green" /> Log Activity
+            </DialogTitle>
+            <DialogDescription className="text-text-muted text-sm font-inter">
+              Record a farming activity for your records.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label className="text-sm font-medium font-inter">Activity Type</Label>
+              <Select value={activityType} onValueChange={setActivityType}>
+                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
+                  <SelectValue placeholder="Select activity type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="irrigation">Irrigation</SelectItem>
+                  <SelectItem value="fertilizing">Fertilizing</SelectItem>
+                  <SelectItem value="pest_control">Pest Control</SelectItem>
+                  <SelectItem value="weeding">Weeding</SelectItem>
+                  <SelectItem value="harvesting">Harvesting</SelectItem>
+                  <SelectItem value="sowing">Sowing</SelectItem>
+                  <SelectItem value="pruning">Pruning</SelectItem>
+                  <SelectItem value="inspection">Inspection</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Field</Label>
+              <Select value={activityField} onValueChange={setActivityField}>
+                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
+                  <SelectValue placeholder="Select field" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Field A">Field A</SelectItem>
+                  <SelectItem value="Field B">Field B</SelectItem>
+                  <SelectItem value="Field C">Field C</SelectItem>
+                  <SelectItem value="Field D">Field D</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Date</Label>
+              <Input
+                value={activityDate}
+                onChange={(e) => setActivityDate(e.target.value)}
+                type="date"
+                className="mt-1.5 rounded-xl font-inter"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Description</Label>
+              <Textarea
+                value={activityDescription}
+                onChange={(e) => setActivityDescription(e.target.value)}
+                placeholder="Describe the activity..."
+                className="mt-1.5 rounded-xl font-inter"
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <button
+              onClick={handleLogActivity}
+              className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
+            >
+              <ClipboardList className="w-4 h-4" /> Log Activity
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Add Note Dialog ── */}
+      <Dialog open={addNoteOpen} onOpenChange={setAddNoteOpen}>
+        <DialogContent className="sm:max-w-[460px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
+              <FileText className="w-5 h-5 text-krishiva-green" /> Add Note
+            </DialogTitle>
+            <DialogDescription className="text-text-muted text-sm font-inter">
+              {selectedCrop ? `Add a note for ${selectedCrop.name} (${selectedCrop.field})` : 'Add a note for your records.'}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label className="text-sm font-medium font-inter">Note Content</Label>
+              <Textarea
+                value={noteContent}
+                onChange={(e) => setNoteContent(e.target.value)}
+                placeholder="Write your note here..."
+                className="mt-1.5 rounded-xl font-inter"
+                rows={5}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <button
+              onClick={handleAddNote}
+              className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
+            >
+              <FileText className="w-4 h-4" /> Add Note
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Mark Issue Dialog ── */}
+      <Dialog open={markIssueOpen} onOpenChange={setMarkIssueOpen}>
+        <DialogContent className="sm:max-w-[460px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-error-red" /> Report Issue
+            </DialogTitle>
+            <DialogDescription className="text-text-muted text-sm font-inter">
+              {selectedCrop ? `Report an issue for ${selectedCrop.name} (${selectedCrop.field})` : 'Report a farm issue.'}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label className="text-sm font-medium font-inter">Issue Type</Label>
+              <Select value={issueType} onValueChange={setIssueType}>
+                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
+                  <SelectValue placeholder="Select issue type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pest">Pest Infestation</SelectItem>
+                  <SelectItem value="disease">Plant Disease</SelectItem>
+                  <SelectItem value="water">Water Problem</SelectItem>
+                  <SelectItem value="soil">Soil Issue</SelectItem>
+                  <SelectItem value="weather">Weather Damage</SelectItem>
+                  <SelectItem value="equipment">Equipment Failure</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Severity</Label>
+              <Select value={issueSeverity} onValueChange={setIssueSeverity}>
+                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
+                  <SelectValue placeholder="Select severity" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Low — Minor concern</SelectItem>
+                  <SelectItem value="medium">Medium — Needs attention</SelectItem>
+                  <SelectItem value="high">High — Urgent action needed</SelectItem>
+                  <SelectItem value="critical">Critical — Immediate action required</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium font-inter">Description</Label>
+              <Textarea
+                value={issueDescription}
+                onChange={(e) => setIssueDescription(e.target.value)}
+                placeholder="Describe the issue in detail..."
+                className="mt-1.5 rounded-xl font-inter"
+                rows={4}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <button
+              onClick={handleMarkIssue}
+              className="flex items-center gap-2 bg-error-red hover:bg-red-700 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
+            >
+              <AlertCircle className="w-4 h-4" /> Report Issue
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }

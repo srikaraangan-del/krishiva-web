@@ -275,15 +275,42 @@ function FeedCard({ item }: { item: FeedItem }) {
       {/* Engagement for community cards */}
       {item.engagement && (
         <div className="flex items-center gap-4 mt-3 pt-3 border-t border-border-light">
-          <button className="flex items-center gap-1.5 text-text-muted hover:text-krishiva-green transition-colors">
+          <button
+            onClick={() => {
+              const toast = document.createElement('div');
+              toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+              toast.textContent = 'Liked!';
+              document.body.appendChild(toast);
+              setTimeout(() => toast.remove(), 2000);
+            }}
+            className="flex items-center gap-1.5 text-text-muted hover:text-krishiva-green transition-colors"
+          >
             <ThumbsUp className="w-4 h-4" />
             <span className="text-xs font-medium">{item.engagement.likes}</span>
           </button>
-          <button className="flex items-center gap-1.5 text-text-muted hover:text-blue-500 transition-colors">
+          <button
+            onClick={() => {
+              const toast = document.createElement('div');
+              toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+              toast.textContent = 'Comments coming soon!';
+              document.body.appendChild(toast);
+              setTimeout(() => toast.remove(), 2000);
+            }}
+            className="flex items-center gap-1.5 text-text-muted hover:text-blue-500 transition-colors"
+          >
             <MessageCircle className="w-4 h-4" />
             <span className="text-xs font-medium">{item.engagement.comments}</span>
           </button>
-          <button className="flex items-center gap-1.5 text-text-muted hover:text-text-primary transition-colors ml-auto">
+          <button
+            onClick={() => {
+              const toast = document.createElement('div');
+              toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+              toast.textContent = 'Sharing coming soon!';
+              document.body.appendChild(toast);
+              setTimeout(() => toast.remove(), 2000);
+            }}
+            className="flex items-center gap-1.5 text-text-muted hover:text-text-primary transition-colors ml-auto"
+          >
             <Share2 className="w-4 h-4" />
             <span className="text-xs font-medium">Share</span>
           </button>
@@ -330,10 +357,28 @@ function FeaturedAlert({ onDismiss }: { onDismiss: () => void }) {
             Avoid sowing new seeds until weather clears. IMD has issued orange alert for Guntur district.
           </p>
           <div className="flex items-center gap-3 mt-3">
-            <button className="bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors">
+            <button
+              onClick={() => {
+                const toast = document.createElement('div');
+                toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+                toast.textContent = 'Weather details coming soon!';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 2000);
+              }}
+              className="bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors"
+            >
               View Details
             </button>
-            <button className="text-krishiva-green text-sm font-medium hover:underline">
+            <button
+              onClick={() => {
+                const toast = document.createElement('div');
+                toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+                toast.textContent = 'Shared with community!';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 2000);
+              }}
+              className="text-krishiva-green text-sm font-medium hover:underline"
+            >
               Share with Community
             </button>
           </div>

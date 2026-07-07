@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sun,
@@ -348,6 +349,8 @@ function getStatusBadgeColor(status: string) {
 /* ------------------------------------------------------------------ */
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   /* -- Weather State -- */
   const [weatherData, setWeatherData] = useState<WeatherDay[]>([]);
   const [weatherLoading, setWeatherLoading] = useState(true);
@@ -1051,13 +1054,20 @@ export default function Dashboard() {
           </div>
           <div className="grid grid-cols-4 gap-3">
             {QUICK_ACTIONS.map((action, i) => (
-              <motion.a
+              <motion.button
                 key={action.label}
-                href={action.href}
+                onClick={() => {
+                  if (action.href.startsWith('#')) {
+                    const el = document.getElementById(action.href.slice(1));
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    navigate(action.href);
+                  }
+                }}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.6 + i * 0.04 }}
-                className="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-border-light shadow-card hover:shadow-card-hover transition-all group"
+                className="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-border-light shadow-card hover:shadow-card-hover transition-all group cursor-pointer"
               >
                 <div className={`w-12 h-12 rounded-xl ${action.color} flex items-center justify-center`}>
                   <action.icon className="w-6 h-6" />
@@ -1065,7 +1075,7 @@ export default function Dashboard() {
                 <span className="text-xs font-medium text-text-primary group-hover:text-krishiva-green transition-colors text-center">
                   {action.label}
                 </span>
-              </motion.a>
+              </motion.button>
             ))}
           </div>
         </motion.div>

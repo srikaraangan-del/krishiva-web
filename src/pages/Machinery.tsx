@@ -131,6 +131,7 @@ function MachineBookingModal({ machine, open, onClose }: { machine: Machine | nu
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [hoursPerDay, setHoursPerDay] = useState(8);
+  const [deliveryOption, setDeliveryOption] = useState('Owner Brings');
 
   if (!machine) return null;
 
@@ -202,7 +203,15 @@ function MachineBookingModal({ machine, open, onClose }: { machine: Machine | nu
             <label className="text-sm font-medium text-text-secondary mb-1.5 block">Delivery Option</label>
             <div className="flex gap-2">
               {['Owner Brings', 'I Pick Up'].map((opt) => (
-                <button key={opt} className="flex-1 h-10 px-3 rounded-xl text-sm font-medium bg-bg-primary text-text-secondary hover:bg-krishiva-green/10 transition-all border border-border-light hover:border-krishiva-green/30">
+                <button
+                  key={opt}
+                  onClick={() => setDeliveryOption(opt)}
+                  className={`flex-1 h-10 px-3 rounded-xl text-sm font-medium transition-all border ${
+                    deliveryOption === opt
+                      ? 'bg-krishiva-green text-white border-krishiva-green'
+                      : 'bg-bg-primary text-text-secondary hover:bg-krishiva-green/10 border-border-light hover:border-krishiva-green/30'
+                  }`}
+                >
                   {opt}
                 </button>
               ))}

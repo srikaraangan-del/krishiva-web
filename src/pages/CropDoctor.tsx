@@ -81,6 +81,8 @@ export default function CropDoctor() {
   const [analyzing, setAnalyzing] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('Today');
+  const [selectedTime, setSelectedTime] = useState('11:00 AM');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUploadClick = useCallback(() => {
@@ -204,7 +206,13 @@ export default function CropDoctor() {
 
               {/* Voice describe */}
               <button
-                onClick={() => {}}
+                onClick={() => {
+                  const toast = document.createElement('div');
+                  toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+                  toast.textContent = 'Voice input coming soon!';
+                  document.body.appendChild(toast);
+                  setTimeout(() => toast.remove(), 2000);
+                }}
                 className="inline-flex items-center gap-2 text-text-secondary hover:text-krishiva-green transition-colors text-sm font-inter mb-4"
               >
                 <Mic className="w-4 h-4" />
@@ -480,7 +488,16 @@ export default function CropDoctor() {
         >
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-poppins font-semibold text-xl text-text-primary">Crop Health Monitoring</h2>
-            <button className="text-krishiva-green text-sm font-medium flex items-center gap-1 hover:underline font-inter">
+            <button
+              onClick={() => {
+                const toast = document.createElement('div');
+                toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+                toast.textContent = 'Full crop health history coming soon!';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 2000);
+              }}
+              className="text-krishiva-green text-sm font-medium flex items-center gap-1 hover:underline font-inter"
+            >
               View All <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -544,7 +561,16 @@ export default function CropDoctor() {
                   <Badge variant="outline" className={severityColor(disease.severity)}>
                     {disease.severity}
                   </Badge>
-                  <button className="block w-full text-krishiva-green text-xs font-medium mt-3 hover:underline font-inter">
+                  <button
+                    onClick={() => {
+                      const toast = document.createElement('div');
+                      toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+                      toast.textContent = 'Disease details coming soon!';
+                      document.body.appendChild(toast);
+                      setTimeout(() => toast.remove(), 2000);
+                    }}
+                    className="block w-full text-krishiva-green text-xs font-medium mt-3 hover:underline font-inter"
+                  >
                     Learn More
                   </button>
                 </Card>
@@ -589,7 +615,16 @@ export default function CropDoctor() {
         >
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-poppins font-semibold text-xl text-text-primary">Recent Scans</h2>
-            <button className="text-krishiva-green text-sm font-medium flex items-center gap-1 hover:underline font-inter">
+            <button
+              onClick={() => {
+                const toast = document.createElement('div');
+                toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+                toast.textContent = 'Full scan history coming soon!';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 2000);
+              }}
+              className="text-krishiva-green text-sm font-medium flex items-center gap-1 hover:underline font-inter"
+            >
               View All <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -634,11 +669,12 @@ export default function CropDoctor() {
             <div>
               <label className="text-sm font-medium text-text-primary mb-2 block font-inter">Select Date</label>
               <div className="grid grid-cols-4 gap-2">
-                {['Today', 'Tomorrow', 'Jun 18', 'Jun 19'].map((d, i) => (
+                {['Today', 'Tomorrow', 'Jun 18', 'Jun 19'].map((d) => (
                   <button
                     key={d}
+                    onClick={() => setSelectedDate(d)}
                     className={`py-2 px-1 rounded-xl text-xs font-medium transition-all border ${
-                      i === 0
+                      selectedDate === d
                         ? 'bg-krishiva-green text-white border-krishiva-green'
                         : 'bg-white text-text-secondary border-border-light hover:border-border-green'
                     }`}
@@ -651,11 +687,12 @@ export default function CropDoctor() {
             <div>
               <label className="text-sm font-medium text-text-primary mb-2 block font-inter">Time Slot</label>
               <div className="grid grid-cols-3 gap-2">
-                {['10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'].map((t, i) => (
+                {['10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'].map((t) => (
                   <button
                     key={t}
+                    onClick={() => setSelectedTime(t)}
                     className={`py-2 rounded-xl text-xs font-medium transition-all border ${
-                      i === 1
+                      selectedTime === t
                         ? 'bg-krishiva-green text-white border-krishiva-green'
                         : 'bg-white text-text-secondary border-border-light hover:border-border-green'
                     }`}

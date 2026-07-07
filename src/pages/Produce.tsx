@@ -22,6 +22,9 @@ import {
   ShoppingCart,
   Send,
   Users,
+  X,
+  Store,
+  Sprout,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -496,7 +499,7 @@ function SellFormSection() {
   );
 }
 
-function MyListingsSection() {
+function MyListingsSection({ listings, onEdit }: { listings: MyListing[]; onEdit: (l: MyListing) => void }) {
   return (
     <div>
       <h3 className="font-poppins font-semibold text-heading-md text-text-primary mb-4 flex items-center gap-2">
@@ -504,7 +507,7 @@ function MyListingsSection() {
         My Listings
       </h3>
       <div className="space-y-3">
-        {MY_LISTINGS.map((listing, i) => (
+        {listings.map((listing, i) => (
           <motion.div
             key={listing.id}
             custom={i}
@@ -540,7 +543,10 @@ function MyListingsSection() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <button className="p-2 rounded-lg hover:bg-bg-primary text-text-muted hover:text-krishiva-green transition-colors">
+                <button
+                  onClick={() => onEdit(listing)}
+                  className="p-2 rounded-lg hover:bg-bg-primary text-text-muted hover:text-krishiva-green transition-colors"
+                >
                   <Edit3 className="w-4 h-4" />
                 </button>
                 <button className="p-2 rounded-lg hover:bg-bg-primary text-text-muted hover:text-error-red transition-colors">
@@ -552,6 +558,142 @@ function MyListingsSection() {
         ))}
       </div>
     </div>
+  );
+}
+
+function EditListingDialog({
+  open,
+  onClose,
+  listing,
+  onSave,
+}: {
+  open: boolean;
+  onClose: () => void;
+  listing: MyListing | null;
+  onSave: (updated: MyListing) => void;
+}) {
+  const [crop, setCrop] = useState(listing?.crop || '');
+  const [quantity, setQuantity] = useState(String(listing?.quantity || ''));
+  const [price, setPrice] = useState(String(listing?.price || ''));
+  const [grade, setGrade] = useState(listing?.grade || '');
+  const [status, setStatus] = useState<MyListing['status']>(listing?.status || 'Active');
+
+  useEffect(() => {
+    if (listing) {
+      setCrop(listing.crop);
+      setQuantity(String(listing.quantity));
+      setPrice(String(listing.price));
+      setGrade(listing.grade);
+      setStatus(listing.status);
+    }
+  }, [listing]);
+
+  const handleSave = () => {
+    if (!listing) return;
+    onSave({
+      ...listing,
+      crop,
+      quantity: parseInt(quantity) || listing.quantity,
+      price: parseInt(price) || listing.price,
+      grade,
+      status,
+    });
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="font-poppins text-heading-md flex items-center gap-2">
+            <Edit3 className="w-5 h-5 text-krishiva-green" />
+            Edit Listing
+          </DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 pt-2">
+          <div>
+            <label className="text-sm font-medium text-text-secondary mb-1.5 block">Crop Type</label>
+            <Select value={crop} onValueChange={setCrop}>
+              <SelectTrigger className="h-12 rounded-xl border-border-light">
+                <SelectValue placeholder="Select crop" />
+              </SelectTrigger>
+              <SelectContent>
+                {CROP_TYPES.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-sm font-medium text-text-secondary mb-1.5 block">Quantity (q)</label>
+              <Input
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                className="h-12 rounded-xl border-border-light"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-text-secondary mb-1.5 block">Price (₹/q)</label>
+              <Input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="h-12 rounded-xl border-border-light"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-sm font-medium text-text-secondary mb-1.5 block">Grade</label>
+              <Select value={grade} onValueChange={setGrade}>
+                <SelectTrigger className="h-12 rounded-xl border-border-light">
+                  <SelectValue placeholder="Select grade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="A">Grade A — Premium</SelectItem>
+                  <SelectItem value="B">Grade B — Standard</SelectItem>
+                  <SelectItem value="C">Grade C — Basic</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-text-secondary mb-1.5 block">Status</label>
+              <Select value={status} onValueChange={(v) => setStatus(v as MyListing['status'])}>
+                <SelectTrigger className="h-12 rounded-xl border-border-light">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Sold">Sold</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex gap-3 pt-2">
+            <Button
+              onClick={onClose}
+              variant="outline"
+              className="flex-1 h-12 border-2 border-border-light text-text-secondary hover:bg-bg-primary rounded-xl font-medium"
+            >
+              <X className="w-4 h-4 mr-2" />
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSave}
+              className="flex-1 h-12 bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl font-medium shadow-button"
+            >
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Save Changes
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -587,6 +729,9 @@ export default function Produce() {
   const [filterCrop, setFilterCrop] = useState('All');
   const [contactSheetOpen, setContactSheetOpen] = useState(false);
   const [contactSeller, setContactSeller] = useState<SellerCard | null>(null);
+  const [myListings, setMyListings] = useState<MyListing[]>(MY_LISTINGS);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingListing, setEditingListing] = useState<MyListing | null>(null);
 
   const handleContact = useCallback((seller: SellerCard) => {
     setContactSeller(seller);
@@ -596,6 +741,15 @@ export default function Produce() {
   const handleMakeOffer = useCallback((seller: SellerCard) => {
     setSelectedSeller(seller);
     setCounterModalOpen(true);
+  }, []);
+
+  const handleEditListing = useCallback((listing: MyListing) => {
+    setEditingListing(listing);
+    setEditDialogOpen(true);
+  }, []);
+
+  const handleSaveListing = useCallback((updated: MyListing) => {
+    setMyListings((prev) => prev.map((l) => (l.id === updated.id ? updated : l)));
   }, []);
 
   const filteredSellers = filterCrop === 'All'
@@ -619,12 +773,12 @@ export default function Produce() {
           <div className="absolute inset-0 bg-gradient-to-r from-krishiva-green/90 via-krishiva-green/75 to-transparent" />
           <div className="relative p-6 sm:p-10">
             <h1 className="font-poppins font-bold text-2xl sm:text-3xl text-white mb-2">
-              {role === 'sell' ? 'Sell Your Produce Directly' : 'Buy Quality Produce'}
+              {role === 'sell' ? 'Sell Your Crop Directly' : 'Buy Quality Crop'}
             </h1>
             <p className="text-white/85 text-sm sm:text-base max-w-md mb-4">
               {role === 'sell'
                 ? 'Connect with buyers across 500+ mandis. No middlemen, better prices.'
-                : 'Connect directly with farmers. Fresh produce, fair prices, verified quality.'}
+                : 'Connect directly with farmers. Fresh crops, fair prices, verified quality.'}
             </p>
             {role === 'sell' && (
               <Button
@@ -632,7 +786,7 @@ export default function Produce() {
                 className="h-12 px-6 bg-harvest-gold hover:bg-[#FBC02D] text-text-primary rounded-xl font-semibold shadow-gold"
               >
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                {showSellForm ? 'Hide Form' : 'Sell Your Produce'}
+                {showSellForm ? 'Hide Form' : 'Sell Your Crop'}
               </Button>
             )}
           </div>
@@ -647,23 +801,25 @@ export default function Produce() {
         >
           <button
             onClick={() => setRole('sell')}
-            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
               role === 'sell'
                 ? 'bg-krishiva-green text-white shadow-button'
                 : 'text-text-secondary hover:text-text-primary'
             }`}
           >
-            I Want to Sell
+            <Sprout className="w-4 h-4" />
+            Sell Crop
           </button>
           <button
             onClick={() => setRole('buy')}
-            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
               role === 'buy'
                 ? 'bg-krishiva-green text-white shadow-button'
                 : 'text-text-secondary hover:text-text-primary'
             }`}
           >
-            I Want to Buy
+            <Store className="w-4 h-4" />
+            Buy Crop
           </button>
         </motion.div>
 
@@ -695,7 +851,7 @@ export default function Produce() {
               </AnimatePresence>
 
               {/* My Listings */}
-              <MyListingsSection />
+              <MyListingsSection listings={myListings} onEdit={handleEditListing} />
 
               {/* Recent Transactions */}
               <RecentTransactions />
@@ -709,6 +865,14 @@ export default function Produce() {
               transition={{ duration: 0.3 }}
               className="space-y-6"
             >
+              {/* Available Crops Section Title */}
+              <div className="flex items-center gap-2">
+                <Store className="w-5 h-5 text-krishiva-green" />
+                <h3 className="font-poppins font-semibold text-heading-md text-text-primary">
+                  Available Crops from Farmers
+                </h3>
+              </div>
+
               {/* Search & Filter Bar */}
               <Card className="border-border-light shadow-card">
                 <CardContent className="p-4 sm:p-5">
@@ -781,6 +945,14 @@ export default function Produce() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Edit Listing Dialog */}
+        <EditListingDialog
+          open={editDialogOpen}
+          onClose={() => setEditDialogOpen(false)}
+          listing={editingListing}
+          onSave={handleSaveListing}
+        />
 
         {/* Counter Offer Modal */}
         <CounterOfferModal
