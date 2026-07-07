@@ -14,27 +14,26 @@ import {
   Globe,
   Calendar,
   Clock,
-  ArrowRight,
   Plus,
   MapPin,
-  Droplets,
-  Tractor,
   TrendingUp,
   Shield,
   Bell,
-  MessageSquare,
-  Smartphone,
   Eye,
   Lock,
   Fingerprint,
   Trash2,
+  AlertTriangle,
   LogOut,
   ChevronRight,
   HelpCircle,
   MessageCircle,
-  Award,
-  X,
   Camera,
+  Check,
+  IndianRupee,
+  Wallet,
+  Briefcase,
+  Landmark,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -44,7 +43,6 @@ import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Progress } from '@/components/ui/progress';
 import DashboardLayout from '@/components/DashboardLayout';
 
 /* ------------------------------------------------------------------ */
@@ -52,8 +50,18 @@ import DashboardLayout from '@/components/DashboardLayout';
 /* ------------------------------------------------------------------ */
 
 const languages = [
-  'English', 'Telugu', 'Hindi', 'Tamil', 'Kannada', 'Marathi',
-  'Gujarati', 'Bengali', 'Punjabi', 'Odia', 'Malayalam', 'Assamese',
+  { code: 'en', name: 'English', native: 'English' },
+  { code: 'hi', name: 'Hindi', native: '\u0939\u093f\u0928\u094d\u0926\u0940' },
+  { code: 'te', name: 'Telugu', native: '\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41' },
+  { code: 'ta', name: 'Tamil', native: '\u0ba4\u0bae\u0bbf\u0bb4\u0bcd' },
+  { code: 'kn', name: 'Kannada', native: '\u0c95\u0ca8\u0ccd\u0ca8\u0ca1' },
+  { code: 'mr', name: 'Marathi', native: '\u092e\u0930\u093e\u0920\u0940' },
+  { code: 'gu', name: 'Gujarati', native: '\u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0' },
+  { code: 'bn', name: 'Bengali', native: '\u09ac\u09be\u0982\u09b2\u09be' },
+  { code: 'pa', name: 'Punjabi', native: '\u0a2a\u0a70\u0a1c\u0a3e\u0a2c\u0a40' },
+  { code: 'or', name: 'Odia', native: '\u0b13\u0b21\u0b3c\u0b3f\u0b06' },
+  { code: 'ml', name: 'Malayalam', native: '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02' },
+  { code: 'as', name: 'Assamese', native: '\u0985\u09b8\u09ae\u09c0\u09af\u09bc\u09be' },
 ];
 
 const personalInfo = [
@@ -79,7 +87,7 @@ const farms = [
     unit: 'acres',
     crops: ['Cotton', 'Chili'],
     location: 'Guntur, Andhra Pradesh',
-    soilType: 'Red Soil',
+    soilType: 'Red Loamy',
     waterSource: 'Borewell + Canal',
   },
   {
@@ -118,7 +126,7 @@ const familyMembers = [
 ];
 
 const rolePermissions = [
-  { role: 'Admin', desc: 'Can do everything — manage farm, add expenses, book services, invite members.' },
+  { role: 'Admin', desc: 'Can do everything \u2014 manage farm, add expenses, book services, invite members.' },
   { role: 'Viewer', desc: 'Can view all data but cannot make changes or approve transactions.' },
   { role: 'Worker', desc: 'Can see assigned tasks, log work hours, and update task status.' },
 ];
@@ -130,14 +138,22 @@ const notificationSettings = [
   { key: 'whatsapp', label: 'WhatsApp Messages', desc: 'Get alerts on WhatsApp', defaultOn: true },
 ];
 
-/* ------------------------------------------------------------------ */
-/*  Animation Variants                                                 */
-/* ------------------------------------------------------------------ */
+/* -- My Registered Crops -- */
+interface Crop {
+  id: number;
+  name: string;
+  acres: number;
+  output: string;
+  harvestDate: string;
+  price: string;
+  status: string;
+}
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: [0, 0, 0.2, 1] as [number, number, number, number] } },
-};
+const MY_CROPS: Crop[] = [
+  { id: 1, name: 'Cotton', acres: 8, output: '40 q', harvestDate: 'Aug 15', price: 'Rs 6,400/q', status: 'Growing' },
+  { id: 2, name: 'Chili', acres: 5, output: '25 q', harvestDate: 'Jul 30', price: 'Contact', status: 'Harvesting' },
+  { id: 3, name: 'Paddy', acres: 6, output: '50 q', harvestDate: 'Sep 10', price: 'Rs 2,050/q', status: 'Sowing' },
+];
 
 /* ------------------------------------------------------------------ */
 /*  Helper Components                                                  */
@@ -150,6 +166,15 @@ function RoleBadge({ role }: { role: string }) {
   return <Badge variant="secondary" className="text-[10px]">{role}</Badge>;
 }
 
+function StatusBadge({ status }: { status: string }) {
+  switch (status) {
+    case 'Growing': return 'bg-blue-100 text-blue-700 border-blue-200';
+    case 'Harvesting': return 'bg-amber-100 text-amber-700 border-amber-200';
+    case 'Sowing': return 'bg-green-100 text-green-700 border-green-200';
+    default: return 'bg-gray-100 text-gray-700 border-gray-200';
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /*  Main Component                                                     */
 /* ------------------------------------------------------------------ */
@@ -160,7 +185,40 @@ export default function Profile() {
   const [addFarmOpen, setAddFarmOpen] = useState(false);
   const [addMemberOpen, setAddMemberOpen] = useState(false);
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
-  const [appLang, setAppLang] = useState('Telugu');
+  const [appLang, setAppLang] = useState('te');
+
+  /* -- My Crops State -- */
+  const [myCrops, setMyCrops] = useState(MY_CROPS);
+  const [cropFormOpen, setCropFormOpen] = useState(false);
+  const [cropForm, setCropForm] = useState({
+    crop: '',
+    location: '',
+    acres: '',
+    output: '',
+    harvestDate: '',
+    priceType: 'set',
+    price: '',
+  });
+
+  const handleCropFormSubmit = () => {
+    if (!cropForm.crop || !cropForm.acres) return;
+    const newCrop: Crop = {
+      id: Date.now(),
+      name: cropForm.crop,
+      acres: parseFloat(cropForm.acres) || 0,
+      output: cropForm.output || '0 q',
+      harvestDate: cropForm.harvestDate || 'TBD',
+      price: cropForm.priceType === 'contact' ? 'Contact' : cropForm.priceType === 'knowmore' ? 'Know More' : `Rs ${cropForm.price}/q`,
+      status: 'Growing',
+    };
+    setMyCrops(prev => [...prev, newCrop]);
+    setCropFormOpen(false);
+    setCropForm({ crop: '', location: '', acres: '', output: '', harvestDate: '', priceType: 'set', price: '' });
+  };
+
+  const handleDeleteCrop = (id: number) => {
+    setMyCrops(prev => prev.filter(c => c.id !== id));
+  };
 
   return (
     <DashboardLayout>
@@ -256,6 +314,7 @@ export default function Profile() {
               {[
                 { value: 'profile', label: 'Profile', icon: User },
                 { value: 'farm', label: 'Farm', icon: Sprout },
+                { value: 'crops', label: 'My Crops', icon: Sprout },
                 { value: 'family', label: 'Family', icon: Users },
                 { value: 'settings', label: 'Settings', icon: Settings },
               ].map((tab) => (
@@ -401,6 +460,39 @@ export default function Profile() {
                     </CardContent>
                   </Card>
 
+                  {/* Farm Location Overview */}
+                  <Card className="border-border-light shadow-card mb-6">
+                    <CardHeader className="pb-2">
+                      <h3 className="font-poppins font-semibold text-base text-text-primary flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-krishiva-green" /> Farm Overview
+                      </h3>
+                    </CardHeader>
+                    <CardContent className="p-5">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        {[
+                          { label: 'Location', value: 'Guntur, Andhra Pradesh', icon: MapPin },
+                          { label: 'Soil Type', value: 'Red Loamy', icon: Sprout },
+                          { label: 'Water Source', value: 'Borewell + Canal', icon: DropletsIcon },
+                          { label: 'Total Area', value: '25 acres', icon: Landmark },
+                        ].map((item, i) => (
+                          <motion.div
+                            key={item.label}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.06 }}
+                            className="bg-bg-primary rounded-xl p-3 text-center"
+                          >
+                            <div className="w-9 h-9 rounded-lg bg-krishiva-green/10 flex items-center justify-center mx-auto mb-2">
+                              <item.icon className="w-4 h-4 text-krishiva-green" />
+                            </div>
+                            <p className="text-[10px] text-text-muted">{item.label}</p>
+                            <p className="text-sm font-semibold text-text-primary">{item.value}</p>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
                   {/* Farm Cards */}
                   <div className="space-y-4 mb-6">
                     {farms.map((farm, i) => (
@@ -462,6 +554,109 @@ export default function Profile() {
                     onClick={() => setAddFarmOpen(true)}
                   >
                     <Plus className="w-5 h-5 mr-2" /> Add Another Farm
+                  </Button>
+                </motion.div>
+              </TabsContent>
+
+              {/* ====== MY CROPS TAB ====== */}
+              <TabsContent value="crops" className="space-y-6 mt-0">
+                <motion.div
+                  key="crops"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {/* Crops Summary */}
+                  <Card className="border-border-light shadow-card mb-6">
+                    <CardContent className="p-5">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                        {[
+                          { label: 'Total Crops', value: myCrops.length, icon: Sprout },
+                          { label: 'Total Area', value: `${myCrops.reduce((s, c) => s + c.acres, 0)} acres`, icon: MapPin },
+                          { label: 'Expected Output', value: `${myCrops.reduce((s, c) => s + parseInt(c.output), 0)} q`, icon: TrendingUp },
+                          { label: 'Next Harvest', value: myCrops[0]?.harvestDate || 'N/A', icon: Calendar },
+                        ].map((stat, i) => (
+                          <motion.div
+                            key={stat.label}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.06 }}
+                            className="bg-bg-primary rounded-xl p-3"
+                          >
+                            <div className="w-9 h-9 rounded-lg bg-krishiva-green/10 flex items-center justify-center mx-auto mb-2">
+                              <stat.icon className="w-4 h-4 text-krishiva-green" />
+                            </div>
+                            <p className="text-[10px] text-text-muted">{stat.label}</p>
+                            <p className="font-poppins font-semibold text-lg text-text-primary">{stat.value}</p>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Crop Cards */}
+                  <div className="space-y-3 mb-6">
+                    <AnimatePresence>
+                      {myCrops.map((crop, i) => (
+                        <motion.div
+                          key={crop.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, x: -50 }}
+                          transition={{ delay: i * 0.06 }}
+                        >
+                          <Card className="border-border-light shadow-card hover:shadow-card-hover transition-all">
+                            <CardContent className="p-4">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+                                    <Sprout className="w-5 h-5 text-green-600" />
+                                  </div>
+                                  <div>
+                                    <div className="flex items-center gap-2 mb-0.5">
+                                      <p className="font-poppins font-semibold text-sm text-text-primary">{crop.name}</p>
+                                      <Badge variant="outline" className={`text-[10px] h-5 ${StatusBadge({ status: crop.status })}`}>
+                                        {crop.status}
+                                      </Badge>
+                                    </div>
+                                    <p className="text-xs text-text-muted">{crop.acres} acres &middot; Expected: {crop.output} &middot; Harvest: {crop.harvestDate}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <div className="text-right">
+                                    <p className="text-xs text-text-muted">Price</p>
+                                    <p className="font-semibold text-sm text-text-primary">{crop.price}</p>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <Button variant="ghost" size="sm" className="text-text-secondary text-xs h-8 px-2">
+                                      <Edit3 className="w-3.5 h-3.5" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-error-red text-xs h-8 px-2"
+                                      onClick={() => handleDeleteCrop(crop.id)}
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Register New Crop Button */}
+                  <Button
+                    variant="outline"
+                    className="w-full border-dashed border-2 border-border-light hover:border-krishiva-green hover:text-krishiva-green hover:bg-krishiva-green/5 rounded-xl h-14 text-sm"
+                    onClick={() => setCropFormOpen(true)}
+                  >
+                    <Plus className="w-5 h-5 mr-2" /> Register New Crop
                   </Button>
                 </motion.div>
               </TabsContent>
@@ -554,28 +749,29 @@ export default function Profile() {
                   transition={{ duration: 0.3 }}
                   className="space-y-6"
                 >
-                  {/* Language Selection */}
+                  {/* Language Selection - 12 Languages in 3-column grid */}
                   <Card className="border-border-light shadow-card">
                     <CardHeader className="pb-2">
                       <h3 className="font-poppins font-semibold text-base text-text-primary flex items-center gap-2">
-                        <Globe className="w-4 h-4 text-krishiva-green" /> Language & Region
+                        <Globe className="w-4 h-4 text-krishiva-green" /> Language &amp; Region
                       </h3>
                     </CardHeader>
                     <CardContent className="p-5">
                       <div className="mb-4">
-                        <label className="text-sm font-medium text-text-primary mb-2 block">App Language</label>
-                        <div className="flex flex-wrap gap-2">
+                        <label className="text-sm font-medium text-text-primary mb-3 block">App Language</label>
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                           {languages.map((lang) => (
                             <button
-                              key={lang}
-                              onClick={() => setAppLang(lang)}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
-                                appLang === lang
-                                  ? 'bg-krishiva-green text-white border-krishiva-green'
+                              key={lang.code}
+                              onClick={() => setAppLang(lang.code)}
+                              className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-medium border transition-all ${
+                                appLang === lang.code
+                                  ? 'border-krishiva-green bg-krishiva-green text-white'
                                   : 'bg-white text-text-secondary border-border-light hover:border-border-green'
                               }`}
                             >
-                              {lang}
+                              {appLang === lang.code && <Check className="w-3.5 h-3.5" />}
+                              <span>{lang.native}</span>
                             </button>
                           ))}
                         </div>
@@ -627,7 +823,7 @@ export default function Profile() {
                   <Card className="border-border-light shadow-card">
                     <CardHeader className="pb-2">
                       <h3 className="font-poppins font-semibold text-base text-text-primary flex items-center gap-2">
-                        <Lock className="w-4 h-4 text-krishiva-green" /> Privacy & Security
+                        <Lock className="w-4 h-4 text-krishiva-green" /> Privacy &amp; Security
                       </h3>
                     </CardHeader>
                     <CardContent className="p-5 space-y-4">
@@ -670,6 +866,47 @@ export default function Profile() {
                           </div>
                         </div>
                         <Switch />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Wallet & Finance Settings */}
+                  <Card className="border-border-light shadow-card">
+                    <CardHeader className="pb-2">
+                      <h3 className="font-poppins font-semibold text-base text-text-primary flex items-center gap-2">
+                        <Wallet className="w-4 h-4 text-krishiva-green" /> Wallet &amp; Finance
+                      </h3>
+                    </CardHeader>
+                    <CardContent className="p-5 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <IndianRupee className="w-4 h-4 text-text-secondary" />
+                          <div>
+                            <p className="text-sm font-medium text-text-primary">Auto-Withdrawal</p>
+                            <p className="text-xs text-text-muted">Automatically transfer to bank</p>
+                          </div>
+                        </div>
+                        <Switch />
+                      </div>
+                      <div className="flex items-center justify-between border-t border-border-light pt-3">
+                        <div className="flex items-center gap-3">
+                          <CreditCard className="w-4 h-4 text-text-secondary" />
+                          <div>
+                            <p className="text-sm font-medium text-text-primary">Linked Bank Account</p>
+                            <p className="text-xs text-text-muted">SBI ****4521</p>
+                          </div>
+                        </div>
+                        <Button variant="ghost" size="sm" className="text-krishiva-green text-xs h-8">Change</Button>
+                      </div>
+                      <div className="flex items-center justify-between border-t border-border-light pt-3">
+                        <div className="flex items-center gap-3">
+                          <Briefcase className="w-4 h-4 text-text-secondary" />
+                          <div>
+                            <p className="text-sm font-medium text-text-primary">UPI ID</p>
+                            <p className="text-xs text-text-muted">rajesh@krishiva</p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="border-success-green text-success-green text-[10px]">Active</Badge>
                       </div>
                     </CardContent>
                   </Card>
@@ -791,6 +1028,7 @@ export default function Profile() {
                       <SelectItem value="alluvial">Alluvial Soil</SelectItem>
                       <SelectItem value="sandy">Sandy Soil</SelectItem>
                       <SelectItem value="clay">Clay Soil</SelectItem>
+                      <SelectItem value="loamy">Red Loamy</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -805,7 +1043,7 @@ export default function Profile() {
                       <SelectItem value="canal">Canal</SelectItem>
                       <SelectItem value="river">River</SelectItem>
                       <SelectItem value="rainfed">Rainfed</SelectItem>
-                      <SelectItem value="multiple">Multiple</SelectItem>
+                      <SelectItem value="multiple">Borewell + Canal</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -875,6 +1113,125 @@ export default function Profile() {
           </DialogContent>
         </Dialog>
 
+        {/* ---- Register New Crop Dialog (Bottom Sheet style) ---- */}
+        <Dialog open={cropFormOpen} onOpenChange={setCropFormOpen}>
+          <DialogContent className="sm:max-w-[480px] rounded-2xl">
+            <DialogHeader>
+              <DialogTitle className="font-poppins text-xl flex items-center gap-2">
+                <Sprout className="w-5 h-5 text-krishiva-green" /> Register New Crop
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 pt-2">
+              <div>
+                <label className="text-sm font-medium text-text-primary mb-1.5 block">Crop</label>
+                <Select value={cropForm.crop} onValueChange={(v) => setCropForm(prev => ({ ...prev, crop: v }))}>
+                  <SelectTrigger className="h-12 rounded-xl border-border-light">
+                    <SelectValue placeholder="Select crop" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Cotton">Cotton</SelectItem>
+                    <SelectItem value="Chili">Chili</SelectItem>
+                    <SelectItem value="Paddy">Paddy</SelectItem>
+                    <SelectItem value="Maize">Maize</SelectItem>
+                    <SelectItem value="Groundnut">Groundnut</SelectItem>
+                    <SelectItem value="Turmeric">Turmeric</SelectItem>
+                    <SelectItem value="Tomato">Tomato</SelectItem>
+                    <SelectItem value="Onion">Onion</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-text-primary mb-1.5 block">Location</label>
+                <div className="relative">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                  <Input
+                    placeholder="Farm location"
+                    value={cropForm.location}
+                    onChange={(e) => setCropForm(prev => ({ ...prev, location: e.target.value }))}
+                    className="h-12 rounded-xl border-border-light pl-10"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium text-text-primary mb-1.5 block">Acres</label>
+                  <Input
+                    type="number"
+                    placeholder="e.g., 8"
+                    value={cropForm.acres}
+                    onChange={(e) => setCropForm(prev => ({ ...prev, acres: e.target.value }))}
+                    className="h-12 rounded-xl border-border-light"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-text-primary mb-1.5 block">Expected Output</label>
+                  <Input
+                    placeholder="e.g., 40 q"
+                    value={cropForm.output}
+                    onChange={(e) => setCropForm(prev => ({ ...prev, output: e.target.value }))}
+                    className="h-12 rounded-xl border-border-light"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-text-primary mb-1.5 block">Expected Harvest Date</label>
+                <div className="relative">
+                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                  <Input
+                    type="date"
+                    value={cropForm.harvestDate}
+                    onChange={(e) => setCropForm(prev => ({ ...prev, harvestDate: e.target.value }))}
+                    className="h-12 rounded-xl border-border-light pl-10"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-text-primary mb-1.5 block">Pricing Option</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { key: 'set', label: 'Set Price' },
+                    { key: 'contact', label: 'Contact' },
+                    { key: 'knowmore', label: 'Know More' },
+                  ].map((opt) => (
+                    <button
+                      key={opt.key}
+                      onClick={() => setCropForm(prev => ({ ...prev, priceType: opt.key }))}
+                      className={`p-3 rounded-xl border text-xs font-medium transition-all ${
+                        cropForm.priceType === opt.key
+                          ? 'border-krishiva-green bg-krishiva-green text-white'
+                          : 'border-border-light text-text-secondary hover:border-krishiva-green/50'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {cropForm.priceType === 'set' && (
+                <div>
+                  <label className="text-sm font-medium text-text-primary mb-1.5 block">Price per Quintal (Rs)</label>
+                  <div className="relative">
+                    <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                    <Input
+                      type="number"
+                      placeholder="e.g., 6400"
+                      value={cropForm.price}
+                      onChange={(e) => setCropForm(prev => ({ ...prev, price: e.target.value }))}
+                      className="h-12 rounded-xl border-border-light pl-10"
+                    />
+                  </div>
+                </div>
+              )}
+              <Button
+                className="w-full bg-krishiva-green hover:bg-[#1B5E20] text-white h-12 rounded-xl"
+                onClick={handleCropFormSubmit}
+              >
+                Register Crop
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* ---- Delete Account Dialog ---- */}
         <Dialog open={deleteAccountOpen} onOpenChange={setDeleteAccountOpen}>
           <DialogContent className="sm:max-w-[400px] rounded-2xl">
@@ -901,7 +1258,29 @@ export default function Profile() {
             </div>
           </DialogContent>
         </Dialog>
+
       </div>
     </DashboardLayout>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Local Icon Helpers                                                 */
+/* ------------------------------------------------------------------ */
+
+function DropletsIcon(props: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
+    >
+      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0L12 2.69z" />
+      <path d="M12 2.69V22" opacity="0.3" />
+    </svg>
   );
 }

@@ -16,23 +16,20 @@ import {
   Smartphone,
   AlertTriangle,
   CheckCircle2,
-  Clock,
   ChevronRight,
   ShieldCheck,
   ShieldAlert,
   IndianRupee,
-  X,
   Tractor,
   Wheat,
   Users,
   MoreHorizontal,
 } from 'lucide-react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import DashboardLayout from '@/components/DashboardLayout';
 
@@ -152,10 +149,6 @@ const paymentMethods = [
 /*  Animation Variants                                                 */
 /* ------------------------------------------------------------------ */
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: [0, 0, 0.2, 1] as [number, number, number, number] } },
-};
 
 /* ------------------------------------------------------------------ */
 /*  Main Component                                                     */
@@ -178,7 +171,6 @@ export default function WalletPage() {
     return true;
   });
 
-  const totalBalance = 24500;
   const escrowAmount = 8200;
   const available = 16300;
   const lifetimeEarned = 145000;

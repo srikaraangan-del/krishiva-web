@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp,
-  Wallet,
   FileText,
   Shield,
   Landmark,
@@ -18,20 +17,15 @@ import {
   ArrowRight,
   Info,
   Lightbulb,
-  Target,
   Calendar,
   Percent,
-  Clock,
-  ChevronRight,
   CheckCircle2,
-  AlertCircle,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
@@ -60,14 +54,7 @@ const creditHistory = [
   { month: 'Jun', score: 742 },
 ];
 
-const savingsData = [
-  { month: 'Jan', amount: 8000 },
-  { month: 'Feb', amount: 12000 },
-  { month: 'Mar', amount: 18000 },
-  { month: 'Apr', amount: 28000 },
-  { month: 'May', amount: 35000 },
-  { month: 'Jun', amount: 45000 },
-];
+/* savings data */
 
 const monthlySavings = [
   { month: 'Jan', saved: 5000 },

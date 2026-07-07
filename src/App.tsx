@@ -16,14 +16,14 @@ import Community from './pages/Community';
 import Experts from './pages/Experts';
 import Wallet from './pages/Wallet';
 import Profile from './pages/Profile';
+import AdminDashboard from './pages/AdminDashboard';
 
 export default function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-        </Route>
+        <Route path="/" element={<Layout><Home /></Layout>} />
+          
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/feed" element={<Feed />} />
         <Route path="/dashboard/farm" element={<FarmOS />} />
@@ -38,6 +38,7 @@ export default function App() {
         <Route path="/dashboard/experts" element={<Experts />} />
         <Route path="/dashboard/wallet" element={<Wallet />} />
         <Route path="/dashboard/profile" element={<Profile />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </AuthProvider>
   );

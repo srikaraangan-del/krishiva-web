@@ -12,7 +12,6 @@ import {
   Clock,
   ChevronDown,
   Check,
-  X,
   Bookmark,
   Briefcase,
 } from 'lucide-react';

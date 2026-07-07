@@ -1,16 +1,13 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Search,
   Mic,
   Phone,
   Calendar,
   Star,
-  MapPin,
   Cog,
-  Check,
   Plus,
-  ChevronDown,
   Tractor,
   Wheat,
   Droplets,
@@ -18,8 +15,6 @@ import {
   LayoutGrid,
   Wind,
   Minus,
-  X,
-  Clock,
   Image,
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';

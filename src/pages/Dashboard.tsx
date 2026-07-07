@@ -1,581 +1,1132 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sun,
   Cloud,
   CloudRain,
   Wind,
   Droplets,
-  Thermometer,
-  Eye,
-  Sunrise,
-  Sunset,
-  Check,
-  Clock,
-  Sprout,
-  Users,
-  Tractor,
-  Wallet,
-  LayoutDashboard,
-  Newspaper,
-  Settings,
-  Wheat,
-  ShoppingCart,
-  Stethoscope,
-  IndianRupee,
-  MessageSquare,
-  GraduationCap,
-  ChevronRight,
-  ArrowUpRight,
-  ArrowDownRight,
+  CloudLightning,
+  CloudSnow,
+  CloudFog,
   TrendingUp,
   TrendingDown,
-  Zap,
+  Minus,
+  Sprout,
+  IndianRupee,
+  ExternalLink,
+  Newspaper,
+  Landmark,
+  CreditCard,
+  Tractor,
+  Users,
+  MessageSquare,
+  GraduationCap,
+  Wallet,
+  Mic,
+  MicOff,
+  ChevronRight,
+  X,
+  CheckCircle2,
+  Clock,
+  MapPin,
+  Shield,
+  Star,
+  Edit3,
+  Trash2,
+  Plus,
+  ArrowUpRight,
+  ArrowDownRight,
+  Bell,
+  Globe,
+  Check,
+  Thermometer,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import DashboardLayout from '@/components/DashboardLayout';
 
-/* ───────────────────────── helpers ───────────────────────── */
-const cardVariant = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.06, duration: 0.4, ease: [0, 0, 0.2, 1] as [number, number, number, number] },
-  }),
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
+
+interface WeatherDay {
+  date: string;
+  tempMax: number;
+  tempMin: number;
+  precipitation: number;
+  windSpeed: number;
+  weatherCode: number;
+}
+
+interface MandiPrice {
+  commodity: string;
+  price: number;
+  unit: string;
+  trend: 'up' | 'down' | 'stable';
+  change: number;
+}
+
+interface NewsArticle {
+  id: number;
+  title: string;
+  snippet: string;
+  source: string;
+  date: string;
+  category: string;
+  url: string;
+}
+
+interface Scheme {
+  name: string;
+  description: string;
+  amount?: string;
+  url: string;
+  icon: React.ComponentType<{ className?: string }>;
+  borderColor: string;
+  bgColor: string;
+}
+
+interface LoanOffer {
+  type: string;
+  bank: string;
+  amount: string;
+  interest: string;
+  tenure: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+interface Crop {
+  id: number;
+  name: string;
+  acres: number;
+  output: string;
+  harvestDate: string;
+  price: string;
+  status: string;
+}
+
+interface BuyerRequest {
+  id: number;
+  name: string;
+  commodity: string;
+  quantity: string;
+  status: string;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Mock Data                                                          */
+/* ------------------------------------------------------------------ */
+
+const WEATHER_CODES: Record<number, { label: string; icon: React.ComponentType<{ className?: string }> }> = {
+  0: { label: 'Clear Sky', icon: Sun },
+  1: { label: 'Mainly Clear', icon: Sun },
+  2: { label: 'Partly Cloudy', icon: Cloud },
+  3: { label: 'Overcast', icon: Cloud },
+  45: { label: 'Foggy', icon: CloudFog },
+  48: { label: 'Foggy', icon: CloudFog },
+  51: { label: 'Light Drizzle', icon: CloudRain },
+  53: { label: 'Drizzle', icon: CloudRain },
+  55: { label: 'Heavy Drizzle', icon: CloudRain },
+  61: { label: 'Light Rain', icon: CloudRain },
+  63: { label: 'Rain', icon: CloudRain },
+  65: { label: 'Heavy Rain', icon: CloudRain },
+  71: { label: 'Light Snow', icon: CloudSnow },
+  73: { label: 'Snow', icon: CloudSnow },
+  75: { label: 'Heavy Snow', icon: CloudSnow },
+  80: { label: 'Rain Showers', icon: CloudRain },
+  81: { label: 'Rain Showers', icon: CloudRain },
+  82: { label: 'Heavy Showers', icon: CloudRain },
+  95: { label: 'Thunderstorm', icon: CloudLightning },
+  96: { label: 'Thunderstorm', icon: CloudLightning },
+  99: { label: 'Thunderstorm', icon: CloudLightning },
 };
 
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.06 } },
-};
-
-const staggerChild = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0, 0, 0.2, 1] as [number, number, number, number] } },
-};
-
-/* ─────────────────────── Weather Widget ─────────────────────── */
-const forecastDays = [
-  { day: 'Mon', icon: Sun, high: 35, low: 26, condition: 'Sunny' },
-  { day: 'Tue', icon: Cloud, high: 33, low: 25, condition: 'Cloudy' },
-  { day: 'Wed', icon: CloudRain, high: 29, low: 24, condition: 'Rainy' },
-  { day: 'Thu', icon: Sun, high: 34, low: 26, condition: 'Sunny' },
-  { day: 'Fri', icon: Cloud, high: 32, low: 25, condition: 'Cloudy' },
+const FALLBACK_WEATHER: WeatherDay[] = [
+  { date: '2024-08-15', tempMax: 34, tempMin: 26, precipitation: 2.5, windSpeed: 12, weatherCode: 1 },
+  { date: '2024-08-16', tempMax: 33, tempMin: 25, precipitation: 5.0, windSpeed: 15, weatherCode: 61 },
+  { date: '2024-08-17', tempMax: 32, tempMin: 25, precipitation: 8.2, windSpeed: 18, weatherCode: 63 },
+  { date: '2024-08-18', tempMax: 31, tempMin: 24, precipitation: 12.0, windSpeed: 20, weatherCode: 80 },
+  { date: '2024-08-19', tempMax: 33, tempMin: 25, precipitation: 3.0, windSpeed: 10, weatherCode: 2 },
+  { date: '2024-08-20', tempMax: 35, tempMin: 27, precipitation: 0, windSpeed: 8, weatherCode: 0 },
+  { date: '2024-08-21', tempMax: 36, tempMin: 27, precipitation: 0, windSpeed: 10, weatherCode: 0 },
 ];
 
-function WeatherWidget() {
+const MANDI_PRICES: MandiPrice[] = [
+  { commodity: 'Cotton', price: 6420, unit: 'q', trend: 'up', change: 120 },
+  { commodity: 'Chili', price: 12800, unit: 'q', trend: 'up', change: 350 },
+  { commodity: 'Tomato', price: 2400, unit: 'q', trend: 'down', change: 180 },
+  { commodity: 'Paddy', price: 2040, unit: 'q', trend: 'stable', change: 0 },
+  { commodity: 'Onion', price: 3200, unit: 'q', trend: 'up', change: 200 },
+  { commodity: 'Turmeric', price: 7800, unit: 'q', trend: 'down', change: 150 },
+  { commodity: 'Maize', price: 2150, unit: 'q', trend: 'up', change: 80 },
+  { commodity: 'Groundnut', price: 5800, unit: 'q', trend: 'up', change: 220 },
+];
+
+const NEWS_ARTICLES: NewsArticle[] = [
+  {
+    id: 1,
+    title: 'AP Government Announces New MSP for Kharif Crops 2024',
+    snippet: 'The Andhra Pradesh government has revised the Minimum Support Price for paddy, cotton, and chili. Farmers can expect higher returns this season with paddy MSP increased by Rs 200 per quintal.',
+    source: 'Government',
+    date: '2 hours ago',
+    category: 'Government',
+    url: '#',
+  },
+  {
+    id: 2,
+    title: 'Monsoon Update: Heavy Rains Expected in Coastal AP Next Week',
+    snippet: 'IMD forecasts above-normal rainfall in coastal districts. Farmers advised to take precautions for standing crops and ensure proper drainage in fields.',
+    source: 'IMD Weather',
+    date: '4 hours ago',
+    category: 'Weather',
+    url: '#',
+  },
+  {
+    id: 3,
+    title: 'Cotton Prices Hit 6-Month High in Guntur Market',
+    snippet: 'Cotton prices surged to Rs 6,420 per quintal in Guntur market, driven by strong export demand. Traders expect the bullish trend to continue through September.',
+    source: 'Market Watch',
+    date: '6 hours ago',
+    category: 'Market',
+    url: '#',
+  },
+  {
+    id: 4,
+    title: 'New Drone Subsidy Scheme for Farmers Launched',
+    snippet: 'The agriculture ministry launches Kisan Drone Scheme with 50% subsidy up to Rs 5 lakh. Drones can be used for spraying, crop monitoring, and precision farming.',
+    source: 'AgriTech Today',
+    date: '8 hours ago',
+    category: 'Technology',
+    url: '#',
+  },
+  {
+    id: 5,
+    title: 'PM-KISAN 17th Installment Released: Check Your Status',
+    snippet: 'The 17th installment of PM-KISAN has been released. Over 11 crore farmers received Rs 2,000 each. Check your beneficiary status on the official portal.',
+    source: 'Government',
+    date: '12 hours ago',
+    category: 'Government',
+    url: '#',
+  },
+  {
+    id: 6,
+    title: 'Best Practices for Cotton Pest Management This Season',
+    snippet: 'Agricultural experts recommend integrated pest management techniques to control pink bollworm. Early detection and biological controls can reduce pesticide use by 40%.',
+    source: 'Krishi Jagran',
+    date: '1 day ago',
+    category: 'My Crops',
+    url: '#',
+  },
+  {
+    id: 7,
+    title: 'Soil Health Card Portal: New Features Added',
+    snippet: 'The Soil Health Card portal now supports multi-language access and provides customized fertilizer recommendations based on soil test results.',
+    source: 'AgriTech Today',
+    date: '1 day ago',
+    category: 'Technology',
+    url: '#',
+  },
+  {
+    id: 8,
+    title: 'Chili Export Demand Rises from Southeast Asia',
+    snippet: 'Indian chili exports to Southeast Asian countries have increased by 25% this quarter. Guntur Sannam and Byadgi varieties are in high demand.',
+    source: 'Market Watch',
+    date: '2 days ago',
+    category: 'Market',
+    url: '#',
+  },
+];
+
+const SCHEMES: Scheme[] = [
+  { name: 'PM-KISAN', description: 'Rs 6,000 per year income support to farmer families', amount: 'Rs 6,000/year', url: 'https://pmkisan.gov.in', icon: Landmark, borderColor: 'border-orange-400', bgColor: 'bg-orange-50' },
+  { name: 'PMFBY', description: 'Crop insurance against natural calamities, pests & diseases', url: 'https://pmfby.gov.in', icon: Shield, borderColor: 'border-blue-400', bgColor: 'bg-blue-50' },
+  { name: 'Soil Health Card', description: 'Free soil testing and customized fertilizer recommendations', url: 'https://soilhealth.dac.gov.in', icon: Sprout, borderColor: 'border-green-400', bgColor: 'bg-green-50' },
+  { name: 'KCC Loan', description: 'Kisan Credit Card - Short term credit up to Rs 3 lakh at 7%', amount: 'Up to Rs 3L @ 7%', url: '#', icon: CreditCard, borderColor: 'border-purple-400', bgColor: 'bg-purple-50' },
+  { name: 'Micro Irrigation', description: '55% subsidy on drip and sprinkler irrigation systems', amount: '55% Subsidy', url: '#', icon: Droplets, borderColor: 'border-cyan-400', bgColor: 'bg-cyan-50' },
+  { name: 'NMSA', description: 'National Mission for Sustainable Agriculture - soil & water conservation', url: '#', icon: Sprout, borderColor: 'border-emerald-400', bgColor: 'bg-emerald-50' },
+];
+
+const LOANS: LoanOffer[] = [
+  { type: 'Kisan Credit Card', bank: 'SBI', amount: 'Up to Rs 3,00,000', interest: '7% p.a.', tenure: '1 Year', icon: CreditCard },
+  { type: 'Personal Loan', bank: 'HDFC Bank', amount: 'Up to Rs 5,00,000', interest: '10.5% p.a.', tenure: '3 Years', icon: IndianRupee },
+  { type: 'Equipment Loan', bank: 'Bank of Baroda', amount: 'Up to Rs 10,00,000', interest: '8.5% p.a.', tenure: '5 Years', icon: Tractor },
+  { type: 'Tractor Finance', bank: 'ICICI Bank', amount: 'Up to Rs 15,00,000', interest: '9% p.a.', tenure: '7 Years', icon: Tractor },
+];
+
+const MY_CROPS: Crop[] = [
+  { id: 1, name: 'Cotton', acres: 8, output: '40 q', harvestDate: 'Aug 15', price: 'Rs 6,400/q', status: 'Growing' },
+  { id: 2, name: 'Chili', acres: 5, output: '25 q', harvestDate: 'Jul 30', price: 'Contact', status: 'Harvesting' },
+  { id: 3, name: 'Paddy', acres: 6, output: '50 q', harvestDate: 'Sep 10', price: 'Rs 2,050/q', status: 'Sowing' },
+];
+
+const BUYERS: BuyerRequest[] = [
+  { id: 1, name: 'Agro Foods Ltd', commodity: 'Cotton', quantity: '20 q', status: 'New' },
+  { id: 2, name: 'Venkatesh Traders', commodity: 'Chili', quantity: '10 q', status: 'Negotiating' },
+  { id: 3, name: 'Srinivas Exports', commodity: 'Paddy', quantity: '30 q', status: 'Connected' },
+];
+
+const QUICK_ACTIONS = [
+  { label: 'Register Crop', icon: Sprout, href: '/dashboard/produce', color: 'bg-green-50 text-green-600' },
+  { label: 'Mandi Prices', icon: IndianRupee, href: '/dashboard/feed', color: 'bg-amber-50 text-amber-600' },
+  { label: 'Weather', icon: Sun, href: '#weather', color: 'bg-blue-50 text-blue-600' },
+  { label: 'Schemes', icon: Landmark, href: '#schemes', color: 'bg-orange-50 text-orange-600' },
+  { label: 'Expert', icon: GraduationCap, href: '/dashboard/experts', color: 'bg-purple-50 text-purple-600' },
+  { label: 'Bookings', icon: CalendarClock, href: '/dashboard/machinery', color: 'bg-pink-50 text-pink-600' },
+  { label: 'Community', icon: MessageSquare, href: '/dashboard/community', color: 'bg-cyan-50 text-cyan-600' },
+  { label: 'Wallet', icon: Wallet, href: '/dashboard/wallet', color: 'bg-emerald-50 text-emerald-600' },
+];
+
+// Wrapper component for Calendar + Clock combo
+function CalendarClock(props: { className?: string }) {
   return (
-    <motion.div
-      custom={0}
-      variants={cardVariant}
-      initial="hidden"
-      animate="visible"
-      className="bg-white rounded-2xl p-5 border border-border-light shadow-card relative overflow-hidden"
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={props.className}
     >
-      {/* Subtle blue gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-blue-50/40 pointer-events-none" />
-
-      <div className="relative">
-        {/* Current Weather */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <motion.div
-              animate={{ y: [0, -4, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <Sun className="w-14 h-14 text-harvest-gold" />
-            </motion.div>
-            <div>
-              <p className="font-poppins font-bold text-3xl text-text-primary">34°C</p>
-              <p className="text-text-secondary text-sm font-medium">Partly Cloudy</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="flex items-center gap-1 text-text-muted text-xs">
-              <span>Location</span>
-            </div>
-            <p className="text-text-secondary text-sm font-medium">Your Farm, Guntur</p>
-          </div>
-        </div>
-
-        {/* Details Row */}
-        <div className="grid grid-cols-4 gap-2 mt-4 pt-4 border-t border-border-light">
-          {[
-            { icon: Droplets, label: 'Humidity', value: '65%' },
-            { icon: Wind, label: 'Wind', value: '12 km/h' },
-            { icon: Eye, label: 'Visibility', value: '10 km' },
-            { icon: Thermometer, label: 'Feels Like', value: '37°C' },
-          ].map((item) => (
-            <div key={item.label} className="flex flex-col items-center text-center gap-1">
-              <item.icon className="w-4 h-4 text-text-muted" />
-              <span className="text-text-primary text-sm font-semibold">{item.value}</span>
-              <span className="text-text-muted text-[11px]">{item.label}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Sun times */}
-        <div className="flex items-center justify-between mt-3 px-2">
-          <div className="flex items-center gap-1.5">
-            <Sunrise className="w-4 h-4 text-harvest-gold" />
-            <span className="text-text-secondary text-xs">6:12 AM</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Sunset className="w-4 h-4 text-soil-brown" />
-            <span className="text-text-secondary text-xs">6:48 PM</span>
-          </div>
-        </div>
-
-        {/* 5-Day Forecast */}
-        <div className="mt-4 pt-4 border-t border-border-light">
-          <p className="text-text-muted text-xs font-medium mb-3 uppercase tracking-wider">5-Day Forecast</p>
-          <div className="grid grid-cols-5 gap-1">
-            {forecastDays.map((d) => (
-              <div key={d.day} className="flex flex-col items-center text-center gap-1">
-                <span className="text-text-secondary text-[11px] font-medium">{d.day}</span>
-                <d.icon className={`w-5 h-5 ${d.condition === 'Sunny' ? 'text-harvest-gold' : d.condition === 'Rainy' ? 'text-blue-400' : 'text-text-muted'}`} />
-                <span className="text-text-primary text-xs font-semibold">{d.high}°</span>
-                <span className="text-text-muted text-[10px]">{d.low}°</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </motion.div>
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+      <circle cx="12" cy="15" r="1" />
+    </svg>
   );
 }
 
-/* ─────────────────────── Today's Tasks ─────────────────────── */
-interface Task {
-  id: number;
-  title: string;
-  subtitle: string;
-  time: string;
-  priority: 'high' | 'medium' | 'low';
-  completed: boolean;
-}
-
-const initialTasks: Task[] = [
-  { id: 1, title: 'Irrigate east field', subtitle: 'Cotton crop — 2 hours', time: '7:00 AM', priority: 'high', completed: false },
-  { id: 2, title: 'Apply fertilizer to tomato crop', subtitle: 'Greenhouse B — 30 min', time: '9:30 AM', priority: 'high', completed: false },
-  { id: 3, title: 'Book tractor for tilling', subtitle: 'Machinery rental', time: '11:00 AM', priority: 'medium', completed: false },
-  { id: 4, title: 'Check market prices for chili', subtitle: 'Guntur APMC', time: '2:00 PM', priority: 'medium', completed: false },
-  { id: 5, title: 'Inspect drip irrigation lines', subtitle: 'East section — 1 hour', time: '4:00 PM', priority: 'low', completed: true },
+const LANGUAGES = [
+  { code: 'en', name: 'English', native: 'English' },
+  { code: 'hi', name: 'Hindi', native: '\u0939\u093f\u0928\u094d\u0926\u0940' },
+  { code: 'te', name: 'Telugu', native: '\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41' },
+  { code: 'ta', name: 'Tamil', native: '\u0ba4\u0bae\u0bbf\u0bb4\u0bcd' },
+  { code: 'kn', name: 'Kannada', native: '\u0c95\u0ca8\u0ccd\u0ca8\u0ca1' },
+  { code: 'mr', name: 'Marathi', native: '\u092e\u0930\u093e\u0920\u0940' },
+  { code: 'gu', name: 'Gujarati', native: '\u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0' },
+  { code: 'bn', name: 'Bengali', native: '\u09ac\u09be\u0982\u09b2\u09be' },
+  { code: 'pa', name: 'Punjabi', native: '\u0a2a\u0a70\u0a1c\u0a3e\u0a2c\u0a40' },
+  { code: 'or', name: 'Odia', native: '\u0b13\u0b21\u0b3c\u0b3f\u0b06' },
+  { code: 'ml', name: 'Malayalam', native: '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02' },
+  { code: 'as', name: 'Assamese', native: '\u0985\u09b8\u09ae\u09c0\u09af\u09bc\u09be' },
 ];
 
-const priorityColors = {
-  high: 'bg-error-red/10 text-error-red',
-  medium: 'bg-harvest-gold/10 text-warning-amber',
-  low: 'bg-krishiva-green/10 text-krishiva-green',
-};
+const NEWS_CATEGORIES = ['All', 'My Crops', 'Government', 'Technology', 'Market', 'Weather'];
 
-function TasksWidget() {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-  const incompleteCount = tasks.filter((t) => !t.completed).length;
+/* ------------------------------------------------------------------ */
+/*  Helper Functions                                                   */
+/* ------------------------------------------------------------------ */
 
-  const toggleTask = (id: number) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
+function getWeatherIcon(code: number) {
+  const entry = WEATHER_CODES[code];
+  return entry || { label: 'Unknown', icon: Cloud };
+}
+
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+function getStatusBadgeColor(status: string) {
+  switch (status) {
+    case 'Growing': return 'bg-blue-100 text-blue-700 border-blue-200';
+    case 'Harvesting': return 'bg-amber-100 text-amber-700 border-amber-200';
+    case 'Sowing': return 'bg-green-100 text-green-700 border-green-200';
+    case 'New': return 'bg-green-100 text-green-700 border-green-200';
+    case 'Negotiating': return 'bg-amber-100 text-amber-700 border-amber-200';
+    case 'Connected': return 'bg-blue-100 text-blue-700 border-blue-200';
+    default: return 'bg-gray-100 text-gray-700 border-gray-200';
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main Component                                                     */
+/* ------------------------------------------------------------------ */
+
+export default function Dashboard() {
+  /* -- Weather State -- */
+  const [weatherData, setWeatherData] = useState<WeatherDay[]>([]);
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [weatherFilter, setWeatherFilter] = useState('1 Week');
+
+  /* -- Mandi Ticker -- */
+  const [selectedMandi, setSelectedMandi] = useState<MandiPrice | null>(null);
+
+  /* -- News -- */
+  const [newsCategory, setNewsCategory] = useState('All');
+
+  /* -- Language -- */
+  const [langOpen, setLangOpen] = useState(false);
+  const [selectedLang, setSelectedLang] = useState('te');
+
+  /* -- Voice Search -- */
+  const [voiceListening, setVoiceListening] = useState(false);
+
+  /* -- Crops -- */
+  const [crops, setCrops] = useState(MY_CROPS);
+
+  /* -- Refs -- */
+  const tickerRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
+
+  /* ---------------------------------------------------------------- */
+  /*  Fetch Weather                                                    */
+  /* ---------------------------------------------------------------- */
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchWeather() {
+      try {
+        const res = await fetch(
+          'https://api.open-meteo.com/v1/forecast?latitude=16.3067&longitude=80.4365&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode,windspeed_10m_max&timezone=Asia/Kolkata&forecast_days=16'
+        );
+        if (!res.ok) throw new Error('Weather fetch failed');
+        const data = await res.json();
+        if (cancelled) return;
+        const days: WeatherDay[] = data.daily.time.map((t: string, i: number) => ({
+          date: t,
+          tempMax: data.daily.temperature_2m_max[i],
+          tempMin: data.daily.temperature_2m_min[i],
+          precipitation: data.daily.precipitation_sum[i],
+          windSpeed: data.daily.windspeed_10m_max[i],
+          weatherCode: data.daily.weathercode[i],
+        }));
+        setWeatherData(days);
+      } catch {
+        setWeatherData(FALLBACK_WEATHER);
+      } finally {
+        setWeatherLoading(false);
+      }
+    }
+    fetchWeather();
+    return () => { cancelled = true; };
+  }, []);
+
+  /* ---------------------------------------------------------------- */
+  /*  Click outside for language dropdown                              */
+  /* ---------------------------------------------------------------- */
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  /* ---------------------------------------------------------------- */
+  /*  Filtered weather                                                 */
+  /* ---------------------------------------------------------------- */
+
+  const filteredWeather = useCallback(() => {
+    if (!weatherData.length) return [];
+    const map: Record<string, number> = { 'Today': 1, '3 Days': 3, '1 Week': 7, '10 Days': 10, '15 Days': 15 };
+    const days = map[weatherFilter] || 7;
+    return weatherData.slice(0, days);
+  }, [weatherData, weatherFilter]);
+
+  const filteredNews = newsCategory === 'All'
+    ? NEWS_ARTICLES
+    : NEWS_ARTICLES.filter(n => n.category === newsCategory);
+
+  const weatherDays = filteredWeather();
+
+  /* ---------------------------------------------------------------- */
+  /*  Voice search toggle                                              */
+  /* ---------------------------------------------------------------- */
+
+  const toggleVoice = () => {
+    setVoiceListening(prev => !prev);
+    if (!voiceListening) {
+      setTimeout(() => setVoiceListening(false), 5000);
+    }
+  };
+
+  /* ---------------------------------------------------------------- */
+  /*  Delete crop handler                                              */
+  /* ---------------------------------------------------------------- */
+
+  const handleDeleteCrop = (id: number) => {
+    setCrops(prev => prev.filter(c => c.id !== id));
   };
 
   return (
-    <motion.div
-      custom={1}
-      variants={cardVariant}
-      initial="hidden"
-      animate="visible"
-      className="bg-white rounded-2xl border border-border-light shadow-card overflow-hidden flex flex-col"
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-border-light">
-        <div className="flex items-center gap-2">
-          <h3 className="font-poppins font-semibold text-lg text-text-primary">Today&apos;s Tasks</h3>
-          <span className="w-6 h-6 rounded-full bg-krishiva-green text-white text-xs font-semibold flex items-center justify-center">
-            {incompleteCount}
-          </span>
-        </div>
-        <span className="text-krishiva-green text-sm font-medium cursor-pointer hover:underline">+ Add</span>
-      </div>
-
-      {/* Task List */}
-      <div className="flex-1 overflow-y-auto max-h-[320px]">
-        {tasks.map((task, idx) => (
-          <motion.div
-            key={task.id}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.15 + idx * 0.06, duration: 0.3 }}
-            className={`flex items-center gap-3 px-5 py-3.5 border-b border-border-light last:border-b-0 transition-colors ${task.completed ? 'bg-bg-primary/50' : ''}`}
-          >
-            {/* Checkbox */}
-            <button
-              onClick={() => toggleTask(task.id)}
-              className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-150 ${
-                task.completed ? 'bg-krishiva-green border-krishiva-green' : 'border-border-light hover:border-krishiva-green'
-              }`}
-            >
-              {task.completed && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
-            </button>
-
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-              <p className={`text-sm font-medium truncate ${task.completed ? 'line-through text-text-muted' : 'text-text-primary'}`}>
-                {task.title}
-              </p>
-              <p className="text-text-secondary text-xs mt-0.5">{task.subtitle}</p>
-            </div>
-
-            {/* Time & Priority */}
-            <div className="flex flex-col items-end gap-1 shrink-0">
-              <span className={`text-[11px] font-medium px-2 py-0.5 rounded-md ${priorityColors[task.priority]}`}>
-                {task.priority}
-              </span>
-              <div className="flex items-center gap-1 text-text-muted">
-                <Clock className="w-3 h-3" />
-                <span className="text-[11px]">{task.time}</span>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─────────────────────── Quick Stats ─────────────────────── */
-const stats = [
-  {
-    icon: IndianRupee,
-    value: '₹90,000',
-    label: 'Farm Profit',
-    trend: '+12%',
-    trendUp: true,
-    accent: 'border-l-krishiva-green',
-    iconBg: 'bg-krishiva-green/10',
-    iconColor: 'text-krishiva-green',
-  },
-  {
-    icon: Sprout,
-    value: '12',
-    label: 'Active Crops',
-    trend: '+2 this month',
-    trendUp: true,
-    accent: 'border-l-leaf-green',
-    iconBg: 'bg-leaf-green/10',
-    iconColor: 'text-leaf-green',
-  },
-  {
-    icon: Users,
-    value: '3',
-    label: 'Labor Booked',
-    trend: '2 due today',
-    trendUp: null,
-    accent: 'border-l-harvest-gold',
-    iconBg: 'bg-harvest-gold/10',
-    iconColor: 'text-harvest-gold',
-  },
-  {
-    icon: Tractor,
-    value: '2',
-    label: 'Machinery',
-    trend: '1 returning',
-    trendUp: null,
-    accent: 'border-l-blue-500',
-    iconBg: 'bg-blue-500/10',
-    iconColor: 'text-blue-500',
-  },
-];
-
-function QuickStats() {
-  return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map((stat, idx) => (
-        <motion.div
-          key={stat.label}
-          custom={idx + 2}
-          variants={cardVariant}
-          initial="hidden"
-          animate="visible"
-          className={`bg-white rounded-2xl p-5 border border-border-light shadow-card border-l-4 ${stat.accent} hover:shadow-card-hover transition-shadow duration-200`}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className={`w-10 h-10 rounded-xl ${stat.iconBg} flex items-center justify-center`}>
-              <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
-            </div>
-            {stat.trendUp !== null && (
-              <span className={`flex items-center gap-0.5 text-xs font-medium ${stat.trendUp ? 'text-success-green' : 'text-error-red'}`}>
-                {stat.trendUp ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
-                {stat.trend}
-              </span>
-            )}
-            {stat.trendUp === null && (
-              <span className="text-text-muted text-xs font-medium">{stat.trend}</span>
-            )}
-          </div>
-          <p className="font-poppins font-bold text-2xl text-text-primary">{stat.value}</p>
-          <p className="text-text-secondary text-sm mt-0.5">{stat.label}</p>
-        </motion.div>
-      ))}
-    </div>
-  );
-}
-
-/* ─────────────────────── Module Grid ─────────────────────── */
-const modules = [
-  { icon: LayoutDashboard, title: 'Dashboard', desc: 'Daily overview & stats', route: '/dashboard', color: 'bg-krishiva-green/10 text-krishiva-green' },
-  { icon: Newspaper, title: 'Smart Feed', desc: 'News, alerts & tips', route: '/dashboard/feed', color: 'bg-blue-500/10 text-blue-500' },
-  { icon: Tractor, title: 'Farm OS', desc: 'Manage your fields', route: '/dashboard/farm', color: 'bg-krishiva-green/10 text-krishiva-green' },
-  { icon: Users, title: 'Labor', desc: 'Find farm workers', route: '/dashboard/labor', color: 'bg-orange-500/10 text-orange-500' },
-  { icon: Settings, title: 'Machinery', desc: 'Rent equipment', route: '/dashboard/machinery', color: 'bg-purple-500/10 text-purple-500' },
-  { icon: Wheat, title: 'Drones', desc: 'Spray & survey', route: '/dashboard/drones', color: 'bg-cyan-500/10 text-cyan-500' },
-  { icon: ShoppingCart, title: 'Produce', desc: 'Sell your crops', route: '/dashboard/produce', color: 'bg-green-500/10 text-green-500' },
-  { icon: Sprout, title: 'Inputs', desc: 'Seeds & fertilizers', route: '/dashboard/inputs', color: 'bg-emerald-500/10 text-emerald-500' },
-  { icon: Stethoscope, title: 'Crop Doctor', desc: 'AI health check', route: '/dashboard/crop-doctor', color: 'bg-red-500/10 text-red-500' },
-  { icon: IndianRupee, title: 'Finance', desc: 'Loans & insurance', route: '/dashboard/finance', color: 'bg-harvest-gold/10 text-harvest-gold' },
-  { icon: MessageSquare, title: 'Community', desc: 'Farmer network', route: '/dashboard/community', color: 'bg-pink-500/10 text-pink-500' },
-  { icon: GraduationCap, title: 'Experts', desc: 'Book specialists', route: '/dashboard/experts', color: 'bg-indigo-500/10 text-indigo-500' },
-  { icon: Wallet, title: 'Wallet', desc: 'Payments & escrow', route: '/dashboard/wallet', color: 'bg-teal-500/10 text-teal-500' },
-];
-
-function ModuleGrid() {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="font-poppins font-semibold text-xl text-text-primary">Your Services</h2>
-        <span className="text-krishiva-green text-sm font-medium cursor-pointer hover:underline">View All</span>
-      </div>
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
-      >
-        {modules.map((mod) => (
-          <motion.div key={mod.title} variants={staggerChild}>
-            <Link
-              to={mod.route}
-              className="group block bg-white rounded-2xl p-5 border border-border-light shadow-card hover:shadow-card-hover hover:border-border-green hover:-translate-y-[3px] active:scale-[0.97] transition-all duration-200"
-            >
-              <div className={`w-12 h-12 rounded-xl ${mod.color} flex items-center justify-center mb-3 group-hover:scale-105 transition-transform`}>
-                <mod.icon className="w-6 h-6" />
-              </div>
-              <h3 className="font-poppins font-semibold text-base text-text-primary">{mod.title}</h3>
-              <p className="text-text-secondary text-sm mt-0.5 line-clamp-1">{mod.desc}</p>
-              <ChevronRight className="w-4 h-4 text-text-muted mt-3 group-hover:text-krishiva-green group-hover:translate-x-1 transition-all" />
-            </Link>
-          </motion.div>
-        ))}
-      </motion.div>
-    </div>
-  );
-}
-
-/* ─────────────────────── Recent Activity ─────────────────────── */
-const activities = [
-  { icon: Users, color: 'bg-krishiva-green', text: 'Booked labor for weeding', sub: '2 workers — East Field', time: '2h ago' },
-  { icon: ShoppingCart, color: 'bg-blue-500', text: 'Listed 50kg tomatoes', sub: 'Price: ₹2,400/quintal', time: '4h ago' },
-  { icon: GraduationCap, color: 'bg-purple-500', text: 'Expert consultation completed', sub: 'Dr. Sharma — Crop advice', time: '6h ago' },
-  { icon: Tractor, color: 'bg-harvest-gold', text: 'Tractor rental confirmed', sub: 'June 15 — Tilling', time: '1d ago' },
-  { icon: IndianRupee, color: 'bg-leaf-green', text: 'Sold 100kg chili', sub: '₹12,800/quintal — Guntur', time: '1d ago' },
-  { icon: Sprout, color: 'bg-cyan-500', text: 'Applied fertilizer to Field A', sub: 'Urea — 50kg', time: '2d ago' },
-];
-
-function RecentActivity() {
-  return (
-    <motion.div
-      custom={15}
-      variants={cardVariant}
-      initial="hidden"
-      animate="visible"
-      className="bg-white rounded-2xl border border-border-light shadow-card overflow-hidden"
-    >
-      <div className="flex items-center justify-between px-5 py-4 border-b border-border-light">
-        <h3 className="font-poppins font-semibold text-lg text-text-primary">Recent Activity</h3>
-        <span className="text-krishiva-green text-sm font-medium cursor-pointer hover:underline">View All</span>
-      </div>
-      <div className="divide-y divide-border-light">
-        {activities.map((act, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 + idx * 0.06, duration: 0.3 }}
-            className="flex items-center gap-3 px-5 py-3.5 hover:bg-bg-primary/50 transition-colors"
-          >
-            <div className={`w-9 h-9 rounded-full ${act.color} flex items-center justify-center shrink-0`}>
-              <act.icon className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-text-primary truncate">{act.text}</p>
-              <p className="text-text-secondary text-xs mt-0.5">{act.sub}</p>
-            </div>
-            <span className="text-text-muted text-[11px] shrink-0">{act.time}</span>
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─────────────────────── Market Prices ─────────────────────── */
-const marketPrices = [
-  { crop: 'Cotton', price: '₹6,420', unit: '/q', change: '+2.3%', up: true },
-  { crop: 'Chili', price: '₹12,800', unit: '/q', change: '+5.1%', up: true },
-  { crop: 'Tomato', price: '₹2,400', unit: '/q', change: '-1.2%', up: false },
-  { crop: 'Paddy', price: '₹2,040', unit: '/q', change: '+0.5%', up: true },
-  { crop: 'Onion', price: '₹3,200', unit: '/q', change: '-3.4%', up: false },
-];
-
-function MarketPrices() {
-  return (
-    <motion.div
-      custom={16}
-      variants={cardVariant}
-      initial="hidden"
-      animate="visible"
-      className="bg-white rounded-2xl border border-border-light shadow-card overflow-hidden"
-    >
-      <div className="flex items-center justify-between px-5 py-4 border-b border-border-light">
-        <div>
-          <h3 className="font-poppins font-semibold text-lg text-text-primary">Market Prices</h3>
-          <p className="text-text-secondary text-xs mt-0.5">Guntur APMC • Updated 30m ago</p>
-        </div>
-        <span className="text-krishiva-green text-sm font-medium cursor-pointer hover:underline">More</span>
-      </div>
-      <div className="divide-y divide-border-light">
-        {marketPrices.map((mp, idx) => (
-          <motion.div
-            key={mp.crop}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35 + idx * 0.05, duration: 0.25 }}
-            className="flex items-center justify-between px-5 py-3"
-          >
-            <div className="flex items-center gap-2">
-              <Sprout className="w-4 h-4 text-krishiva-green" />
-              <span className="text-sm font-medium text-text-primary">{mp.crop}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-semibold text-text-primary">{mp.price}<span className="text-text-muted text-xs font-normal">{mp.unit}</span></span>
-              <span className={`flex items-center gap-0.5 text-xs font-medium ${mp.up ? 'text-success-green' : 'text-error-red'}`}>
-                {mp.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                {mp.change}
-              </span>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─────────────────────── Market Ticker ─────────────────────── */
-function MarketTicker() {
-  const tickerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = tickerRef.current;
-    if (!el) return;
-    let animId: number;
-    let pos = 0;
-    const speed = 0.5;
-    const animate = () => {
-      pos -= speed;
-      if (Math.abs(pos) >= el.scrollWidth / 2) pos = 0;
-      el.style.transform = `translateX(${pos}px)`;
-      animId = requestAnimationFrame(animate);
-    };
-    animId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animId);
-  }, []);
-
-  const tickerItems = [
-    { crop: 'Cotton', price: '₹6,420/q', up: true },
-    { crop: 'Chili', price: '₹12,800/q', up: true },
-    { crop: 'Tomato', price: '₹2,400/q', up: false },
-    { crop: 'Paddy', price: '₹2,040/q', up: true },
-    { crop: 'Onion', price: '₹3,200/q', up: false },
-    { crop: 'Wheat', price: '₹2,450/q', up: true },
-    { crop: 'Rice', price: '₹3,200/q', up: false },
-    { crop: 'Potato', price: '₹1,500/q', up: true },
-  ];
-
-  const doubled = [...tickerItems, ...tickerItems];
-
-  return (
-    <motion.div
-      custom={17}
-      variants={cardVariant}
-      initial="hidden"
-      animate="visible"
-      className="bg-white rounded-2xl border border-border-light shadow-card overflow-hidden py-3"
-    >
-      <div className="flex items-center gap-2 px-5 mb-2">
-        <Zap className="w-4 h-4 text-harvest-gold" />
-        <span className="font-poppins font-semibold text-sm text-text-primary">Live Mandi Rates</span>
-      </div>
-      <div className="relative overflow-hidden">
-        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10" />
-        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10" />
-        <div ref={tickerRef} className="flex items-center gap-8 whitespace-nowrap px-5">
-          {doubled.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-2 shrink-0">
-              <span className="text-sm font-medium text-text-primary">{item.crop}</span>
-              <span className="text-sm font-semibold text-text-primary">{item.price}</span>
-              {item.up ? <ArrowUpRight className="w-3.5 h-3.5 text-success-green" /> : <ArrowDownRight className="w-3.5 h-3.5 text-error-red" />}
-            </div>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─────────────────────── Main Page ─────────────────────── */
-export default function Dashboard() {
-  return (
     <DashboardLayout>
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="visible"
-        className="space-y-6"
-      >
-        {/* Page Title */}
-        <motion.div variants={staggerChild} className="mb-6">
-          <h1 className="font-poppins font-bold text-2xl sm:text-3xl text-text-primary">Daily Companion</h1>
-          <p className="text-text-secondary text-sm mt-1">Wednesday, 12 June 2025</p>
+      <div className="max-w-[1200px] mx-auto space-y-6 pb-6">
+
+        {/* ====== HERO: Welcome + Quick Summary ====== */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative overflow-hidden rounded-3xl bg-krishiva-green p-6 sm:p-8 text-white"
+        >
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
+          <div className="relative z-10">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h1 className="font-poppins font-bold text-2xl sm:text-3xl mb-1">Welcome back, Rajesh!</h1>
+                <p className="text-white/70 text-sm">Here&apos;s what&apos;s happening on your farm today</p>
+              </div>
+              <div className="flex items-center gap-2">
+                {/* Language Selector */}
+                <div className="relative" ref={langRef}>
+                  <button
+                    onClick={() => setLangOpen(!langOpen)}
+                    className="flex items-center gap-2 bg-white/15 hover:bg-white/25 transition-colors rounded-xl px-3 py-2 text-sm"
+                  >
+                    <Globe className="w-4 h-4" />
+                    <span>{LANGUAGES.find(l => l.code === selectedLang)?.native}</span>
+                  </button>
+                  <AnimatePresence>
+                    {langOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-border-light z-50 p-3"
+                      >
+                        <p className="text-xs text-text-muted mb-2 px-2">Select Language</p>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {LANGUAGES.map((lang) => (
+                            <button
+                              key={lang.code}
+                              onClick={() => { setSelectedLang(lang.code); setLangOpen(false); }}
+                              className={`flex items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium border transition-all ${
+                                selectedLang === lang.code
+                                  ? 'border-krishiva-green bg-krishiva-green text-white'
+                                  : 'border-border-light text-text-secondary hover:border-border-green'
+                              }`}
+                            >
+                              {selectedLang === lang.code && <Check className="w-3 h-3" />}
+                              <span>{lang.native}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Stats Row */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+              {[
+                { label: 'Total Farm Area', value: '25 acres', icon: Sprout },
+                { label: 'Active Crops', value: '3 Crops', icon: CheckCircle2 },
+                { label: 'Mandi Alerts', value: '5 New', icon: Bell },
+                { label: 'Wallet Balance', value: 'Rs 12,450', icon: Wallet },
+              ].map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + i * 0.08 }}
+                  className="bg-white/10 backdrop-blur-sm rounded-xl p-3"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <stat.icon className="w-4 h-4 text-white/70" />
+                    <span className="text-white/60 text-xs">{stat.label}</span>
+                  </div>
+                  <p className="font-poppins font-semibold text-lg">{stat.value}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </motion.div>
 
-        {/* Weather + Tasks Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-1">
-            <WeatherWidget />
+        {/* ====== MANDI TICKER ====== */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
+          <Card className="border-border-light shadow-card overflow-hidden">
+            <CardContent className="p-0">
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-border-light bg-amber-50/50">
+                <TrendingUp className="w-5 h-5 text-harvest-gold shrink-0" />
+                <h3 className="font-poppins font-semibold text-sm text-text-primary shrink-0">Live Mandi Prices</h3>
+                <div className="flex-1 overflow-hidden" ref={tickerRef}>
+                  <div className="flex gap-6 animate-scroll-x whitespace-nowrap">
+                    {[...MANDI_PRICES, ...MANDI_PRICES].map((item, idx) => (
+                      <button
+                        key={`${item.commodity}-${idx}`}
+                        onClick={() => setSelectedMandi(item)}
+                        className="flex items-center gap-1.5 text-sm hover:bg-amber-100/50 px-2 py-1 rounded-lg transition-colors shrink-0"
+                      >
+                        <span className="font-medium text-text-primary">{item.commodity}</span>
+                        <span className="text-text-secondary">Rs {item.price.toLocaleString()}/{item.unit}</span>
+                        {item.trend === 'up' && <ArrowUpRight className="w-3.5 h-3.5 text-success-green" />}
+                        {item.trend === 'down' && <ArrowDownRight className="w-3.5 h-3.5 text-error-red" />}
+                        {item.trend === 'stable' && <Minus className="w-3.5 h-3.5 text-text-muted" />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Mandi Detail */}
+              <AnimatePresence>
+                {selectedMandi && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-4 bg-bg-primary">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <p className="font-poppins font-semibold text-lg text-text-primary">{selectedMandi.commodity}</p>
+                          <p className="text-xs text-text-muted">Current market rate across major mandis</p>
+                        </div>
+                        <button onClick={() => setSelectedMandi(null)} className="p-1.5 rounded-lg hover:bg-white transition-colors">
+                          <X className="w-4 h-4 text-text-muted" />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {[
+                          { mandi: 'Guntur', price: selectedMandi.price, change: selectedMandi.change },
+                          { mandi: 'Vijayawada', price: selectedMandi.price - 80, change: selectedMandi.change - 30 },
+                          { mandi: 'Nellore', price: selectedMandi.price + 40, change: selectedMandi.change + 15 },
+                          { mandi: 'Kurnool', price: selectedMandi.price - 50, change: selectedMandi.change - 20 },
+                        ].map((m) => (
+                          <div key={m.mandi} className="bg-white rounded-xl p-3 border border-border-light">
+                            <p className="text-xs text-text-muted">{m.mandi}</p>
+                            <p className="font-semibold text-sm text-text-primary">Rs {m.price.toLocaleString()}/q</p>
+                            <div className="flex items-center gap-1 mt-0.5">
+                              {m.change >= 0 ? (
+                                <TrendingUp className="w-3 h-3 text-success-green" />
+                              ) : (
+                                <TrendingDown className="w-3 h-3 text-error-red" />
+                              )}
+                              <span className={`text-xs ${m.change >= 0 ? 'text-success-green' : 'text-error-red'}`}>
+                                {m.change >= 0 ? '+' : ''}{m.change}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* ====== WEATHER WIDGET ====== */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+          id="weather"
+        >
+          <Card className="border-border-light shadow-card">
+            <CardHeader className="pb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                    <Cloud className="w-5 h-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-poppins font-semibold text-lg text-text-primary">Weather Forecast</h3>
+                    <p className="text-xs text-text-muted flex items-center gap-1">
+                      <MapPin className="w-3 h-3" /> Guntur, Andhra Pradesh
+                    </p>
+                  </div>
+                </div>
+                {/* Filter Pills */}
+                <div className="flex gap-1.5 flex-wrap">
+                  {['Today', '3 Days', '1 Week', '10 Days', '15 Days'].map((filter) => (
+                    <button
+                      key={filter}
+                      onClick={() => setWeatherFilter(filter)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                        weatherFilter === filter
+                          ? 'bg-krishiva-green text-white'
+                          : 'bg-bg-primary text-text-secondary hover:bg-krishiva-green/10'
+                      }`}
+                    >
+                      {filter}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-5">
+              {weatherLoading ? (
+                <div className="space-y-3">
+                  <Skeleton className="h-24 w-full rounded-xl" />
+                  <div className="grid grid-cols-7 gap-2">
+                    {Array.from({ length: 7 }).map((_, i) => (
+                      <Skeleton key={i} className="h-32 rounded-xl" />
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {/* Current Conditions */}
+                  {weatherDays.length > 0 && (
+                    <div className="flex flex-col sm:flex-row items-center gap-6 bg-blue-50/50 rounded-2xl p-5 mb-5">
+                      <div className="text-center">
+                        {(() => {
+                          const Icon = getWeatherIcon(weatherDays[0].weatherCode).icon;
+                          return <Icon className="w-16 h-16 text-blue-500 mx-auto mb-2" />;
+                        })()}
+                        <p className="text-sm text-text-secondary">{getWeatherIcon(weatherDays[0].weatherCode).label}</p>
+                      </div>
+                      <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
+                        <div className="text-center">
+                          <Thermometer className="w-5 h-5 text-error-red mx-auto mb-1" />
+                          <p className="text-xs text-text-muted">Max Temp</p>
+                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].tempMax}&deg;C</p>
+                        </div>
+                        <div className="text-center">
+                          <Thermometer className="w-5 h-5 text-blue-500 mx-auto mb-1" />
+                          <p className="text-xs text-text-muted">Min Temp</p>
+                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].tempMin}&deg;C</p>
+                        </div>
+                        <div className="text-center">
+                          <Droplets className="w-5 h-5 text-cyan-500 mx-auto mb-1" />
+                          <p className="text-xs text-text-muted">Rainfall</p>
+                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].precipitation} mm</p>
+                        </div>
+                        <div className="text-center">
+                          <Wind className="w-5 h-5 text-text-secondary mx-auto mb-1" />
+                          <p className="text-xs text-text-muted">Wind</p>
+                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].windSpeed} km/h</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Forecast Cards */}
+                  <div className={`grid gap-2 ${weatherDays.length <= 3 ? 'grid-cols-3' : weatherDays.length <= 7 ? 'grid-cols-4 sm:grid-cols-7' : 'grid-cols-4 sm:grid-cols-5 lg:grid-cols-7 xl:grid-cols-10'}`}>
+                    {weatherDays.map((day, i) => {
+                      const wc = getWeatherIcon(day.weatherCode);
+                      const Icon = wc.icon;
+                      return (
+                        <motion.div
+                          key={day.date}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: i * 0.04 }}
+                          className="bg-bg-primary rounded-xl p-3 text-center"
+                        >
+                          <p className="text-[10px] text-text-muted mb-1.5">{i === 0 ? 'Today' : formatDate(day.date)}</p>
+                          <Icon className="w-6 h-6 mx-auto mb-1.5 text-blue-500" />
+                          <p className="font-semibold text-sm text-text-primary">{day.tempMax}&deg;</p>
+                          <p className="text-xs text-text-muted">{day.tempMin}&deg;</p>
+                          {day.precipitation > 0 && (
+                            <div className="flex items-center justify-center gap-0.5 mt-1">
+                              <Droplets className="w-3 h-3 text-cyan-500" />
+                              <span className="text-[10px] text-cyan-600">{day.precipitation}mm</span>
+                            </div>
+                          )}
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* ====== AGRICULTURE NEWS FEED ====== */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, duration: 0.4 }}
+        >
+          <Card className="border-border-light shadow-card">
+            <CardHeader className="pb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+                    <Newspaper className="w-5 h-5 text-red-500" />
+                  </div>
+                  <h3 className="font-poppins font-semibold text-lg text-text-primary">Agriculture News</h3>
+                </div>
+                <div className="flex gap-1.5 flex-wrap">
+                  {NEWS_CATEGORIES.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setNewsCategory(cat)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                        newsCategory === cat
+                          ? 'bg-krishiva-green text-white'
+                          : 'bg-bg-primary text-text-secondary hover:bg-krishiva-green/10'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-5">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={newsCategory}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25 }}
+                  className="space-y-3"
+                >
+                  {filteredNews.map((article) => (
+                    <div
+                      key={article.id}
+                      className="flex flex-col sm:flex-row sm:items-start gap-3 p-4 bg-bg-primary rounded-xl hover:bg-krishiva-green/5 transition-colors group cursor-pointer"
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge variant="outline" className="text-[10px] h-5 px-1.5 border-krishiva-green text-krishiva-green">
+                            {article.source}
+                          </Badge>
+                          <span className="text-[10px] text-text-muted flex items-center gap-1">
+                            <Clock className="w-3 h-3" /> {article.date}
+                          </span>
+                        </div>
+                        <h4 className="font-medium text-sm text-text-primary group-hover:text-krishiva-green transition-colors mb-1">
+                          {article.title}
+                        </h4>
+                        <p className="text-xs text-text-secondary line-clamp-2">{article.snippet}</p>
+                      </div>
+                      <div className="shrink-0 flex items-center gap-1 text-krishiva-green text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span>Read Full Article</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* ====== GOVERNMENT SCHEMES ====== */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.4 }}
+          id="schemes"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
+              <Landmark className="w-5 h-5 text-orange-500" />
+            </div>
+            <h3 className="font-poppins font-semibold text-lg text-text-primary">Government Schemes</h3>
           </div>
-          <div className="lg:col-span-2">
-            <TasksWidget />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {SCHEMES.map((scheme, i) => (
+              <motion.a
+                key={scheme.name}
+                href={scheme.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + i * 0.06 }}
+                className={`block bg-white rounded-2xl p-5 border-l-4 ${scheme.borderColor} shadow-card hover:shadow-card-hover transition-all group`}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className={`w-10 h-10 rounded-xl ${scheme.bgColor} flex items-center justify-center`}>
+                    <scheme.icon className="w-5 h-5 text-text-primary" />
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-text-muted group-hover:text-krishiva-green transition-colors" />
+                </div>
+                <h4 className="font-poppins font-semibold text-sm text-text-primary mb-1">{scheme.name}</h4>
+                <p className="text-xs text-text-secondary mb-3">{scheme.description}</p>
+                {scheme.amount && (
+                  <Badge className="bg-krishiva-green/10 text-krishiva-green border-krishiva-green/20 text-[10px]">
+                    {scheme.amount}
+                  </Badge>
+                )}
+              </motion.a>
+            ))}
           </div>
+        </motion.div>
+
+        {/* ====== LOANS & BANK OFFERS ====== */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45, duration: 0.4 }}
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
+              <CreditCard className="w-5 h-5 text-purple-500" />
+            </div>
+            <h3 className="font-poppins font-semibold text-lg text-text-primary">Loans & Bank Offers</h3>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+            {LOANS.map((loan, i) => (
+              <motion.div
+                key={loan.type}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.45 + i * 0.06 }}
+                className="min-w-[260px] snap-start"
+              >
+                <Card className="border-border-light shadow-card hover:shadow-card-hover transition-all h-full">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
+                        <loan.icon className="w-5 h-5 text-purple-500" />
+                      </div>
+                      <div>
+                        <h4 className="font-poppins font-semibold text-sm text-text-primary">{loan.type}</h4>
+                        <p className="text-xs text-text-muted">{loan.bank}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3 mb-4">
+                      <div className="text-center">
+                        <p className="text-[10px] text-text-muted">Amount</p>
+                        <p className="text-xs font-semibold text-text-primary">{loan.amount}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[10px] text-text-muted">Interest</p>
+                        <p className="text-xs font-semibold text-text-primary">{loan.interest}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[10px] text-text-muted">Tenure</p>
+                        <p className="text-xs font-semibold text-text-primary">{loan.tenure}</p>
+                      </div>
+                    </div>
+                    <Button className="w-full bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl h-10 text-sm">
+                      Apply Now
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ====== MY REGISTERED CROPS ====== */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.4 }}
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+              <Sprout className="w-5 h-5 text-green-500" />
+            </div>
+            <h3 className="font-poppins font-semibold text-lg text-text-primary">My Registered Crops</h3>
+          </div>
+          <div className="space-y-3">
+            {crops.map((crop, i) => (
+              <motion.div
+                key={crop.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + i * 0.06 }}
+              >
+                <Card className="border-border-light shadow-card hover:shadow-card-hover transition-all">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+                          <Sprout className="w-5 h-5 text-green-500" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="font-poppins font-semibold text-sm text-text-primary">{crop.name}</p>
+                            <Badge variant="outline" className={`text-[10px] h-5 ${getStatusBadgeColor(crop.status)}`}>
+                              {crop.status}
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-text-muted">{crop.acres} acres &middot; Expected: {crop.output} &middot; Harvest: {crop.harvestDate}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <p className="text-xs text-text-muted">Price</p>
+                          <p className="font-semibold text-sm text-text-primary">{crop.price}</p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="sm" className="text-text-secondary text-xs h-8 px-2">
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-error-red text-xs h-8 px-2"
+                            onClick={() => handleDeleteCrop(crop.id)}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+            <Button
+              variant="outline"
+              className="w-full border-dashed border-2 border-border-light hover:border-krishiva-green hover:text-krishiva-green hover:bg-krishiva-green/5 rounded-xl h-12 text-sm"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Register New Crop
+            </Button>
+          </div>
+        </motion.div>
+
+        {/* ====== BUYER CONNECTIONS ====== */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55, duration: 0.4 }}
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+              <Users className="w-5 h-5 text-blue-500" />
+            </div>
+            <h3 className="font-poppins font-semibold text-lg text-text-primary">Buyer Connections</h3>
+          </div>
+          <div className="space-y-3">
+            {BUYERS.map((buyer, i) => (
+              <motion.div
+                key={buyer.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55 + i * 0.06 }}
+              >
+                <Card className="border-border-light shadow-card hover:shadow-card-hover transition-all">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-semibold text-sm">
+                          {buyer.name.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="font-poppins font-semibold text-sm text-text-primary">{buyer.name}</p>
+                            <Badge variant="outline" className={`text-[10px] h-5 ${getStatusBadgeColor(buyer.status)}`}>
+                              {buyer.status}
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-text-muted">Interested in: {buyer.commodity} &middot; Qty: {buyer.quantity}</p>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        className="bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl h-9 text-xs px-4"
+                      >
+                        Connect
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ====== QUICK ACTIONS GRID ====== */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.4 }}
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
+              <Star className="w-5 h-5 text-gray-500" />
+            </div>
+            <h3 className="font-poppins font-semibold text-lg text-text-primary">Quick Actions</h3>
+          </div>
+          <div className="grid grid-cols-4 gap-3">
+            {QUICK_ACTIONS.map((action, i) => (
+              <motion.a
+                key={action.label}
+                href={action.href}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6 + i * 0.04 }}
+                className="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-border-light shadow-card hover:shadow-card-hover transition-all group"
+              >
+                <div className={`w-12 h-12 rounded-xl ${action.color} flex items-center justify-center`}>
+                  <action.icon className="w-6 h-6" />
+                </div>
+                <span className="text-xs font-medium text-text-primary group-hover:text-krishiva-green transition-colors text-center">
+                  {action.label}
+                </span>
+              </motion.a>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ====== VOICE SEARCH FLOATING BUTTON ====== */}
+        <div className="fixed bottom-24 right-5 z-40 lg:bottom-8">
+          <motion.button
+            onClick={toggleVoice}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-14 h-14 rounded-full shadow-voice flex items-center justify-center transition-all ${
+              voiceListening ? 'bg-error-red animate-pulse' : 'bg-krishiva-green hover:bg-[#1B5E20]'
+            }`}
+          >
+            {voiceListening ? <MicOff className="w-6 h-6 text-white" /> : <Mic className="w-6 h-6 text-white" />}
+          </motion.button>
+          {/* Pulse rings when listening */}
+          {voiceListening && (
+            <>
+              <span className="absolute inset-0 rounded-full bg-error-red/30 animate-ping" />
+              <span className="absolute inset-0 rounded-full bg-error-red/20 animate-pulse" />
+            </>
+          )}
         </div>
 
-        {/* Quick Stats */}
-        <QuickStats />
+        {/* Voice Listening Overlay */}
+        <AnimatePresence>
+          {voiceListening && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+              onClick={() => setVoiceListening(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                className="bg-white rounded-3xl p-8 text-center max-w-sm mx-4"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="w-20 h-20 rounded-full bg-krishiva-green/10 flex items-center justify-center mx-auto mb-4 relative">
+                  <Mic className="w-10 h-10 text-krishiva-green" />
+                  <span className="absolute inset-0 rounded-full bg-krishiva-green/20 animate-ping" />
+                </div>
+                <h3 className="font-poppins font-semibold text-lg text-text-primary mb-2">Listening...</h3>
+                <p className="text-sm text-text-secondary mb-4">Say something like &quot;Check cotton prices&quot; or &quot;Weather forecast&quot;</p>
+                <Button
+                  variant="outline"
+                  className="rounded-xl border-error-red text-error-red hover:bg-error-red hover:text-white"
+                  onClick={() => setVoiceListening(false)}
+                >
+                  <X className="w-4 h-4 mr-1.5" /> Cancel
+                </Button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Module Grid */}
-        <ModuleGrid />
-
-        {/* Activity + Market Prices */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-          <div className="lg:col-span-3">
-            <RecentActivity />
-          </div>
-          <div className="lg:col-span-2">
-            <MarketPrices />
-          </div>
-        </div>
-
-        {/* Market Ticker */}
-        <MarketTicker />
-      </motion.div>
+      </div>
     </DashboardLayout>
   );
 }
