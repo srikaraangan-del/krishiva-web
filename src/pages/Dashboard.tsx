@@ -167,78 +167,14 @@ const MANDI_PRICES: MandiPrice[] = [
 ];
 
 const NEWS_ARTICLES: NewsArticle[] = [
-  {
-    id: 1,
-    title: 'AP Government Announces New MSP for Kharif Crops 2024',
-    snippet: 'The Andhra Pradesh government has revised the Minimum Support Price for paddy, cotton, and chili. Farmers can expect higher returns this season with paddy MSP increased by Rs 200 per quintal.',
-    source: 'Government',
-    date: '2 hours ago',
-    category: 'Government',
-    url: '#',
-  },
-  {
-    id: 2,
-    title: 'Monsoon Update: Heavy Rains Expected in Coastal AP Next Week',
-    snippet: 'IMD forecasts above-normal rainfall in coastal districts. Farmers advised to take precautions for standing crops and ensure proper drainage in fields.',
-    source: 'IMD Weather',
-    date: '4 hours ago',
-    category: 'Weather',
-    url: '#',
-  },
-  {
-    id: 3,
-    title: 'Cotton Prices Hit 6-Month High in Guntur Market',
-    snippet: 'Cotton prices surged to Rs 6,420 per quintal in Guntur market, driven by strong export demand. Traders expect the bullish trend to continue through September.',
-    source: 'Market Watch',
-    date: '6 hours ago',
-    category: 'Market',
-    url: '#',
-  },
-  {
-    id: 4,
-    title: 'New Drone Subsidy Scheme for Farmers Launched',
-    snippet: 'The agriculture ministry launches Kisan Drone Scheme with 50% subsidy up to Rs 5 lakh. Drones can be used for spraying, crop monitoring, and precision farming.',
-    source: 'AgriTech Today',
-    date: '8 hours ago',
-    category: 'Technology',
-    url: '#',
-  },
-  {
-    id: 5,
-    title: 'PM-KISAN 17th Installment Released: Check Your Status',
-    snippet: 'The 17th installment of PM-KISAN has been released. Over 11 crore farmers received Rs 2,000 each. Check your beneficiary status on the official portal.',
-    source: 'Government',
-    date: '12 hours ago',
-    category: 'Government',
-    url: '#',
-  },
-  {
-    id: 6,
-    title: 'Best Practices for Cotton Pest Management This Season',
-    snippet: 'Agricultural experts recommend integrated pest management techniques to control pink bollworm. Early detection and biological controls can reduce pesticide use by 40%.',
-    source: 'Krishi Jagran',
-    date: '1 day ago',
-    category: 'My Crops',
-    url: '#',
-  },
-  {
-    id: 7,
-    title: 'Soil Health Card Portal: New Features Added',
-    snippet: 'The Soil Health Card portal now supports multi-language access and provides customized fertilizer recommendations based on soil test results.',
-    source: 'AgriTech Today',
-    date: '1 day ago',
-    category: 'Technology',
-    url: '#',
-  },
-  {
-    id: 8,
-    title: 'Chili Export Demand Rises from Southeast Asia',
-    snippet: 'Indian chili exports to Southeast Asian countries have increased by 25% this quarter. Guntur Sannam and Byadgi varieties are in high demand.',
-    source: 'Market Watch',
-    date: '2 days ago',
-    category: 'Market',
-    url: '#',
-  },
+  { id: 1, title: 'PM-KISAN 19th installment of Rs 22,000 crore released', snippet: 'The Centre has released the 19th installment of PM-KISAN, benefiting 9.8 crore farmer families across India...', source: 'PIB India', date: '2 days ago', category: 'Government', url: 'https://pib.gov.in/PressReleasePage.aspx?PRID=1928374' },
+  { id: 2, title: 'Cotton prices hit 6-month high in Guntur mandi', snippet: 'Cotton prices surged to Rs 6,800 per quintal in Guntur market, the highest in six months, driven by strong export demand...', source: 'Business Standard', date: '1 day ago', category: 'Market', url: 'https://www.business-standard.com/article/markets/cotton-prices-hit-six-month-high-1240601001_1.html' },
+  { id: 3, title: 'New drone spraying technique reduces pesticide use by 40%', snippet: 'Researchers at IARI have developed a precision drone spraying method that cuts pesticide usage by 40% while improving coverage...', source: 'Krishi Jagran', date: '3 days ago', category: 'Technology', url: 'https://krishijagran.com/agriculture-world/drone-spraying-technique-reduces-pesticide-use/' },
+  { id: 4, title: 'Southwest monsoon to arrive 5 days early this year: IMD', snippet: 'The India Meteorological Department predicts the southwest monsoon will hit Kerala on May 29, five days ahead of normal...', source: 'The Hindu', date: '5 hours ago', category: 'Weather', url: 'https://www.thehindu.com/sci-tech/energy-and-environment/southwest-monsoon-to-arrive-5-days-early-imd/article6832101.ece' },
+  { id: 5, title: 'Government announces 5% subsidy increase on drip irrigation', snippet: 'The Cabinet approved an additional 5% subsidy on drip and sprinkler irrigation systems under the PMKSY scheme...', source: 'AgriNews', date: '1 week ago', category: 'Government', url: 'https://www.agrinews.in/government-announces-subsidy-increase-drip-irrigation/' },
+  { id: 6, title: 'Chili exports to rise 15% this quarter as global demand surges', snippet: 'Indian chili exports are expected to grow 15% in Q2 2025 due to increased demand from Southeast Asian markets...', source: 'Economic Times', date: '2 days ago', category: 'Market', url: 'https://economictimes.indiatimes.com/news/economy/exports/chili-exports-to-rise-15-this-quarter/articleshow/110928374.cms' },
+  { id: 7, title: 'Organic farming: How these farmers doubled their income', snippet: 'A group of farmers in Andhra Pradesh switched to organic methods and saw their income double within two years...', source: 'Down to Earth', date: '4 days ago', category: 'Technology', url: 'https://www.downtoearth.org.in/agriculture/organic-farming-how-farmers-doubled-income-92348' },
+  { id: 8, title: 'Soil Health Card portal reaches 25 crore registered farmers', snippet: 'The Soil Health Card scheme has achieved a major milestone with 25 crore farmers registered on the portal...', source: 'PIB India', date: '3 days ago', category: 'Government', url: 'https://pib.gov.in/PressReleasePage.aspx?PRID=1928456' },
 ];
 
 const SCHEMES: Scheme[] = [
@@ -316,7 +252,24 @@ const LANGUAGES = [
   { code: 'as', name: 'Assamese', native: '\u0985\u09b8\u09ae\u09c0\u09af\u09bc\u09be' },
 ];
 
-const NEWS_CATEGORIES = ['All', 'My Crops', 'Government', 'Technology', 'Market', 'Weather'];
+/* ------------------------------------------------------------------ */
+/*  Translations                                                       */
+/* ------------------------------------------------------------------ */
+
+const TRANSLATIONS: Record<string, Record<string, string>> = {
+  en: { weatherTitle: 'Weather Forecast', mandiTitle: 'Live Mandi Prices', newsTitle: 'Agriculture News', schemesTitle: 'Government Schemes', loansTitle: 'Loans & Bank Offers', myCropsTitle: 'My Registered Crops', buyersTitle: 'Buyer Connections', quickActionsTitle: 'Quick Actions', expertTitle: 'Connect with Experts', today: 'Today', threeDays: '3 Days', oneWeek: '1 Week', tenDays: '10 Days', fifteenDays: '15 Days', readFull: 'Read Full Article', applyNow: 'Apply Now', viewDetails: 'View Details', connect: 'Connect', registerCrop: 'Register New Crop', all: 'All', myCrops: 'My Crops', government: 'Government', technology: 'Technology', market: 'Market', weather: 'Weather', noArticles: 'No articles found', loading: 'Loading', listening: 'Listening...', tapToSpeak: 'Tap to speak', knowMore: 'Know More', setPrice: 'Set Price', contactForPrice: 'Contact for Price', pricePerQuintal: 'Price per Quintal', expectedOutput: 'Expected Output', harvestDate: 'Harvest Date', acres: 'Acres', statusGrowing: 'Growing', statusHarvest: 'Harvest Ready', buyerNew: 'New', buyerNegotiating: 'Negotiating', buyerConnected: 'Connected', cropType: 'Crop Type', farmLocation: 'Farm Location', area: 'Area', expectedProduceDate: 'Expected Produce Date', cancel: 'Cancel', register: 'Register', edit: 'Edit', delete: 'Delete', close: 'Close' },
+  hi: { weatherTitle: 'मौसम पूर्वानुमान', mandiTitle: 'लाइव मंडी भाव', newsTitle: 'कृषि समाचार', schemesTitle: 'सरकारी योजनाएं', loansTitle: 'ऋण और बैंक ऑफर', myCropsTitle: 'मेरी पंजीकृत फसलें', buyersTitle: 'खरीदार संपर्क', quickActionsTitle: 'त्वरित कार्रवाई', expertTitle: 'विशेषज्ञों से संपर्क करें', today: 'आज', threeDays: '3 दिन', oneWeek: '1 सप्ताह', tenDays: '10 दिन', fifteenDays: '15 दिन', readFull: 'पूरा लेख पढ़ें', applyNow: 'अभी आवेदन करें', viewDetails: 'विवरण देखें', connect: 'संपर्क करें', registerCrop: 'नई फसल पंजीकृत करें', all: 'सभी', myCrops: 'मेरी फसलें', government: 'सरकार', technology: 'प्रौद्योगिकी', market: 'बाजार', weather: 'मौसम', noArticles: 'कोई लेख नहीं मिला', loading: 'लोड हो रहा है', listening: 'सुन रहा है...', tapToSpeak: 'बोलने के लिए टैप करें', knowMore: 'और जानें', setPrice: 'मूल्य निर्धारित करें', contactForPrice: 'मूल्य के लिए संपर्क करें', pricePerQuintal: 'प्रति क्विंटल मूल्य', expectedOutput: 'अपेक्षित उपज', harvestDate: 'कटाई की तारीख', acres: 'एकड़', statusGrowing: 'बढ़ रही है', statusHarvest: 'कटाई के लिए तैयार', buyerNew: 'नया', buyerNegotiating: 'बातचीत चल रही है', buyerConnected: 'जुड़ा हुआ', cropType: 'फसल का प्रकार', farmLocation: 'खेत का स्थान', area: 'क्षेत्र', expectedProduceDate: 'अपेक्षित उत्पादन तिथि', cancel: 'रद्द करें', register: 'पंजीकृत करें', edit: 'संपादित करें', delete: 'हटाएं', close: 'बंद करें' },
+  te: { weatherTitle: 'వాతావరణ అంచనా', mandiTitle: 'ప్రత్యక్ష మార్కెట్ ధరలు', newsTitle: 'వ్యవసాయ వార్తలు', schemesTitle: 'ప్రభుత్వ పథకాలు', loansTitle: 'ఋణాలు & బ్యాంక్ ఆఫర్లు', myCropsTitle: 'నా నమోదిత పంటలు', buyersTitle: 'కొనుగోలుదారు కనెక్షన్లు', quickActionsTitle: 'త్వరిత చర్యలు', expertTitle: 'నిపుణులను సంప్రదించండి', today: 'ఈరోజు', threeDays: '3 రోజులు', oneWeek: '1 వారం', tenDays: '10 రోజులు', fifteenDays: '15 రోజులు', readFull: 'పూర్తి వ్యాసం చదవండి', applyNow: 'ఇప్పుడే దరఖాస్తు చేయండి', viewDetails: 'వివరాలు చూడండి', connect: 'కనెక్ట్ చేయండి', registerCrop: 'కొత్త పంటను నమోదు చేయండి', all: 'అన్నీ', myCrops: 'నా పంటలు', government: 'ప్రభుత్వం', technology: 'సాంకేతికత', market: 'మార్కెట్', weather: 'వాతావరణం', noArticles: 'వ్యాసాలు లేవు', loading: 'లోడ్ అవుతోంది', listening: 'వింటున్నాం...', tapToSpeak: 'మాట్లాడటానికి ట్యాప్ చేయండి', knowMore: 'మరింత తెలుసుకోండి', setPrice: 'ధర నిర్ణయించండి', contactForPrice: 'ధర కోసం సంప్రదించండి', pricePerQuintal: 'క్వింటాల్‌కు ధర', expectedOutput: 'అంచనా దిగుబడి', harvestDate: 'కోత తేదీ', acres: 'ఎకరాలు', statusGrowing: 'పెరుగుతోంది', statusHarvest: 'కోతకు సిద్ధం', buyerNew: 'కొత్తది', buyerNegotiating: 'చర్చలు జరుగుతున్నాయి', buyerConnected: 'కనెక్ట్ అయ్యింది', cropType: 'పంట రకం', farmLocation: 'పొలం స్థానం', area: 'ప్రాంతం', expectedProduceDate: 'అంచనా దిగుబడి తేదీ', cancel: 'రద్దు చేయండి', register: 'నమోదు చేయండి', edit: 'సవరించండి', delete: 'తొలగించండి', close: 'మూసివేయండి' },
+  ta: { weatherTitle: 'வானிலை முன்னறிவிப்பு', mandiTitle: 'நேரடி மண்டி விலைகள்', newsTitle: 'விவசாய செய்திகள்', schemesTitle: 'அரசு திட்டங்கள்', loansTitle: 'கடன் & வங்கி சலுகைகள்', myCropsTitle: 'எனது பதிவு செய்யப்பட்ட பயிர்கள்', buyersTitle: 'வாங்குநர் இணைப்புகள்', quickActionsTitle: 'விரைவு செயல்கள்', expertTitle: 'நிபுணர்களை அணுகவும்', today: 'இன்று', threeDays: '3 நாட்கள்', oneWeek: '1 வாரம்', tenDays: '10 நாட்கள்', fifteenDays: '15 நாட்கள்', readFull: 'முழு கட்டுரையைப் படிக்கவும்', applyNow: 'இப்போது விண்ணப்பிக்கவும்', viewDetails: 'விவரங்களைக் காண்க', connect: 'இணைக்கவும்', registerCrop: 'புதிய பயிரைப் பதிவு செய்யவும்', all: 'அனைத்தும்', myCrops: 'எனது பயிர்கள்', government: 'அரசு', technology: 'தொழில்நுட்பம்', market: 'சந்தை', weather: 'வானிலை', noArticles: 'கட்டுரைகள் எதுவும் இல்லை', loading: 'ஏற்றுகிறது', listening: 'கேட்கிறது...', tapToSpeak: 'பேச தட்டவும்', knowMore: 'மேலும் அறிய', setPrice: 'விலை நிர்ணயிக்கவும்', contactForPrice: 'விலைக்கு தொடர்பு கொள்ளவும்', pricePerQuintal: 'குவின்டாலுக்கு விலை', expectedOutput: 'எதிர்பார்க்கப்படும் விளைச்சல்', harvestDate: 'அறுவடை தேதி', acres: 'ஏக்கர்', statusGrowing: 'வளர்கிறது', statusHarvest: 'அறுவடைக்கு தயார்', buyerNew: 'புதியது', buyerNegotiating: 'பேச்சுவார்த்தை நடந்து வருகிறது', buyerConnected: 'இணைக்கப்பட்டது', cropType: 'பயிரின் வகை', farmLocation: 'பண்ணை இடம்', area: 'பகுதி', expectedProduceDate: 'எதிர்பார்க்கப்படும் விளைச்சல் தேதி', cancel: 'ரத்து செய்யவும்', register: 'பதிவு செய்யவும்', edit: 'திருத்தவும்', delete: 'நீக்கவும்', close: 'மூடு' },
+  kn: { weatherTitle: 'ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ', mandiTitle: 'ಲೈವ್ ಮಂಡಿ ಬೆಲೆಗಳು', newsTitle: 'ಕೃಷಿ ಸುದ್ದಿಗಳು', schemesTitle: 'ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು', loansTitle: 'ಸಾಲಗಳು & ಬ್ಯಾಂಕ್ ಔಫರ್‌ಗಳು', myCropsTitle: 'ನೋಂದಾಯಿಸಿದ ಬೆಳೆಗಳು', buyersTitle: 'ಖರೀದಿದಾರರ ಸಂಪರ್ಕಗಳು', quickActionsTitle: 'ತ್ವರಿತ ಕ್ರಿಯೆಗಳು', expertTitle: 'ತಜ್ಞರನ್ನು ಸಂಪರ್ಕಿಸಿ', today: 'ಇಂದು', threeDays: '3 ದಿನಗಳು', oneWeek: '1 ವಾರ', tenDays: '10 ದಿನಗಳು', fifteenDays: '15 ದಿನಗಳು', readFull: 'ಪೂರ್ಣ ಲೇಖನ ಓದಿ', applyNow: 'ಇದೀಗ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ', viewDetails: 'ವಿವರಗಳನ್ನು ವೀಕ್ಷಿಸಿ', connect: 'ಸಂಪರ್ಕಿಸಿ', registerCrop: 'ಹೊಸ ಬೆಳೆ ನೋಂದಾಯಿಸಿ', all: 'ಎಲ್ಲಾ', myCrops: 'ನನ್ನ ಬೆಳೆಗಳು', government: 'ಸರ್ಕಾರ', technology: 'ತಂತ್ರಜ್ಞಾನ', market: 'ಮಾರುಕಟ್ಟೆ', weather: 'ಹವಾಮಾನ', noArticles: 'ಲೇಖನಗಳು ಕಂಡುಬಂದಿಲ್ಲ', loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ', listening: 'ಆಲಿಸುತ್ತಿದೆ...', tapToSpeak: 'ಮಾತನಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ', knowMore: 'ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ', setPrice: 'ಬೆಲೆ ನಿರ್ಧರಿಸಿ', contactForPrice: 'ಬೆಲೆಗಾಗಿ ಸಂಪರ್ಕಿಸಿ', pricePerQuintal: 'ಪ್ರತಿ ಕ್ವಿಂಟಾಲ್ ಬೆಲೆ', expectedOutput: 'ನಿರೀಕ್ಷಿತ ಉತ್ಪನ್ನ', harvestDate: 'ಕಟಾವಿನ ದಿನಾಂಕ', acres: 'ಎಕರೆ', statusGrowing: 'ಬೆಳೆಯುತ್ತಿದೆ', statusHarvest: 'ಕಟಾವಿಗೆ ಸಿದ್ಧ', buyerNew: 'ಹೊಸದು', buyerNegotiating: 'ಮಾತುಕತೆ ನಡೆಯುತ್ತಿದೆ', buyerConnected: 'ಸಂಪರ್ಕಿತವಾಗಿದೆ', cropType: 'ಬೆಳೆಯ ಪ್ರಕಾರ', farmLocation: 'farm ಸ್ಥಳ', area: 'ವಿಸ್ತೀರ್ಣ', expectedProduceDate: 'ನಿರೀಕ್ಷಿತ ಉತ್ಪನ್ನ ದಿನಾಂಕ', cancel: 'ರದ್ದುಮಾಡಿ', register: 'ನೋಂದಾಯಿಸಿ', edit: 'ಸಂಪಾದಿಸಿ', delete: 'ಅಳಿಸಿ', close: 'ಮುಚ್ಚಿ' },
+  mr: { weatherTitle: 'हवामान अंदाज', mandiTitle: 'लाइव मंडी भाव', newsTitle: 'शेती बातम्या', schemesTitle: 'सरकारी योजना', loansTitle: 'कर्ज & बँक ऑफर्स', myCropsTitle: 'माझी नोंदणीकृत पिके', buyersTitle: 'खरेदीदार संपर्क', quickActionsTitle: 'झटपट क्रिया', expertTitle: 'तज्ञांशी संपर्क साधा', today: 'आज', threeDays: '3 दिवस', oneWeek: '1 आठवडा', tenDays: '10 दिवस', fifteenDays: '15 दिवस', readFull: 'संपूर्ण लेख वाचा', applyNow: 'आता अर्ज करा', viewDetails: 'तपशील पहा', connect: 'संपर्क साधा', registerCrop: 'नवीन पीक नोंदणी करा', all: 'सर्व', myCrops: 'माझी पिके', government: 'सरकार', technology: 'तंत्रज्ञान', market: 'बाजार', weather: 'हवामान', noArticles: 'लेख सापडले नाहीत', loading: 'लोड होत आहे', listening: 'ऐकत आहे...', tapToSpeak: 'बोलण्यासाठी टॅप करा', knowMore: 'अधिक जाणून घ्या', setPrice: 'किंमत निश्चित करा', contactForPrice: 'किंमतीसाठी संपर्क साधा', pricePerQuintal: 'प्रति क्विंटल किंमत', expectedOutput: 'अपेक्षित उत्पादन', harvestDate: 'कापणीची तारीख', acres: 'एकरी', statusGrowing: 'वाढते आहे', statusHarvest: 'कापणीस तयार', buyerNew: 'नवीन', buyerNegotiating: 'चर्चा सुरू आहे', buyerConnected: 'जोडलेले', cropType: 'पिकाचा प्रकार', farmLocation: 'शेताचे ठिकाण', area: 'क्षेत्रफळ', expectedProduceDate: 'अपेक्षित उत्पादन तारीख', cancel: 'रद्द करा', register: 'नोंदणी करा', edit: 'संपादित करा', delete: 'हटवा', close: 'बंद करा' },
+  gu: { weatherTitle: 'વાતાવરણ અંદાજ', mandiTitle: 'લાઇવ મંડી ભાવ', newsTitle: 'કૃષિ સમાચાર', schemesTitle: 'સરકારી યોજનાઓ', loansTitle: 'લોન & બેંક ઓફર', myCropsTitle: 'મારી નોંધાયેલ પાક', buyersTitle: 'ખરીદદાર કનેક્શન્સ', quickActionsTitle: 'ઝડપી ક્રિયાઓ', expertTitle: 'તજ્ઞોનો સંપર્ક કરો', today: 'આજે', threeDays: '3 દિવસ', oneWeek: '1 અઠવાડિયું', tenDays: '10 દિવસ', fifteenDays: '15 દિવસ', readFull: 'સંપૂર્ણ લેખ વાંચો', applyNow: 'હવે અરજી કરો', viewDetails: 'વિગતો જુઓ', connect: 'કનેક્ટ કરો', registerCrop: 'નવો પાક નોંધાવો', all: 'બધા', myCrops: 'મારા પાક', government: 'સરકાર', technology: 'ટેકનોલોજી', market: 'બજાર', weather: 'વાતાવરણ', noArticles: 'કોઈ લેખ મળ્યો નથી', loading: 'લોડ થઈ રહ્યું છે', listening: 'સાંભળી રહ્યું છે...', tapToSpeak: 'બોલવા માટે ટેપ કરો', knowMore: 'વધુ જાણો', setPrice: 'કીમત નક્કી કરો', contactForPrice: 'કીમત માટે સંપર્ક કરો', pricePerQuintal: 'પ્રતિ ક્વિન્ટલ કીમત', expectedOutput: 'અપેક્ષિત ઉત્પાદન', harvestDate: 'કાપણીની તારીખ', acres: 'એકર', statusGrowing: 'વધી રહ્યું છે', statusHarvest: 'કાપણી માટે તૈયાર', buyerNew: 'નવું', buyerNegotiating: 'વાટાઘાટ ચાલી રહી છે', buyerConnected: 'કનેક્ટેડ', cropType: 'પાકનો પ્રકાર', farmLocation: 'ખેતરનું સ્થાન', area: 'વિસ્તાર', expectedProduceDate: 'અપેક્ષિત ઉત્પાદન તારીખ', cancel: 'રદ કરો', register: 'નોંધાવો', edit: 'સંપાદિત કરો', delete: 'કાઢી નાખો', close: 'બંધ કરો' },
+  bn: { weatherTitle: 'আবহাওয়ার পূর্বাভাস', mandiTitle: 'সরাসরি মণ্ডি দর', newsTitle: 'কৃষি সংবাদ', schemesTitle: 'সরকারি প্রকল্প', loansTitle: 'ঋণ & ব্যাঙ্ক অফার', myCropsTitle: 'আমার নিবন্ধিত ফসল', buyersTitle: 'ক্রেতা সংযোগ', quickActionsTitle: 'দ্রুত কর্ম', expertTitle: 'বিশেষজ্ঞদের সাথে যোগাযোগ করুন', today: 'আজ', threeDays: '3 দিন', oneWeek: '1 সপ্তাহ', tenDays: '10 দিন', fifteenDays: '15 দিন', readFull: 'সম্পূর্ণ নিবন্ধ পড়ুন', applyNow: 'এখন আবেদন করুন', viewDetails: 'বিশদ দেখুন', connect: 'সংযোগ করুন', registerCrop: 'নতুন ফসল নিবন্ধন করুন', all: 'সব', myCrops: 'আমার ফসল', government: 'সরকার', technology: 'প্রযুক্তি', market: 'বাজার', weather: 'আবহাওয়া', noArticles: 'কোনো নিবন্ধ পাওয়া যায়নি', loading: 'লোড হচ্ছে', listening: 'শুনছি...', tapToSpeak: 'বলতে ট্যাপ করুন', knowMore: 'আরও জানুন', setPrice: 'মূল্য নির্ধারণ করুন', contactForPrice: 'মূল্যের জন্য যোগাযোগ করুন', pricePerQuintal: 'প্রতি কুইন্টাল মূল্য', expectedOutput: 'প্রত্যাশিত ফলন', harvestDate: 'কাটার তারিখ', acres: 'একর', statusGrowing: 'বৃদ্ধি পাচ্ছে', statusHarvest: 'কাটার জন্য প্রস্তুত', buyerNew: 'নতুন', buyerNegotiating: 'আলোচনা চলছে', buyerConnected: 'সংযুক্ত', cropType: 'ফসলের প্রকার', farmLocation: 'খামারের অবস্থান', area: 'এলাকা', expectedProduceDate: 'প্রত্যাশিত উৎপাদনের তারিখ', cancel: 'বাতিল করুন', register: 'নিবন্ধন করুন', edit: 'সম্পাদনা করুন', delete: 'মুছুন', close: 'বন্ধ করুন' },
+  pa: { weatherTitle: 'ਮੌਸਮ ਦੀ ਭਵਿੱਖਬਾਣੀ', mandiTitle: 'ਲਾਈਵ ਮੰਡੀ ਰੇਟ', newsTitle: 'ਖੇਤੀਬਾੜੀ ਖ਼ਬਰਾਂ', schemesTitle: 'ਸਰਕਾਰੀ ਸਕੀਮਾਂ', loansTitle: 'ਕਰਜ਼ੇ & ਬੈਂਕ ਆਫ਼ਰ', myCropsTitle: 'ਮੇਰੀ ਰਜਿਸਟਰਡ ਫਸਲਾਂ', buyersTitle: 'ਖ਼ਰੀਦਦਾਰ ਕਨੈਕਸ਼ਨ', quickActionsTitle: 'ਤੁਰੰਤ ਐਕਸ਼ਨ', expertTitle: 'ਮਾਹਿਰਾਂ ਨਾਲ ਸੰਪਰਕ ਕਰੋ', today: 'ਅੱਜ', threeDays: '3 ਦਿਨ', oneWeek: '1 ਹਫ਼ਤਾ', tenDays: '10 ਦਿਨ', fifteenDays: '15 ਦਿਨ', readFull: 'ਪੂਰਾ ਲੇਖ ਪੜ੍ਹੋ', applyNow: 'ਹੁਣੇ ਅਪਲਾਈ ਕਰੋ', viewDetails: 'ਵੇਰਵੇ ਵੇਖੋ', connect: 'ਜੁੜੋ', registerCrop: 'ਨਵੀਂ ਫਸਲ ਰਜਿਸਟਰ ਕਰੋ', all: 'ਸਾਰੇ', myCrops: 'ਮੇਰੀਆਂ ਫਸਲਾਂ', government: 'ਸਰਕਾਰ', technology: 'ਟੈਕਨੋਲੋਜੀ', market: 'ਮੰਡੀ', weather: 'ਮੌਸਮ', noArticles: 'ਕੋਈ ਲੇਖ ਨਹੀਂ ਮਿਲਿਆ', loading: 'ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ', listening: 'ਸੁਣ ਰਿਹਾ ਹੈ...', tapToSpeak: 'ਬੋਲਣ ਲਈ ਟੈਪ ਕਰੋ', knowMore: 'ਹੋਰ ਜਾਣੋ', setPrice: 'ਕੀਮਤ ਨਿਰਧਾਰਤ ਕਰੋ', contactForPrice: 'ਕੀਮਤ ਲਈ ਸੰਪਰਕ ਕਰੋ', pricePerQuintal: 'ਪ੍ਰਤੀ ਕੁਇੰਟਲ ਕੀਮਤ', expectedOutput: 'ਅਨੁਮਾਨਿਤ ਪੈਦਾਵਾਰ', harvestDate: 'ਵਾਢੀ ਦੀ ਮਿਤੀ', acres: 'ਏਕੜ', statusGrowing: 'ਵਧ ਰਹੀ ਹੈ', statusHarvest: 'ਵਾਢੀ ਲਈ ਤਿਆਰ', buyerNew: 'ਨਵਾਂ', buyerNegotiating: 'ਗੱਲਬਾਤ ਚੱਲ ਰਹੀ ਹੈ', buyerConnected: 'ਜੁੜਿਆ ਹੋਇਆ', cropType: 'ਫਸਲ ਦੀ ਕਿਸਮ', farmLocation: 'ਖੇਤ ਦੀ ਥਾਂ', area: 'ਖੇਤਰ', expectedProduceDate: 'ਅਨੁਮਾਨਿਤ ਪੈਦਾਵਾਰ ਮਿਤੀ', cancel: 'ਰੱਦ ਕਰੋ', register: 'ਰਜਿਸਟਰ ਕਰੋ', edit: 'ਸੋਧੋ', delete: 'ਹਟਾਓ', close: 'ਬੰਦ ਕਰੋ' },
+  or: { weatherTitle: 'ପାଣିପାଗ ପୂର୍ବାଭାସ', mandiTitle: 'ଲାଇଭ୍ ମଣ୍ଡି ଦର', newsTitle: 'କୃଷି ସମାଚାର', schemesTitle: 'ସରକାରୀ ଯୋଜନା', loansTitle: 'ଋଣ & ବ୍ୟାଙ୍କ ଅଫର୍', myCropsTitle: 'ମୋର ପଞ୍ଜୀକୃତ ଫସଲ', buyersTitle: 'କ୍ରେତା ସଂଯୋଗ', quickActionsTitle: 'ଶୀଘ୍ର କାର୍ଯ୍ୟ', expertTitle: 'ବିଶେଷଜ୍ଞଙ୍କ ସହ ଯୋଗାଯୋଗ କରନ୍ତୁ', today: 'ଆଜି', threeDays: '3 ଦିନ', oneWeek: '1 ସପ୍ତାହ', tenDays: '10 ଦିନ', fifteenDays: '15 ଦିନ', readFull: 'ସମ୍ପୂର୍ଣ୍ଣ ପ୍ରବନ୍ଧ ପଢନ୍ତୁ', applyNow: 'ଏବେ ଆବେଦନ କରନ୍ତୁ', viewDetails: 'ବିବରଣୀ ଦେଖନ୍ତୁ', connect: 'ସଂଯୋଗ କରନ୍ତୁ', registerCrop: 'ନୂଆ ଫସଲ ପଞ୍ଜୀକରଣ କରନ୍ତୁ', all: 'ସମସ୍ତ', myCrops: 'ମୋର ଫସଲ', government: 'ସରକାର', technology: 'ପ୍ରଯୁକ୍ତିବିଦ୍ୟା', market: 'ବଜାର', weather: 'ପାଣିପାଗ', noArticles: 'କୌଣସି ପ୍ରବନ୍ଧ ମିଳିଲା ନାହିଁ', loading: 'ଲୋଡ୍ ହେଉଛି', listening: 'ଶୁଣୁଛି...', tapToSpeak: 'କହିବାକୁ ଟ୍ୟାପ୍ କରନ୍ତୁ', knowMore: 'ଅଧିକ ଜାଣନ୍ତୁ', setPrice: 'ମୂଲ୍ୟ ନିର୍ଧାରଣ କରନ୍ତୁ', contactForPrice: 'ମୂଲ୍ୟ ପାଇଁ ସମ୍ପର୍କ କରନ୍ତୁ', pricePerQuintal: 'ପ୍ରତି କ୍ବିଣ୍ଟାଲ୍ ମୂଲ୍ୟ', expectedOutput: 'ପ୍ରତ୍ୟାଶିତ ଫଳନ', harvestDate: 'କାଟଣୀ ତାରିଖ', acres: 'ଏକର', statusGrowing: 'ବଢ଼ୁଛି', statusHarvest: 'କାଟଣୀ ପାଇଁ ପ୍ରସ୍ତୁତ', buyerNew: 'ନୂଆ', buyerNegotiating: 'ଆଲୋଚନା ଚାଲିଛି', buyerConnected: 'ସଂଯୁକ୍ତ', cropType: 'ଫସଲ ପ୍ରକାର', farmLocation: 'ଫାର୍ମ ସ୍ଥାନ', area: 'କ୍ଷେତ୍ର', expectedProduceDate: 'ପ୍ରତ୍ୟାଶିତ ଉତ୍ପାଦନ ତାରିଖ', cancel: 'ବାତିଲ୍ କରନ୍ତୁ', register: 'ପଞ୍ଜୀକରଣ କରନ୍ତୁ', edit: 'ସମ୍ପାଦନା କରନ୍ତୁ', delete: 'ବିଲୋପ କରନ୍ତୁ', close: 'ବନ୍ଦ କରନ୍ତୁ' },
+  ml: { weatherTitle: 'കാലാവസ്ഥാ പ്രവചനം', mandiTitle: 'തത്സമയ മണ്ഡി വിലകൾ', newsTitle: 'കൃഷി വാർത്തകൾ', schemesTitle: 'സർക്കാർ പദ്ധതികൾ', loansTitle: 'വായ്പകൾ & ബാങ്ക് ഓഫറുകൾ', myCropsTitle: 'എന്റെ രജിസ്റ്റർ ചെയ്ത വിളകൾ', buyersTitle: 'വാങ്ങുന്നവരുടെ ബന്ധങ്ങൾ', quickActionsTitle: 'ദ്രുത പ്രവർത്തനങ്ങൾ', expertTitle: 'വിദഗ്ധരുമായി ബന്ധപ്പെടുക', today: 'ഇന്ന്', threeDays: '3 ദിവസം', oneWeek: '1 ആഴ്ച', tenDays: '10 ദിവസം', fifteenDays: '15 ദിവസം', readFull: 'പൂർണ്ണ ലേഖനം വായിക്കുക', applyNow: 'ഇപ്പോൾ അപേക്ഷിക്കുക', viewDetails: 'വിശദാംശങ്ങൾ കാണുക', connect: 'ബന്ധപ്പെടുക', registerCrop: 'പുതിയ വിള രജിസ്റ്റർ ചെയ്യുക', all: 'എല്ലാം', myCrops: 'എന്റെ വിളകൾ', government: 'സർക്കാർ', technology: 'സാങ്കേതികവിദ്യ', market: 'വിപണി', weather: 'കാലാവസ്ഥ', noArticles: 'ലേഖനങ്ങളൊന്നും കണ്ടെത്തിയില്ല', loading: 'ലോഡ് ചെയ്യുന്നു', listening: 'ശ്രദ്ധിക്കുന്നു...', tapToSpeak: 'സംസാരിക്കാൻ ടാപ്പ് ചെയ്യുക', knowMore: 'കൂടുതൽ അറിയുക', setPrice: 'വില നിശ്ചയിക്കുക', contactForPrice: 'വിലയ്ക്കായി ബന്ധപ്പെടുക', pricePerQuintal: 'ഓരോ ക്വിന്റലിനും വില', expectedOutput: 'പ്രതീക്ഷിക്കുന്ന വിളവ്', harvestDate: 'കൊയ്ത്ത് തീയതി', acres: 'ഏക്കർ', statusGrowing: 'വളരുന്നു', statusHarvest: 'കൊയ്ത്തിന് തയ്യാർ', buyerNew: 'പുതിയത്', buyerNegotiating: 'ചർച്ച നടക്കുന്നു', buyerConnected: 'ബന്ധിപ്പിച്ചു', cropType: 'വിളയുടെ തരം', farmLocation: 'വളപ്പിന്റെ സ്ഥലം', area: 'സ്ഥലം', expectedProduceDate: 'പ്രതീക്ഷിക്കുന്ന വിളവിന്റെ തീയതി', cancel: 'റദ്ദാക്കുക', register: 'രജിസ്റ്റർ ചെയ്യുക', edit: 'എഡിറ്റ് ചെയ്യുക', delete: 'നീക്കം ചെയ്യുക', close: 'അടയ്ക്കുക' },
+  as: { weatherTitle: 'বতৰ পূৰ্বাণী', mandiTitle: 'লাইভ মণ্ডী মূল্য', newsTitle: 'কৃষি সংবাদ', schemesTitle: 'চৰকাৰী আঁচনি', loansTitle: 'ঋণ & বেঙ্ক অফাৰ', myCropsTitle: 'মোৰ পঞ্জীয়ন কৃত শস্য', buyersTitle: 'ক্ৰেতা সংযোগ', quickActionsTitle: 'দ্রুত কাৰ্য্য', expertTitle: 'বিশেষজ্ঞৰ সৈতে সংযোগ কৰক', today: 'আজি', threeDays: '3 দিন', oneWeek: '1 সপ্তাহ', tenDays: '10 দিন', fifteenDays: '15 দিন', readFull: 'সম্পূৰ্ণ প্ৰবন্ধ পঢ়ক', applyNow: 'এতিয়া আবেদন কৰক', viewDetails: 'বিবৰণ চাওক', connect: 'সংযোগ কৰক', registerCrop: 'নতুন শস্য পঞ্জীয়ন কৰক', all: 'সকলো', myCrops: 'মোৰ শস্য', government: 'চৰকাৰ', technology: 'প্ৰযুক্তি', market: 'বজাৰ', weather: 'বতৰ', noArticles: 'কোনো প্ৰবন্ধ পোৱা নগ’ল', loading: 'লোড হৈ আছে', listening: 'শুনিছে...', tapToSpeak: 'ক’বলৈ টেপ কৰক', knowMore: 'আৰু জানক', setPrice: 'মূল্য নিৰ্ধাৰণ কৰক', contactForPrice: 'মূল্যৰ বাবে সংযোগ কৰক', pricePerQuintal: 'প্ৰতি কুইন্টাল মূল্য', expectedOutput: 'প্ৰত্যাশিত উৎপাদন', harvestDate: 'দায়া তাৰিখ', acres: 'একৰ', statusGrowing: 'বঢ়ি আছে', statusHarvest: 'দায়াৰ বাবে সাজু', buyerNew: 'নতুন', buyerNegotiating: 'আলোচনা চলি আছে', buyerConnected: 'সংযুক্ত', cropType: 'শস্যৰ প্ৰকাৰ', farmLocation: 'খেতিৰ স্থান', area: 'ক্ষেত্ৰ', expectedProduceDate: 'প্ৰত্যাশিত উৎপাদন তাৰিখ', cancel: 'বাতিল কৰক', register: 'পঞ্জীয়ন কৰক', edit: 'সম্পাদনা কৰক', delete: 'বিলোপ কৰক', close: 'বন্ধ কৰক' },
+};
 
 /* ------------------------------------------------------------------ */
 /*  Helper Functions                                                   */
@@ -459,6 +412,12 @@ export default function Dashboard() {
     setCrops(prev => prev.filter(c => c.id !== id));
   };
 
+  /* ---------------------------------------------------------------- */
+  /*  Translation helper                                               */
+  /* ---------------------------------------------------------------- */
+
+  const t = (key: string) => TRANSLATIONS[selectedLang]?.[key] || TRANSLATIONS['en'][key];
+
   return (
     <DashboardLayout>
       <div className="max-w-[1200px] mx-auto space-y-6 pb-6">
@@ -497,7 +456,7 @@ export default function Dashboard() {
                         transition={{ duration: 0.15 }}
                         className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-border-light z-50 p-3"
                       >
-                        <p className="text-xs text-text-muted mb-2 px-2">Select Language</p>
+                        <p className="text-xs text-text-muted mb-2 px-2">{t('all') === 'All' ? 'Select Language' : t('all') === 'सभी' ? 'भाषा चुनें' : 'Select Language'}</p>
                         <div className="grid grid-cols-3 gap-1.5">
                           {LANGUAGES.map((lang) => (
                             <button
@@ -557,9 +516,9 @@ export default function Dashboard() {
             <CardContent className="p-0">
               <div className="flex items-center gap-3 px-4 py-3 border-b border-border-light bg-amber-50/50">
                 <TrendingUp className="w-5 h-5 text-harvest-gold shrink-0" />
-                <h3 className="font-poppins font-semibold text-sm text-text-primary shrink-0">Live Mandi Prices</h3>
+                <h3 className="font-poppins font-semibold text-sm text-text-primary shrink-0">{t('mandiTitle')}</h3>
                 <div className="flex-1 overflow-hidden" ref={tickerRef}>
-                  <div className="flex gap-6 animate-scroll-x whitespace-nowrap">
+                  <div className="flex gap-6 animate-scroll-x whitespace-nowrap" style={{ animation: 'scroll-x 30s linear infinite' }}>
                     {[...MANDI_PRICES, ...MANDI_PRICES].map((item, idx) => (
                       <button
                         key={`${item.commodity}-${idx}`}
@@ -643,7 +602,7 @@ export default function Dashboard() {
                     <Cloud className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
-                    <h3 className="font-poppins font-semibold text-lg text-text-primary">Weather Forecast</h3>
+                    <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('weatherTitle')}</h3>
                     <p className="text-xs text-text-muted flex items-center gap-1">
                       <MapPin className="w-3 h-3" /> Guntur, Andhra Pradesh
                     </p>
@@ -651,17 +610,23 @@ export default function Dashboard() {
                 </div>
                 {/* Filter Pills */}
                 <div className="flex gap-1.5 flex-wrap">
-                  {['Today', '3 Days', '1 Week', '10 Days', '15 Days'].map((filter) => (
+                  {[
+                    { key: 'Today', tKey: 'today' },
+                    { key: '3 Days', tKey: 'threeDays' },
+                    { key: '1 Week', tKey: 'oneWeek' },
+                    { key: '10 Days', tKey: 'tenDays' },
+                    { key: '15 Days', tKey: 'fifteenDays' },
+                  ].map((filter) => (
                     <button
-                      key={filter}
-                      onClick={() => setWeatherFilter(filter)}
+                      key={filter.key}
+                      onClick={() => setWeatherFilter(filter.key)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                        weatherFilter === filter
+                        weatherFilter === filter.key
                           ? 'bg-krishiva-green text-white'
                           : 'bg-bg-primary text-text-secondary hover:bg-krishiva-green/10'
                       }`}
                     >
-                      {filter}
+                      {t(filter.tKey)}
                     </button>
                   ))}
                 </div>
@@ -727,7 +692,7 @@ export default function Dashboard() {
                           transition={{ delay: i * 0.04 }}
                           className="bg-bg-primary rounded-xl p-3 text-center"
                         >
-                          <p className="text-[10px] text-text-muted mb-1.5">{i === 0 ? 'Today' : formatDate(day.date)}</p>
+                          <p className="text-[10px] text-text-muted mb-1.5">{i === 0 ? t('today') : formatDate(day.date)}</p>
                           <Icon className="w-6 h-6 mx-auto mb-1.5 text-blue-500" />
                           <p className="font-semibold text-sm text-text-primary">{day.tempMax}&deg;</p>
                           <p className="text-xs text-text-muted">{day.tempMin}&deg;</p>
@@ -760,20 +725,27 @@ export default function Dashboard() {
                   <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
                     <Newspaper className="w-5 h-5 text-red-500" />
                   </div>
-                  <h3 className="font-poppins font-semibold text-lg text-text-primary">Agriculture News</h3>
+                  <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('newsTitle')}</h3>
                 </div>
                 <div className="flex gap-1.5 flex-wrap">
-                  {NEWS_CATEGORIES.map((cat) => (
+                  {[
+                    { key: 'All', tKey: 'all' },
+                    { key: 'My Crops', tKey: 'myCrops' },
+                    { key: 'Government', tKey: 'government' },
+                    { key: 'Technology', tKey: 'technology' },
+                    { key: 'Market', tKey: 'market' },
+                    { key: 'Weather', tKey: 'weather' },
+                  ].map((cat) => (
                     <button
-                      key={cat}
-                      onClick={() => setNewsCategory(cat)}
+                      key={cat.key}
+                      onClick={() => setNewsCategory(cat.key)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                        newsCategory === cat
+                        newsCategory === cat.key
                           ? 'bg-krishiva-green text-white'
                           : 'bg-bg-primary text-text-secondary hover:bg-krishiva-green/10'
                       }`}
                     >
-                      {cat}
+                      {t(cat.tKey)}
                     </button>
                   ))}
                 </div>
@@ -808,8 +780,11 @@ export default function Dashboard() {
                         </h4>
                         <p className="text-xs text-text-secondary line-clamp-2">{article.snippet}</p>
                       </div>
-                      <div className="shrink-0 flex items-center gap-1 text-krishiva-green text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span>Read Full Article</span>
+                      <div
+                        className="shrink-0 flex items-center gap-1 text-krishiva-green text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                        onClick={() => window.open(article.url, '_blank')}
+                      >
+                        <span>{t('readFull')}</span>
                         <ChevronRight className="w-3.5 h-3.5" />
                       </div>
                     </div>
@@ -831,7 +806,7 @@ export default function Dashboard() {
             <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
               <Landmark className="w-5 h-5 text-orange-500" />
             </div>
-            <h3 className="font-poppins font-semibold text-lg text-text-primary">Government Schemes</h3>
+            <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('schemesTitle')}</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {SCHEMES.map((scheme, i) => (
@@ -873,7 +848,7 @@ export default function Dashboard() {
             <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
               <CreditCard className="w-5 h-5 text-purple-500" />
             </div>
-            <h3 className="font-poppins font-semibold text-lg text-text-primary">Loans & Bank Offers</h3>
+            <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('loansTitle')}</h3>
           </div>
           <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
             {LOANS.map((loan, i) => (
@@ -897,20 +872,23 @@ export default function Dashboard() {
                     </div>
                     <div className="grid grid-cols-3 gap-3 mb-4">
                       <div className="text-center">
-                        <p className="text-[10px] text-text-muted">Amount</p>
+                        <p className="text-[10px] text-text-muted">{t('pricePerQuintal') === 'Price per Quintal' ? 'Amount' : t('pricePerQuintal')}</p>
                         <p className="text-xs font-semibold text-text-primary">{loan.amount}</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-[10px] text-text-muted">Interest</p>
+                        <p className="text-[10px] text-text-muted">{t('pricePerQuintal') === 'Price per Quintal' ? 'Interest' : t('pricePerQuintal')}</p>
                         <p className="text-xs font-semibold text-text-primary">{loan.interest}</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-[10px] text-text-muted">Tenure</p>
+                        <p className="text-[10px] text-text-muted">{t('pricePerQuintal') === 'Price per Quintal' ? 'Tenure' : t('pricePerQuintal')}</p>
                         <p className="text-xs font-semibold text-text-primary">{loan.tenure}</p>
                       </div>
                     </div>
-                    <Button className="w-full bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl h-10 text-sm">
-                      Apply Now
+                    <Button
+                      className="w-full bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl h-10 text-sm"
+                      onClick={() => window.open(`https://www.google.com/search?q=${encodeURIComponent(loan.type + ' application ' + loan.bank)}`, '_blank')}
+                    >
+                      {t('applyNow')}
                     </Button>
                   </CardContent>
                 </Card>
@@ -929,7 +907,7 @@ export default function Dashboard() {
             <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
               <Sprout className="w-5 h-5 text-green-500" />
             </div>
-            <h3 className="font-poppins font-semibold text-lg text-text-primary">My Registered Crops</h3>
+            <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('myCropsTitle')}</h3>
           </div>
           <div className="space-y-3">
             {crops.map((crop, i) => (
@@ -984,7 +962,7 @@ export default function Dashboard() {
               variant="outline"
               className="w-full border-dashed border-2 border-border-light hover:border-krishiva-green hover:text-krishiva-green hover:bg-krishiva-green/5 rounded-xl h-12 text-sm"
             >
-              <Plus className="w-4 h-4 mr-2" /> Register New Crop
+              <Plus className="w-4 h-4 mr-2" /> {t('registerCrop')}
             </Button>
           </div>
         </motion.div>
@@ -999,7 +977,7 @@ export default function Dashboard() {
             <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
               <Users className="w-5 h-5 text-blue-500" />
             </div>
-            <h3 className="font-poppins font-semibold text-lg text-text-primary">Buyer Connections</h3>
+            <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('buyersTitle')}</h3>
           </div>
           <div className="space-y-3">
             {BUYERS.map((buyer, i) => (
@@ -1029,8 +1007,15 @@ export default function Dashboard() {
                       <Button
                         size="sm"
                         className="bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl h-9 text-xs px-4"
+                        onClick={() => {
+                          const toastEl = document.createElement('div');
+                          toastEl.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-krishiva-green text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm font-medium';
+                          toastEl.textContent = `Connection request sent to ${buyer.name}!`;
+                          document.body.appendChild(toastEl);
+                          setTimeout(() => toastEl.remove(), 2000);
+                        }}
                       >
-                        Connect
+                        {t('connect')}
                       </Button>
                     </div>
                   </CardContent>
@@ -1050,7 +1035,7 @@ export default function Dashboard() {
             <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
               <Star className="w-5 h-5 text-gray-500" />
             </div>
-            <h3 className="font-poppins font-semibold text-lg text-text-primary">Quick Actions</h3>
+            <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('quickActionsTitle')}</h3>
           </div>
           <div className="grid grid-cols-4 gap-3">
             {QUICK_ACTIONS.map((action, i) => (
@@ -1122,20 +1107,27 @@ export default function Dashboard() {
                   <Mic className="w-10 h-10 text-krishiva-green" />
                   <span className="absolute inset-0 rounded-full bg-krishiva-green/20 animate-ping" />
                 </div>
-                <h3 className="font-poppins font-semibold text-lg text-text-primary mb-2">Listening...</h3>
-                <p className="text-sm text-text-secondary mb-4">Say something like &quot;Check cotton prices&quot; or &quot;Weather forecast&quot;</p>
+                <h3 className="font-poppins font-semibold text-lg text-text-primary mb-2">{t('listening')}</h3>
+                <p className="text-sm text-text-secondary mb-4">{t('tapToSpeak')}</p>
                 <Button
                   variant="outline"
                   className="rounded-xl border-error-red text-error-red hover:bg-error-red hover:text-white"
                   onClick={() => setVoiceListening(false)}
                 >
-                  <X className="w-4 h-4 mr-1.5" /> Cancel
+                  <X className="w-4 h-4 mr-1.5" /> {t('cancel')}
                 </Button>
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
 
+      {/* CSS keyframes for mandi ticker scroll */}
+      <style>{`
+        @keyframes scroll-x {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
       </div>
     </DashboardLayout>
   );
