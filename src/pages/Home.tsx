@@ -303,16 +303,20 @@ function AboutSection() {
             </ScrollReveal>
           </div>
 
-          {/* Right: Video placeholder */}
+          {/* Right: Video */}
           <ScrollReveal delay={0.3}>
             <div className="relative rounded-[20px] overflow-hidden border border-border-light shadow-[0_8px_32px_rgba(0,0,0,0.08)] bg-white">
-              <div className="aspect-video bg-gradient-to-br from-krishiva-green/10 to-leaf-green/10 flex items-center justify-center">
-                <button className="w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-105 transition-transform">
-                  <Play className="w-6 h-6 text-krishiva-green ml-1" />
-                </button>
-              </div>
-              <p className="text-center text-text-muted text-sm py-4">
-                See how KRISHIVA works in 90 seconds
+              <video
+                className="w-full aspect-video object-cover"
+                controls
+                poster="/hero-farmer.png"
+                preload="metadata"
+              >
+                <source src="/how-krishiva-works.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <p className="text-center text-text-muted text-sm py-3 font-medium">
+                See how KRISHIVA works
               </p>
             </div>
           </ScrollReveal>

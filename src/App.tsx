@@ -17,6 +17,8 @@ import Experts from './pages/Experts';
 import Wallet from './pages/Wallet';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
+import BuyerConnect from './pages/BuyerConnect';
+import MarketPrices from './pages/MarketPrices';
 
 export default function App() {
   return (
@@ -39,6 +41,8 @@ export default function App() {
         <Route path="/dashboard/wallet" element={<Wallet />} />
         <Route path="/dashboard/profile" element={<Profile />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/dashboard/buyer-connect" element={<BuyerConnect />} />
+        <Route path="/dashboard/market-prices" element={<MarketPrices />} />
       </Routes>
     </AuthProvider>
   );
