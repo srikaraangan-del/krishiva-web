@@ -34,6 +34,9 @@ import {
   Wallet,
   Briefcase,
   Landmark,
+  Building2,
+  FileText,
+  ShoppingCart,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -181,6 +184,7 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState('profile');
+  const [profileRole, setProfileRole] = useState<'farmer' | 'buyer'>('farmer');
   const [editProfile, setEditProfile] = useState(false);
   const [addFarmOpen, setAddFarmOpen] = useState(false);
   const [addMemberOpen, setAddMemberOpen] = useState(false);
@@ -303,7 +307,110 @@ export default function Profile() {
           </Card>
         </motion.div>
 
-        {/* ---- Tabs ---- */}
+        {/* ---- Profile Role Toggle ---- */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="bg-white border border-border-light rounded-2xl p-1.5 flex gap-1 w-fit mx-auto shadow-sm"
+        >
+          <button
+            onClick={() => setProfileRole('farmer')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all ${profileRole === 'farmer' ? 'bg-krishiva-green text-white shadow-md' : 'text-text-secondary hover:bg-gray-50'}`}
+          >
+            <Sprout className="w-4 h-4" /> Farmer Profile
+          </button>
+          <button
+            onClick={() => setProfileRole('buyer')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all ${profileRole === 'buyer' ? 'bg-[#3B82F6] text-white shadow-md' : 'text-text-secondary hover:bg-gray-50'}`}
+          >
+            <Briefcase className="w-4 h-4" /> Buyer Profile
+          </button>
+        </motion.div>
+
+        {/* ---- BUYER PROFILE VIEW ---- */}
+        {profileRole === 'buyer' && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className="space-y-6"
+          >
+            {/* Company Info Card */}
+            <Card className="bg-gradient-to-br from-[#3B82F6] to-[#60A5FA] text-white rounded-3xl p-6 shadow-md">
+              <div className="flex items-center gap-5">
+                <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-white text-2xl font-bold">AF</div>
+                <div>
+                  <h2 className="text-xl font-semibold font-poppins">Agro Foods Ltd</h2>
+                  <p className="text-white/80 text-sm flex items-center gap-1"><MapPin className="w-4 h-4" /> Hyderabad, Telangana</p>
+                  <div className="flex items-center gap-3 mt-2">
+                    <Badge className="bg-white/20 text-white border-white/30">Buyer</Badge>
+                    <span className="text-sm flex items-center gap-1"><Star className="w-4 h-4 text-harvest-gold fill-harvest-gold" /> 4.7 (67 reviews)</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Company Details */}
+            <Card className="bg-white rounded-3xl shadow-sm-mobile border border-border-light overflow-hidden">
+              <CardContent className="p-5 space-y-4">
+                <h3 className="font-semibold text-text-primary flex items-center gap-2"><Building2 className="w-5 h-5 text-[#3B82F6]" /> Company Details</h3>
+                {[{ label: 'GST Number', value: '36AABCU9603R1ZX', icon: FileText }, { label: 'Contact Person', value: 'Ramesh Kumar', icon: User }, { label: 'Phone', value: '+91 98765 43210', icon: Phone }, { label: 'Email', value: 'contact@agrofoods.in', icon: Mail }].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                    <item.icon className="w-5 h-5 text-text-muted" />
+                    <div>
+                      <p className="text-xs text-text-muted">{item.label}</p>
+                      <p className="text-sm font-medium text-text-primary">{item.value}</p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Crops Interested In */}
+            <Card className="bg-white rounded-3xl shadow-sm-mobile border border-border-light overflow-hidden">
+              <CardContent className="p-5">
+                <h3 className="font-semibold text-text-primary mb-4 flex items-center gap-2"><Sprout className="w-5 h-5 text-krishiva-green" /> Crops We Buy</h3>
+                <div className="flex flex-wrap gap-2">
+                  {['Cotton (50-100q)', 'Chili (20-50q)', 'Paddy (100-200q)', 'Turmeric (10-30q)', 'Onion (50-80q)'].map((crop, i) => (
+                    <Badge key={i} className="bg-krishiva-green/10 text-krishiva-green border-krishiva-green/20 px-3 py-1.5 rounded-full text-sm">{crop}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Purchase History */}
+            <Card className="bg-white rounded-3xl shadow-sm-mobile border border-border-light overflow-hidden">
+              <CardContent className="p-5">
+                <h3 className="font-semibold text-text-primary mb-4 flex items-center gap-2"><ShoppingCart className="w-5 h-5 text-harvest-gold" /> Purchase History</h3>
+                <div className="space-y-3">
+                  {[
+                    { crop: 'Cotton', qty: '80q', price: 'Rs 6,200/q', total: 'Rs 4,96,000', date: 'Jun 2025', farmer: 'Rajesh K.' },
+                    { crop: 'Chili', qty: '30q', price: 'Rs 12,500/q', total: 'Rs 3,75,000', date: 'May 2025', farmer: 'Sita D.' },
+                    { crop: 'Paddy', qty: '150q', price: 'Rs 2,000/q', total: 'Rs 3,00,000', date: 'Apr 2025', farmer: 'Mohan R.' }
+                  ].map((p, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-krishiva-green/10 flex items-center justify-center"><Sprout className="w-5 h-5 text-krishiva-green" /></div>
+                        <div>
+                          <p className="text-sm font-medium text-text-primary">{p.crop} <span className="text-text-muted">({p.qty})</span></p>
+                          <p className="text-xs text-text-muted">From {p.farmer} &bull; {p.date}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold text-krishiva-green">{p.total}</p>
+                        <p className="text-xs text-text-muted">{p.price}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
+        {/* ---- FARMER TABS ---- */}
+        {profileRole === 'farmer' && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -975,6 +1082,7 @@ export default function Profile() {
             </AnimatePresence>
           </Tabs>
         </motion.div>
+        )}
 
         {/* ---- Add Farm Dialog ---- */}
         <Dialog open={addFarmOpen} onOpenChange={setAddFarmOpen}>
