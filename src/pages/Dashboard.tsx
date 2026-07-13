@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -316,8 +317,8 @@ export default function Dashboard() {
   const [newsCategory, setNewsCategory] = useState('All');
 
   /* -- Language -- */
+  const { selectedLang, setLanguage } = useLanguage();
   const [langOpen, setLangOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState('te');
 
   /* -- Voice Search -- */
   const [voiceListening, setVoiceListening] = useState(false);
@@ -461,7 +462,7 @@ export default function Dashboard() {
                           {LANGUAGES.map((lang) => (
                             <button
                               key={lang.code}
-                              onClick={() => { setSelectedLang(lang.code); setLangOpen(false); }}
+                              onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
                               className={`flex items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium border transition-all ${
                                 selectedLang === lang.code
                                   ? 'border-krishiva-green bg-krishiva-green text-white'
