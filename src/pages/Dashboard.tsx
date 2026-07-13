@@ -11,6 +11,11 @@ import {
   CloudLightning,
   CloudSnow,
   CloudFog,
+  Eye,
+  Sunrise,
+  Sunset,
+  Gauge,
+  CloudDrizzle,
   TrendingUp,
   TrendingDown,
   Minus,
@@ -20,7 +25,7 @@ import {
   Newspaper,
   Landmark,
   CreditCard,
-  Tractor,
+
   Users,
   MessageSquare,
   GraduationCap,
@@ -61,6 +66,13 @@ interface WeatherDay {
   precipitation: number;
   windSpeed: number;
   weatherCode: number;
+  humidity: number;
+  uvIndex: number;
+  visibility: number;
+  sunrise: string;
+  sunset: string;
+  pressure: number;
+  dewPoint: number;
 }
 
 interface MandiPrice {
@@ -91,21 +103,15 @@ interface Scheme {
   bgColor: string;
 }
 
-interface LoanOffer {
-  type: string;
-  bank: string;
-  amount: string;
-  interest: string;
-  tenure: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
-
 interface Crop {
   id: number;
   name: string;
   acres: number;
   output: string;
   harvestDate: string;
+  expectedHarvestDate: string;
+  sowingDate: string;
+  avgHarvestQuantity: string;
   price: string;
   status: string;
 }
@@ -147,13 +153,13 @@ const WEATHER_CODES: Record<number, { label: string; icon: React.ComponentType<{
 };
 
 const FALLBACK_WEATHER: WeatherDay[] = [
-  { date: '2024-08-15', tempMax: 34, tempMin: 26, precipitation: 2.5, windSpeed: 12, weatherCode: 1 },
-  { date: '2024-08-16', tempMax: 33, tempMin: 25, precipitation: 5.0, windSpeed: 15, weatherCode: 61 },
-  { date: '2024-08-17', tempMax: 32, tempMin: 25, precipitation: 8.2, windSpeed: 18, weatherCode: 63 },
-  { date: '2024-08-18', tempMax: 31, tempMin: 24, precipitation: 12.0, windSpeed: 20, weatherCode: 80 },
-  { date: '2024-08-19', tempMax: 33, tempMin: 25, precipitation: 3.0, windSpeed: 10, weatherCode: 2 },
-  { date: '2024-08-20', tempMax: 35, tempMin: 27, precipitation: 0, windSpeed: 8, weatherCode: 0 },
-  { date: '2024-08-21', tempMax: 36, tempMin: 27, precipitation: 0, windSpeed: 10, weatherCode: 0 },
+  { date: '2024-08-15', tempMax: 34, tempMin: 26, precipitation: 2.5, windSpeed: 12, weatherCode: 1, humidity: 68, uvIndex: 7, visibility: 10, sunrise: '06:12', sunset: '18:48', pressure: 1010, dewPoint: 24 },
+  { date: '2024-08-16', tempMax: 33, tempMin: 25, precipitation: 5.0, windSpeed: 15, weatherCode: 61, humidity: 82, uvIndex: 3, visibility: 7, sunrise: '06:12', sunset: '18:47', pressure: 1008, dewPoint: 25 },
+  { date: '2024-08-17', tempMax: 32, tempMin: 25, precipitation: 8.2, windSpeed: 18, weatherCode: 63, humidity: 90, uvIndex: 2, visibility: 4, sunrise: '06:13', sunset: '18:46', pressure: 1005, dewPoint: 26 },
+  { date: '2024-08-18', tempMax: 31, tempMin: 24, precipitation: 12.0, windSpeed: 20, weatherCode: 80, humidity: 88, uvIndex: 2, visibility: 5, sunrise: '06:13', sunset: '18:46', pressure: 1006, dewPoint: 25 },
+  { date: '2024-08-19', tempMax: 33, tempMin: 25, precipitation: 3.0, windSpeed: 10, weatherCode: 2, humidity: 72, uvIndex: 6, visibility: 9, sunrise: '06:14', sunset: '18:45', pressure: 1011, dewPoint: 24 },
+  { date: '2024-08-20', tempMax: 35, tempMin: 27, precipitation: 0, windSpeed: 8, weatherCode: 0, humidity: 55, uvIndex: 9, visibility: 12, sunrise: '06:14', sunset: '18:44', pressure: 1014, dewPoint: 22 },
+  { date: '2024-08-21', tempMax: 36, tempMin: 27, precipitation: 0, windSpeed: 10, weatherCode: 0, humidity: 52, uvIndex: 9, visibility: 12, sunrise: '06:14', sunset: '18:44', pressure: 1015, dewPoint: 21 },
 ];
 
 const MANDI_PRICES: MandiPrice[] = [
@@ -187,17 +193,10 @@ const SCHEMES: Scheme[] = [
   { name: 'NMSA', description: 'National Mission for Sustainable Agriculture - soil & water conservation', url: '#', icon: Sprout, borderColor: 'border-emerald-400', bgColor: 'bg-emerald-50' },
 ];
 
-const LOANS: LoanOffer[] = [
-  { type: 'Kisan Credit Card', bank: 'SBI', amount: 'Up to Rs 3,00,000', interest: '7% p.a.', tenure: '1 Year', icon: CreditCard },
-  { type: 'Personal Loan', bank: 'HDFC Bank', amount: 'Up to Rs 5,00,000', interest: '10.5% p.a.', tenure: '3 Years', icon: IndianRupee },
-  { type: 'Equipment Loan', bank: 'Bank of Baroda', amount: 'Up to Rs 10,00,000', interest: '8.5% p.a.', tenure: '5 Years', icon: Tractor },
-  { type: 'Tractor Finance', bank: 'ICICI Bank', amount: 'Up to Rs 15,00,000', interest: '9% p.a.', tenure: '7 Years', icon: Tractor },
-];
-
 const MY_CROPS: Crop[] = [
-  { id: 1, name: 'Cotton', acres: 8, output: '40 q', harvestDate: 'Aug 15', price: 'Rs 6,400/q', status: 'Growing' },
-  { id: 2, name: 'Chili', acres: 5, output: '25 q', harvestDate: 'Jul 30', price: 'Contact', status: 'Harvesting' },
-  { id: 3, name: 'Paddy', acres: 6, output: '50 q', harvestDate: 'Sep 10', price: 'Rs 2,050/q', status: 'Sowing' },
+  { id: 1, name: 'Cotton', acres: 8, output: '40 q', harvestDate: 'Aug 15', expectedHarvestDate: 'Oct 10-20', sowingDate: 'Jun 1', avgHarvestQuantity: '5 q/acre', price: 'Rs 6,400/q', status: 'Growing' },
+  { id: 2, name: 'Chili', acres: 5, output: '25 q', harvestDate: 'Jul 30', expectedHarvestDate: 'Aug 20-30', sowingDate: 'Feb 15', avgHarvestQuantity: '5 q/acre', price: 'Contact', status: 'Harvesting' },
+  { id: 3, name: 'Paddy', acres: 6, output: '50 q', harvestDate: 'Sep 10', expectedHarvestDate: 'Nov 15-25', sowingDate: 'Jul 1', avgHarvestQuantity: '8.3 q/acre', price: 'Rs 2,050/q', status: 'Sowing' },
 ];
 
 const BUYERS: BuyerRequest[] = [
@@ -258,18 +257,18 @@ const LANGUAGES = [
 /* ------------------------------------------------------------------ */
 
 const TRANSLATIONS: Record<string, Record<string, string>> = {
-  en: { weatherTitle: 'Weather Forecast', mandiTitle: 'Live Mandi Prices', newsTitle: 'Agriculture News', schemesTitle: 'Government Schemes', loansTitle: 'Loans & Bank Offers', myCropsTitle: 'My Registered Crops', buyersTitle: 'Buyer Connections', quickActionsTitle: 'Quick Actions', expertTitle: 'Connect with Experts', today: 'Today', threeDays: '3 Days', oneWeek: '1 Week', tenDays: '10 Days', fifteenDays: '15 Days', readFull: 'Read Full Article', applyNow: 'Apply Now', viewDetails: 'View Details', connect: 'Connect', registerCrop: 'Register New Crop', all: 'All', myCrops: 'My Crops', government: 'Government', technology: 'Technology', market: 'Market', weather: 'Weather', noArticles: 'No articles found', loading: 'Loading', listening: 'Listening...', tapToSpeak: 'Tap to speak', knowMore: 'Know More', setPrice: 'Set Price', contactForPrice: 'Contact for Price', pricePerQuintal: 'Price per Quintal', expectedOutput: 'Expected Output', harvestDate: 'Harvest Date', acres: 'Acres', statusGrowing: 'Growing', statusHarvest: 'Harvest Ready', buyerNew: 'New', buyerNegotiating: 'Negotiating', buyerConnected: 'Connected', cropType: 'Crop Type', farmLocation: 'Farm Location', area: 'Area', expectedProduceDate: 'Expected Produce Date', cancel: 'Cancel', register: 'Register', edit: 'Edit', delete: 'Delete', close: 'Close' },
-  hi: { weatherTitle: 'मौसम पूर्वानुमान', mandiTitle: 'लाइव मंडी भाव', newsTitle: 'कृषि समाचार', schemesTitle: 'सरकारी योजनाएं', loansTitle: 'ऋण और बैंक ऑफर', myCropsTitle: 'मेरी पंजीकृत फसलें', buyersTitle: 'खरीदार संपर्क', quickActionsTitle: 'त्वरित कार्रवाई', expertTitle: 'विशेषज्ञों से संपर्क करें', today: 'आज', threeDays: '3 दिन', oneWeek: '1 सप्ताह', tenDays: '10 दिन', fifteenDays: '15 दिन', readFull: 'पूरा लेख पढ़ें', applyNow: 'अभी आवेदन करें', viewDetails: 'विवरण देखें', connect: 'संपर्क करें', registerCrop: 'नई फसल पंजीकृत करें', all: 'सभी', myCrops: 'मेरी फसलें', government: 'सरकार', technology: 'प्रौद्योगिकी', market: 'बाजार', weather: 'मौसम', noArticles: 'कोई लेख नहीं मिला', loading: 'लोड हो रहा है', listening: 'सुन रहा है...', tapToSpeak: 'बोलने के लिए टैप करें', knowMore: 'और जानें', setPrice: 'मूल्य निर्धारित करें', contactForPrice: 'मूल्य के लिए संपर्क करें', pricePerQuintal: 'प्रति क्विंटल मूल्य', expectedOutput: 'अपेक्षित उपज', harvestDate: 'कटाई की तारीख', acres: 'एकड़', statusGrowing: 'बढ़ रही है', statusHarvest: 'कटाई के लिए तैयार', buyerNew: 'नया', buyerNegotiating: 'बातचीत चल रही है', buyerConnected: 'जुड़ा हुआ', cropType: 'फसल का प्रकार', farmLocation: 'खेत का स्थान', area: 'क्षेत्र', expectedProduceDate: 'अपेक्षित उत्पादन तिथि', cancel: 'रद्द करें', register: 'पंजीकृत करें', edit: 'संपादित करें', delete: 'हटाएं', close: 'बंद करें' },
-  te: { weatherTitle: 'వాతావరణ అంచనా', mandiTitle: 'ప్రత్యక్ష మార్కెట్ ధరలు', newsTitle: 'వ్యవసాయ వార్తలు', schemesTitle: 'ప్రభుత్వ పథకాలు', loansTitle: 'ఋణాలు & బ్యాంక్ ఆఫర్లు', myCropsTitle: 'నా నమోదిత పంటలు', buyersTitle: 'కొనుగోలుదారు కనెక్షన్లు', quickActionsTitle: 'త్వరిత చర్యలు', expertTitle: 'నిపుణులను సంప్రదించండి', today: 'ఈరోజు', threeDays: '3 రోజులు', oneWeek: '1 వారం', tenDays: '10 రోజులు', fifteenDays: '15 రోజులు', readFull: 'పూర్తి వ్యాసం చదవండి', applyNow: 'ఇప్పుడే దరఖాస్తు చేయండి', viewDetails: 'వివరాలు చూడండి', connect: 'కనెక్ట్ చేయండి', registerCrop: 'కొత్త పంటను నమోదు చేయండి', all: 'అన్నీ', myCrops: 'నా పంటలు', government: 'ప్రభుత్వం', technology: 'సాంకేతికత', market: 'మార్కెట్', weather: 'వాతావరణం', noArticles: 'వ్యాసాలు లేవు', loading: 'లోడ్ అవుతోంది', listening: 'వింటున్నాం...', tapToSpeak: 'మాట్లాడటానికి ట్యాప్ చేయండి', knowMore: 'మరింత తెలుసుకోండి', setPrice: 'ధర నిర్ణయించండి', contactForPrice: 'ధర కోసం సంప్రదించండి', pricePerQuintal: 'క్వింటాల్‌కు ధర', expectedOutput: 'అంచనా దిగుబడి', harvestDate: 'కోత తేదీ', acres: 'ఎకరాలు', statusGrowing: 'పెరుగుతోంది', statusHarvest: 'కోతకు సిద్ధం', buyerNew: 'కొత్తది', buyerNegotiating: 'చర్చలు జరుగుతున్నాయి', buyerConnected: 'కనెక్ట్ అయ్యింది', cropType: 'పంట రకం', farmLocation: 'పొలం స్థానం', area: 'ప్రాంతం', expectedProduceDate: 'అంచనా దిగుబడి తేదీ', cancel: 'రద్దు చేయండి', register: 'నమోదు చేయండి', edit: 'సవరించండి', delete: 'తొలగించండి', close: 'మూసివేయండి' },
-  ta: { weatherTitle: 'வானிலை முன்னறிவிப்பு', mandiTitle: 'நேரடி மண்டி விலைகள்', newsTitle: 'விவசாய செய்திகள்', schemesTitle: 'அரசு திட்டங்கள்', loansTitle: 'கடன் & வங்கி சலுகைகள்', myCropsTitle: 'எனது பதிவு செய்யப்பட்ட பயிர்கள்', buyersTitle: 'வாங்குநர் இணைப்புகள்', quickActionsTitle: 'விரைவு செயல்கள்', expertTitle: 'நிபுணர்களை அணுகவும்', today: 'இன்று', threeDays: '3 நாட்கள்', oneWeek: '1 வாரம்', tenDays: '10 நாட்கள்', fifteenDays: '15 நாட்கள்', readFull: 'முழு கட்டுரையைப் படிக்கவும்', applyNow: 'இப்போது விண்ணப்பிக்கவும்', viewDetails: 'விவரங்களைக் காண்க', connect: 'இணைக்கவும்', registerCrop: 'புதிய பயிரைப் பதிவு செய்யவும்', all: 'அனைத்தும்', myCrops: 'எனது பயிர்கள்', government: 'அரசு', technology: 'தொழில்நுட்பம்', market: 'சந்தை', weather: 'வானிலை', noArticles: 'கட்டுரைகள் எதுவும் இல்லை', loading: 'ஏற்றுகிறது', listening: 'கேட்கிறது...', tapToSpeak: 'பேச தட்டவும்', knowMore: 'மேலும் அறிய', setPrice: 'விலை நிர்ணயிக்கவும்', contactForPrice: 'விலைக்கு தொடர்பு கொள்ளவும்', pricePerQuintal: 'குவின்டாலுக்கு விலை', expectedOutput: 'எதிர்பார்க்கப்படும் விளைச்சல்', harvestDate: 'அறுவடை தேதி', acres: 'ஏக்கர்', statusGrowing: 'வளர்கிறது', statusHarvest: 'அறுவடைக்கு தயார்', buyerNew: 'புதியது', buyerNegotiating: 'பேச்சுவார்த்தை நடந்து வருகிறது', buyerConnected: 'இணைக்கப்பட்டது', cropType: 'பயிரின் வகை', farmLocation: 'பண்ணை இடம்', area: 'பகுதி', expectedProduceDate: 'எதிர்பார்க்கப்படும் விளைச்சல் தேதி', cancel: 'ரத்து செய்யவும்', register: 'பதிவு செய்யவும்', edit: 'திருத்தவும்', delete: 'நீக்கவும்', close: 'மூடு' },
-  kn: { weatherTitle: 'ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ', mandiTitle: 'ಲೈವ್ ಮಂಡಿ ಬೆಲೆಗಳು', newsTitle: 'ಕೃಷಿ ಸುದ್ದಿಗಳು', schemesTitle: 'ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು', loansTitle: 'ಸಾಲಗಳು & ಬ್ಯಾಂಕ್ ಔಫರ್‌ಗಳು', myCropsTitle: 'ನೋಂದಾಯಿಸಿದ ಬೆಳೆಗಳು', buyersTitle: 'ಖರೀದಿದಾರರ ಸಂಪರ್ಕಗಳು', quickActionsTitle: 'ತ್ವರಿತ ಕ್ರಿಯೆಗಳು', expertTitle: 'ತಜ್ಞರನ್ನು ಸಂಪರ್ಕಿಸಿ', today: 'ಇಂದು', threeDays: '3 ದಿನಗಳು', oneWeek: '1 ವಾರ', tenDays: '10 ದಿನಗಳು', fifteenDays: '15 ದಿನಗಳು', readFull: 'ಪೂರ್ಣ ಲೇಖನ ಓದಿ', applyNow: 'ಇದೀಗ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ', viewDetails: 'ವಿವರಗಳನ್ನು ವೀಕ್ಷಿಸಿ', connect: 'ಸಂಪರ್ಕಿಸಿ', registerCrop: 'ಹೊಸ ಬೆಳೆ ನೋಂದಾಯಿಸಿ', all: 'ಎಲ್ಲಾ', myCrops: 'ನನ್ನ ಬೆಳೆಗಳು', government: 'ಸರ್ಕಾರ', technology: 'ತಂತ್ರಜ್ಞಾನ', market: 'ಮಾರುಕಟ್ಟೆ', weather: 'ಹವಾಮಾನ', noArticles: 'ಲೇಖನಗಳು ಕಂಡುಬಂದಿಲ್ಲ', loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ', listening: 'ಆಲಿಸುತ್ತಿದೆ...', tapToSpeak: 'ಮಾತನಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ', knowMore: 'ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ', setPrice: 'ಬೆಲೆ ನಿರ್ಧರಿಸಿ', contactForPrice: 'ಬೆಲೆಗಾಗಿ ಸಂಪರ್ಕಿಸಿ', pricePerQuintal: 'ಪ್ರತಿ ಕ್ವಿಂಟಾಲ್ ಬೆಲೆ', expectedOutput: 'ನಿರೀಕ್ಷಿತ ಉತ್ಪನ್ನ', harvestDate: 'ಕಟಾವಿನ ದಿನಾಂಕ', acres: 'ಎಕರೆ', statusGrowing: 'ಬೆಳೆಯುತ್ತಿದೆ', statusHarvest: 'ಕಟಾವಿಗೆ ಸಿದ್ಧ', buyerNew: 'ಹೊಸದು', buyerNegotiating: 'ಮಾತುಕತೆ ನಡೆಯುತ್ತಿದೆ', buyerConnected: 'ಸಂಪರ್ಕಿತವಾಗಿದೆ', cropType: 'ಬೆಳೆಯ ಪ್ರಕಾರ', farmLocation: 'farm ಸ್ಥಳ', area: 'ವಿಸ್ತೀರ್ಣ', expectedProduceDate: 'ನಿರೀಕ್ಷಿತ ಉತ್ಪನ್ನ ದಿನಾಂಕ', cancel: 'ರದ್ದುಮಾಡಿ', register: 'ನೋಂದಾಯಿಸಿ', edit: 'ಸಂಪಾದಿಸಿ', delete: 'ಅಳಿಸಿ', close: 'ಮುಚ್ಚಿ' },
-  mr: { weatherTitle: 'हवामान अंदाज', mandiTitle: 'लाइव मंडी भाव', newsTitle: 'शेती बातम्या', schemesTitle: 'सरकारी योजना', loansTitle: 'कर्ज & बँक ऑफर्स', myCropsTitle: 'माझी नोंदणीकृत पिके', buyersTitle: 'खरेदीदार संपर्क', quickActionsTitle: 'झटपट क्रिया', expertTitle: 'तज्ञांशी संपर्क साधा', today: 'आज', threeDays: '3 दिवस', oneWeek: '1 आठवडा', tenDays: '10 दिवस', fifteenDays: '15 दिवस', readFull: 'संपूर्ण लेख वाचा', applyNow: 'आता अर्ज करा', viewDetails: 'तपशील पहा', connect: 'संपर्क साधा', registerCrop: 'नवीन पीक नोंदणी करा', all: 'सर्व', myCrops: 'माझी पिके', government: 'सरकार', technology: 'तंत्रज्ञान', market: 'बाजार', weather: 'हवामान', noArticles: 'लेख सापडले नाहीत', loading: 'लोड होत आहे', listening: 'ऐकत आहे...', tapToSpeak: 'बोलण्यासाठी टॅप करा', knowMore: 'अधिक जाणून घ्या', setPrice: 'किंमत निश्चित करा', contactForPrice: 'किंमतीसाठी संपर्क साधा', pricePerQuintal: 'प्रति क्विंटल किंमत', expectedOutput: 'अपेक्षित उत्पादन', harvestDate: 'कापणीची तारीख', acres: 'एकरी', statusGrowing: 'वाढते आहे', statusHarvest: 'कापणीस तयार', buyerNew: 'नवीन', buyerNegotiating: 'चर्चा सुरू आहे', buyerConnected: 'जोडलेले', cropType: 'पिकाचा प्रकार', farmLocation: 'शेताचे ठिकाण', area: 'क्षेत्रफळ', expectedProduceDate: 'अपेक्षित उत्पादन तारीख', cancel: 'रद्द करा', register: 'नोंदणी करा', edit: 'संपादित करा', delete: 'हटवा', close: 'बंद करा' },
-  gu: { weatherTitle: 'વાતાવરણ અંદાજ', mandiTitle: 'લાઇવ મંડી ભાવ', newsTitle: 'કૃષિ સમાચાર', schemesTitle: 'સરકારી યોજનાઓ', loansTitle: 'લોન & બેંક ઓફર', myCropsTitle: 'મારી નોંધાયેલ પાક', buyersTitle: 'ખરીદદાર કનેક્શન્સ', quickActionsTitle: 'ઝડપી ક્રિયાઓ', expertTitle: 'તજ્ઞોનો સંપર્ક કરો', today: 'આજે', threeDays: '3 દિવસ', oneWeek: '1 અઠવાડિયું', tenDays: '10 દિવસ', fifteenDays: '15 દિવસ', readFull: 'સંપૂર્ણ લેખ વાંચો', applyNow: 'હવે અરજી કરો', viewDetails: 'વિગતો જુઓ', connect: 'કનેક્ટ કરો', registerCrop: 'નવો પાક નોંધાવો', all: 'બધા', myCrops: 'મારા પાક', government: 'સરકાર', technology: 'ટેકનોલોજી', market: 'બજાર', weather: 'વાતાવરણ', noArticles: 'કોઈ લેખ મળ્યો નથી', loading: 'લોડ થઈ રહ્યું છે', listening: 'સાંભળી રહ્યું છે...', tapToSpeak: 'બોલવા માટે ટેપ કરો', knowMore: 'વધુ જાણો', setPrice: 'કીમત નક્કી કરો', contactForPrice: 'કીમત માટે સંપર્ક કરો', pricePerQuintal: 'પ્રતિ ક્વિન્ટલ કીમત', expectedOutput: 'અપેક્ષિત ઉત્પાદન', harvestDate: 'કાપણીની તારીખ', acres: 'એકર', statusGrowing: 'વધી રહ્યું છે', statusHarvest: 'કાપણી માટે તૈયાર', buyerNew: 'નવું', buyerNegotiating: 'વાટાઘાટ ચાલી રહી છે', buyerConnected: 'કનેક્ટેડ', cropType: 'પાકનો પ્રકાર', farmLocation: 'ખેતરનું સ્થાન', area: 'વિસ્તાર', expectedProduceDate: 'અપેક્ષિત ઉત્પાદન તારીખ', cancel: 'રદ કરો', register: 'નોંધાવો', edit: 'સંપાદિત કરો', delete: 'કાઢી નાખો', close: 'બંધ કરો' },
-  bn: { weatherTitle: 'আবহাওয়ার পূর্বাভাস', mandiTitle: 'সরাসরি মণ্ডি দর', newsTitle: 'কৃষি সংবাদ', schemesTitle: 'সরকারি প্রকল্প', loansTitle: 'ঋণ & ব্যাঙ্ক অফার', myCropsTitle: 'আমার নিবন্ধিত ফসল', buyersTitle: 'ক্রেতা সংযোগ', quickActionsTitle: 'দ্রুত কর্ম', expertTitle: 'বিশেষজ্ঞদের সাথে যোগাযোগ করুন', today: 'আজ', threeDays: '3 দিন', oneWeek: '1 সপ্তাহ', tenDays: '10 দিন', fifteenDays: '15 দিন', readFull: 'সম্পূর্ণ নিবন্ধ পড়ুন', applyNow: 'এখন আবেদন করুন', viewDetails: 'বিশদ দেখুন', connect: 'সংযোগ করুন', registerCrop: 'নতুন ফসল নিবন্ধন করুন', all: 'সব', myCrops: 'আমার ফসল', government: 'সরকার', technology: 'প্রযুক্তি', market: 'বাজার', weather: 'আবহাওয়া', noArticles: 'কোনো নিবন্ধ পাওয়া যায়নি', loading: 'লোড হচ্ছে', listening: 'শুনছি...', tapToSpeak: 'বলতে ট্যাপ করুন', knowMore: 'আরও জানুন', setPrice: 'মূল্য নির্ধারণ করুন', contactForPrice: 'মূল্যের জন্য যোগাযোগ করুন', pricePerQuintal: 'প্রতি কুইন্টাল মূল্য', expectedOutput: 'প্রত্যাশিত ফলন', harvestDate: 'কাটার তারিখ', acres: 'একর', statusGrowing: 'বৃদ্ধি পাচ্ছে', statusHarvest: 'কাটার জন্য প্রস্তুত', buyerNew: 'নতুন', buyerNegotiating: 'আলোচনা চলছে', buyerConnected: 'সংযুক্ত', cropType: 'ফসলের প্রকার', farmLocation: 'খামারের অবস্থান', area: 'এলাকা', expectedProduceDate: 'প্রত্যাশিত উৎপাদনের তারিখ', cancel: 'বাতিল করুন', register: 'নিবন্ধন করুন', edit: 'সম্পাদনা করুন', delete: 'মুছুন', close: 'বন্ধ করুন' },
-  pa: { weatherTitle: 'ਮੌਸਮ ਦੀ ਭਵਿੱਖਬਾਣੀ', mandiTitle: 'ਲਾਈਵ ਮੰਡੀ ਰੇਟ', newsTitle: 'ਖੇਤੀਬਾੜੀ ਖ਼ਬਰਾਂ', schemesTitle: 'ਸਰਕਾਰੀ ਸਕੀਮਾਂ', loansTitle: 'ਕਰਜ਼ੇ & ਬੈਂਕ ਆਫ਼ਰ', myCropsTitle: 'ਮੇਰੀ ਰਜਿਸਟਰਡ ਫਸਲਾਂ', buyersTitle: 'ਖ਼ਰੀਦਦਾਰ ਕਨੈਕਸ਼ਨ', quickActionsTitle: 'ਤੁਰੰਤ ਐਕਸ਼ਨ', expertTitle: 'ਮਾਹਿਰਾਂ ਨਾਲ ਸੰਪਰਕ ਕਰੋ', today: 'ਅੱਜ', threeDays: '3 ਦਿਨ', oneWeek: '1 ਹਫ਼ਤਾ', tenDays: '10 ਦਿਨ', fifteenDays: '15 ਦਿਨ', readFull: 'ਪੂਰਾ ਲੇਖ ਪੜ੍ਹੋ', applyNow: 'ਹੁਣੇ ਅਪਲਾਈ ਕਰੋ', viewDetails: 'ਵੇਰਵੇ ਵੇਖੋ', connect: 'ਜੁੜੋ', registerCrop: 'ਨਵੀਂ ਫਸਲ ਰਜਿਸਟਰ ਕਰੋ', all: 'ਸਾਰੇ', myCrops: 'ਮੇਰੀਆਂ ਫਸਲਾਂ', government: 'ਸਰਕਾਰ', technology: 'ਟੈਕਨੋਲੋਜੀ', market: 'ਮੰਡੀ', weather: 'ਮੌਸਮ', noArticles: 'ਕੋਈ ਲੇਖ ਨਹੀਂ ਮਿਲਿਆ', loading: 'ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ', listening: 'ਸੁਣ ਰਿਹਾ ਹੈ...', tapToSpeak: 'ਬੋਲਣ ਲਈ ਟੈਪ ਕਰੋ', knowMore: 'ਹੋਰ ਜਾਣੋ', setPrice: 'ਕੀਮਤ ਨਿਰਧਾਰਤ ਕਰੋ', contactForPrice: 'ਕੀਮਤ ਲਈ ਸੰਪਰਕ ਕਰੋ', pricePerQuintal: 'ਪ੍ਰਤੀ ਕੁਇੰਟਲ ਕੀਮਤ', expectedOutput: 'ਅਨੁਮਾਨਿਤ ਪੈਦਾਵਾਰ', harvestDate: 'ਵਾਢੀ ਦੀ ਮਿਤੀ', acres: 'ਏਕੜ', statusGrowing: 'ਵਧ ਰਹੀ ਹੈ', statusHarvest: 'ਵਾਢੀ ਲਈ ਤਿਆਰ', buyerNew: 'ਨਵਾਂ', buyerNegotiating: 'ਗੱਲਬਾਤ ਚੱਲ ਰਹੀ ਹੈ', buyerConnected: 'ਜੁੜਿਆ ਹੋਇਆ', cropType: 'ਫਸਲ ਦੀ ਕਿਸਮ', farmLocation: 'ਖੇਤ ਦੀ ਥਾਂ', area: 'ਖੇਤਰ', expectedProduceDate: 'ਅਨੁਮਾਨਿਤ ਪੈਦਾਵਾਰ ਮਿਤੀ', cancel: 'ਰੱਦ ਕਰੋ', register: 'ਰਜਿਸਟਰ ਕਰੋ', edit: 'ਸੋਧੋ', delete: 'ਹਟਾਓ', close: 'ਬੰਦ ਕਰੋ' },
-  or: { weatherTitle: 'ପାଣିପାଗ ପୂର୍ବାଭାସ', mandiTitle: 'ଲାଇଭ୍ ମଣ୍ଡି ଦର', newsTitle: 'କୃଷି ସମାଚାର', schemesTitle: 'ସରକାରୀ ଯୋଜନା', loansTitle: 'ଋଣ & ବ୍ୟାଙ୍କ ଅଫର୍', myCropsTitle: 'ମୋର ପଞ୍ଜୀକୃତ ଫସଲ', buyersTitle: 'କ୍ରେତା ସଂଯୋଗ', quickActionsTitle: 'ଶୀଘ୍ର କାର୍ଯ୍ୟ', expertTitle: 'ବିଶେଷଜ୍ଞଙ୍କ ସହ ଯୋଗାଯୋଗ କରନ୍ତୁ', today: 'ଆଜି', threeDays: '3 ଦିନ', oneWeek: '1 ସପ୍ତାହ', tenDays: '10 ଦିନ', fifteenDays: '15 ଦିନ', readFull: 'ସମ୍ପୂର୍ଣ୍ଣ ପ୍ରବନ୍ଧ ପଢନ୍ତୁ', applyNow: 'ଏବେ ଆବେଦନ କରନ୍ତୁ', viewDetails: 'ବିବରଣୀ ଦେଖନ୍ତୁ', connect: 'ସଂଯୋଗ କରନ୍ତୁ', registerCrop: 'ନୂଆ ଫସଲ ପଞ୍ଜୀକରଣ କରନ୍ତୁ', all: 'ସମସ୍ତ', myCrops: 'ମୋର ଫସଲ', government: 'ସରକାର', technology: 'ପ୍ରଯୁକ୍ତିବିଦ୍ୟା', market: 'ବଜାର', weather: 'ପାଣିପାଗ', noArticles: 'କୌଣସି ପ୍ରବନ୍ଧ ମିଳିଲା ନାହିଁ', loading: 'ଲୋଡ୍ ହେଉଛି', listening: 'ଶୁଣୁଛି...', tapToSpeak: 'କହିବାକୁ ଟ୍ୟାପ୍ କରନ୍ତୁ', knowMore: 'ଅଧିକ ଜାଣନ୍ତୁ', setPrice: 'ମୂଲ୍ୟ ନିର୍ଧାରଣ କରନ୍ତୁ', contactForPrice: 'ମୂଲ୍ୟ ପାଇଁ ସମ୍ପର୍କ କରନ୍ତୁ', pricePerQuintal: 'ପ୍ରତି କ୍ବିଣ୍ଟାଲ୍ ମୂଲ୍ୟ', expectedOutput: 'ପ୍ରତ୍ୟାଶିତ ଫଳନ', harvestDate: 'କାଟଣୀ ତାରିଖ', acres: 'ଏକର', statusGrowing: 'ବଢ଼ୁଛି', statusHarvest: 'କାଟଣୀ ପାଇଁ ପ୍ରସ୍ତୁତ', buyerNew: 'ନୂଆ', buyerNegotiating: 'ଆଲୋଚନା ଚାଲିଛି', buyerConnected: 'ସଂଯୁକ୍ତ', cropType: 'ଫସଲ ପ୍ରକାର', farmLocation: 'ଫାର୍ମ ସ୍ଥାନ', area: 'କ୍ଷେତ୍ର', expectedProduceDate: 'ପ୍ରତ୍ୟାଶିତ ଉତ୍ପାଦନ ତାରିଖ', cancel: 'ବାତିଲ୍ କରନ୍ତୁ', register: 'ପଞ୍ଜୀକରଣ କରନ୍ତୁ', edit: 'ସମ୍ପାଦନା କରନ୍ତୁ', delete: 'ବିଲୋପ କରନ୍ତୁ', close: 'ବନ୍ଦ କରନ୍ତୁ' },
-  ml: { weatherTitle: 'കാലാവസ്ഥാ പ്രവചനം', mandiTitle: 'തത്സമയ മണ്ഡി വിലകൾ', newsTitle: 'കൃഷി വാർത്തകൾ', schemesTitle: 'സർക്കാർ പദ്ധതികൾ', loansTitle: 'വായ്പകൾ & ബാങ്ക് ഓഫറുകൾ', myCropsTitle: 'എന്റെ രജിസ്റ്റർ ചെയ്ത വിളകൾ', buyersTitle: 'വാങ്ങുന്നവരുടെ ബന്ധങ്ങൾ', quickActionsTitle: 'ദ്രുത പ്രവർത്തനങ്ങൾ', expertTitle: 'വിദഗ്ധരുമായി ബന്ധപ്പെടുക', today: 'ഇന്ന്', threeDays: '3 ദിവസം', oneWeek: '1 ആഴ്ച', tenDays: '10 ദിവസം', fifteenDays: '15 ദിവസം', readFull: 'പൂർണ്ണ ലേഖനം വായിക്കുക', applyNow: 'ഇപ്പോൾ അപേക്ഷിക്കുക', viewDetails: 'വിശദാംശങ്ങൾ കാണുക', connect: 'ബന്ധപ്പെടുക', registerCrop: 'പുതിയ വിള രജിസ്റ്റർ ചെയ്യുക', all: 'എല്ലാം', myCrops: 'എന്റെ വിളകൾ', government: 'സർക്കാർ', technology: 'സാങ്കേതികവിദ്യ', market: 'വിപണി', weather: 'കാലാവസ്ഥ', noArticles: 'ലേഖനങ്ങളൊന്നും കണ്ടെത്തിയില്ല', loading: 'ലോഡ് ചെയ്യുന്നു', listening: 'ശ്രദ്ധിക്കുന്നു...', tapToSpeak: 'സംസാരിക്കാൻ ടാപ്പ് ചെയ്യുക', knowMore: 'കൂടുതൽ അറിയുക', setPrice: 'വില നിശ്ചയിക്കുക', contactForPrice: 'വിലയ്ക്കായി ബന്ധപ്പെടുക', pricePerQuintal: 'ഓരോ ക്വിന്റലിനും വില', expectedOutput: 'പ്രതീക്ഷിക്കുന്ന വിളവ്', harvestDate: 'കൊയ്ത്ത് തീയതി', acres: 'ഏക്കർ', statusGrowing: 'വളരുന്നു', statusHarvest: 'കൊയ്ത്തിന് തയ്യാർ', buyerNew: 'പുതിയത്', buyerNegotiating: 'ചർച്ച നടക്കുന്നു', buyerConnected: 'ബന്ധിപ്പിച്ചു', cropType: 'വിളയുടെ തരം', farmLocation: 'വളപ്പിന്റെ സ്ഥലം', area: 'സ്ഥലം', expectedProduceDate: 'പ്രതീക്ഷിക്കുന്ന വിളവിന്റെ തീയതി', cancel: 'റദ്ദാക്കുക', register: 'രജിസ്റ്റർ ചെയ്യുക', edit: 'എഡിറ്റ് ചെയ്യുക', delete: 'നീക്കം ചെയ്യുക', close: 'അടയ്ക്കുക' },
-  as: { weatherTitle: 'বতৰ পূৰ্বাণী', mandiTitle: 'লাইভ মণ্ডী মূল্য', newsTitle: 'কৃষি সংবাদ', schemesTitle: 'চৰকাৰী আঁচনি', loansTitle: 'ঋণ & বেঙ্ক অফাৰ', myCropsTitle: 'মোৰ পঞ্জীয়ন কৃত শস্য', buyersTitle: 'ক্ৰেতা সংযোগ', quickActionsTitle: 'দ্রুত কাৰ্য্য', expertTitle: 'বিশেষজ্ঞৰ সৈতে সংযোগ কৰক', today: 'আজি', threeDays: '3 দিন', oneWeek: '1 সপ্তাহ', tenDays: '10 দিন', fifteenDays: '15 দিন', readFull: 'সম্পূৰ্ণ প্ৰবন্ধ পঢ়ক', applyNow: 'এতিয়া আবেদন কৰক', viewDetails: 'বিবৰণ চাওক', connect: 'সংযোগ কৰক', registerCrop: 'নতুন শস্য পঞ্জীয়ন কৰক', all: 'সকলো', myCrops: 'মোৰ শস্য', government: 'চৰকাৰ', technology: 'প্ৰযুক্তি', market: 'বজাৰ', weather: 'বতৰ', noArticles: 'কোনো প্ৰবন্ধ পোৱা নগ’ল', loading: 'লোড হৈ আছে', listening: 'শুনিছে...', tapToSpeak: 'ক’বলৈ টেপ কৰক', knowMore: 'আৰু জানক', setPrice: 'মূল্য নিৰ্ধাৰণ কৰক', contactForPrice: 'মূল্যৰ বাবে সংযোগ কৰক', pricePerQuintal: 'প্ৰতি কুইন্টাল মূল্য', expectedOutput: 'প্ৰত্যাশিত উৎপাদন', harvestDate: 'দায়া তাৰিখ', acres: 'একৰ', statusGrowing: 'বঢ়ি আছে', statusHarvest: 'দায়াৰ বাবে সাজু', buyerNew: 'নতুন', buyerNegotiating: 'আলোচনা চলি আছে', buyerConnected: 'সংযুক্ত', cropType: 'শস্যৰ প্ৰকাৰ', farmLocation: 'খেতিৰ স্থান', area: 'ক্ষেত্ৰ', expectedProduceDate: 'প্ৰত্যাশিত উৎপাদন তাৰিখ', cancel: 'বাতিল কৰক', register: 'পঞ্জীয়ন কৰক', edit: 'সম্পাদনা কৰক', delete: 'বিলোপ কৰক', close: 'বন্ধ কৰক' },
+  en: { weatherTitle: 'Weather Forecast', mandiTitle: 'Live Mandi Prices', newsTitle: 'Agriculture News', schemesTitle: 'Government Schemes', myCropsTitle: 'My Registered Crops', buyersTitle: 'Buyer Connections', quickActionsTitle: 'Quick Actions', expertTitle: 'Connect with Experts', today: 'Today', threeDays: '3 Days', oneWeek: '1 Week', tenDays: '10 Days', fifteenDays: '15 Days', readFull: 'Read Full Article', applyNow: 'Apply Now', viewDetails: 'View Details', connect: 'Connect', registerCrop: 'Register New Crop', all: 'All', myCrops: 'My Crops', government: 'Government', technology: 'Technology', market: 'Market', weather: 'Weather', noArticles: 'No articles found', loading: 'Loading', listening: 'Listening...', tapToSpeak: 'Tap to speak', knowMore: 'Know More', setPrice: 'Set Price', contactForPrice: 'Contact for Price', pricePerQuintal: 'Price per Quintal', expectedOutput: 'Expected Output', harvestDate: 'Harvest Date', acres: 'Acres', statusGrowing: 'Growing', statusHarvest: 'Harvest Ready', buyerNew: 'New', buyerNegotiating: 'Negotiating', buyerConnected: 'Connected', cropType: 'Crop Type', farmLocation: 'Farm Location', area: 'Area', expectedProduceDate: 'Expected Produce Date', cancel: 'Cancel', register: 'Register', edit: 'Edit', delete: 'Delete', close: 'Close' },
+  hi: { weatherTitle: 'मौसम पूर्वानुमान', mandiTitle: 'लाइव मंडी भाव', newsTitle: 'कृषि समाचार', schemesTitle: 'सरकारी योजनाएं', myCropsTitle: 'मेरी पंजीकृत फसलें', buyersTitle: 'खरीदार संपर्क', quickActionsTitle: 'त्वरित कार्रवाई', expertTitle: 'विशेषज्ञों से संपर्क करें', today: 'आज', threeDays: '3 दिन', oneWeek: '1 सप्ताह', tenDays: '10 दिन', fifteenDays: '15 दिन', readFull: 'पूरा लेख पढ़ें', applyNow: 'अभी आवेदन करें', viewDetails: 'विवरण देखें', connect: 'संपर्क करें', registerCrop: 'नई फसल पंजीकृत करें', all: 'सभी', myCrops: 'मेरी फसलें', government: 'सरकार', technology: 'प्रौद्योगिकी', market: 'बाजार', weather: 'मौसम', noArticles: 'कोई लेख नहीं मिला', loading: 'लोड हो रहा है', listening: 'सुन रहा है...', tapToSpeak: 'बोलने के लिए टैप करें', knowMore: 'और जानें', setPrice: 'मूल्य निर्धारित करें', contactForPrice: 'मूल्य के लिए संपर्क करें', pricePerQuintal: 'प्रति क्विंटल मूल्य', expectedOutput: 'अपेक्षित उपज', harvestDate: 'कटाई की तारीख', acres: 'एकड़', statusGrowing: 'बढ़ रही है', statusHarvest: 'कटाई के लिए तैयार', buyerNew: 'नया', buyerNegotiating: 'बातचीत चल रही है', buyerConnected: 'जुड़ा हुआ', cropType: 'फसल का प्रकार', farmLocation: 'खेत का स्थान', area: 'क्षेत्र', expectedProduceDate: 'अपेक्षित उत्पादन तिथि', cancel: 'रद्द करें', register: 'पंजीकृत करें', edit: 'संपादित करें', delete: 'हटाएं', close: 'बंद करें' },
+  te: { weatherTitle: 'వాతావరణ అంచనా', mandiTitle: 'ప్రత్యక్ష మార్కెట్ ధరలు', newsTitle: 'వ్యవసాయ వార్తలు', schemesTitle: 'ప్రభుత్వ పథకాలు', myCropsTitle: 'నా నమోదిత పంటలు', buyersTitle: 'కొనుగోలుదారు కనెక్షన్లు', quickActionsTitle: 'త్వరిత చర్యలు', expertTitle: 'నిపుణులను సంప్రదించండి', today: 'ఈరోజు', threeDays: '3 రోజులు', oneWeek: '1 వారం', tenDays: '10 రోజులు', fifteenDays: '15 రోజులు', readFull: 'పూర్తి వ్యాసం చదవండి', applyNow: 'ఇప్పుడే దరఖాస్తు చేయండి', viewDetails: 'వివరాలు చూడండి', connect: 'కనెక్ట్ చేయండి', registerCrop: 'కొత్త పంటను నమోదు చేయండి', all: 'అన్నీ', myCrops: 'నా పంటలు', government: 'ప్రభుత్వం', technology: 'సాంకేతికత', market: 'మార్కెట్', weather: 'వాతావరణం', noArticles: 'వ్యాసాలు లేవు', loading: 'లోడ్ అవుతోంది', listening: 'వింటున్నాం...', tapToSpeak: 'మాట్లాడటానికి ట్యాప్ చేయండి', knowMore: 'మరింత తెలుసుకోండి', setPrice: 'ధర నిర్ణయించండి', contactForPrice: 'ధర కోసం సంప్రదించండి', pricePerQuintal: 'క్వింటాల్‌కు ధర', expectedOutput: 'అంచనా దిగుబడి', harvestDate: 'కోత తేదీ', acres: 'ఎకరాలు', statusGrowing: 'పెరుగుతోంది', statusHarvest: 'కోతకు సిద్ధం', buyerNew: 'కొత్తది', buyerNegotiating: 'చర్చలు జరుగుతున్నాయి', buyerConnected: 'కనెక్ట్ అయ్యింది', cropType: 'పంట రకం', farmLocation: 'పొలం స్థానం', area: 'ప్రాంతం', expectedProduceDate: 'అంచనా దిగుబడి తేదీ', cancel: 'రద్దు చేయండి', register: 'నమోదు చేయండి', edit: 'సవరించండి', delete: 'తొలగించండి', close: 'మూసివేయండి' },
+  ta: { weatherTitle: 'வானிலை முன்னறிவிப்பு', mandiTitle: 'நேரடி மண்டி விலைகள்', newsTitle: 'விவசாய செய்திகள்', schemesTitle: 'அரசு திட்டங்கள்', myCropsTitle: 'எனது பதிவு செய்யப்பட்ட பயிர்கள்', buyersTitle: 'வாங்குநர் இணைப்புகள்', quickActionsTitle: 'விரைவு செயல்கள்', expertTitle: 'நிபுணர்களை அணுகவும்', today: 'இன்று', threeDays: '3 நாட்கள்', oneWeek: '1 வாரம்', tenDays: '10 நாட்கள்', fifteenDays: '15 நாட்கள்', readFull: 'முழு கட்டுரையைப் படிக்கவும்', applyNow: 'இப்போது விண்ணப்பிக்கவும்', viewDetails: 'விவரங்களைக் காண்க', connect: 'இணைக்கவும்', registerCrop: 'புதிய பயிரைப் பதிவு செய்யவும்', all: 'அனைத்தும்', myCrops: 'எனது பயிர்கள்', government: 'அரசு', technology: 'தொழில்நுட்பம்', market: 'சந்தை', weather: 'வானிலை', noArticles: 'கட்டுரைகள் எதுவும் இல்லை', loading: 'ஏற்றுகிறது', listening: 'கேட்கிறது...', tapToSpeak: 'பேச தட்டவும்', knowMore: 'மேலும் அறிய', setPrice: 'விலை நிர்ணயிக்கவும்', contactForPrice: 'விலைக்கு தொடர்பு கொள்ளவும்', pricePerQuintal: 'குவின்டாலுக்கு விலை', expectedOutput: 'எதிர்பார்க்கப்படும் விளைச்சல்', harvestDate: 'அறுவடை தேதி', acres: 'ஏக்கர்', statusGrowing: 'வளர்கிறது', statusHarvest: 'அறுவடைக்கு தயார்', buyerNew: 'புதியது', buyerNegotiating: 'பேச்சுவார்த்தை நடந்து வருகிறது', buyerConnected: 'இணைக்கப்பட்டது', cropType: 'பயிரின் வகை', farmLocation: 'பண்ணை இடம்', area: 'பகுதி', expectedProduceDate: 'எதிர்பார்க்கப்படும் விளைச்சல் தேதி', cancel: 'ரத்து செய்யவும்', register: 'பதிவு செய்யவும்', edit: 'திருத்தவும்', delete: 'நீக்கவும்', close: 'மூடு' },
+  kn: { weatherTitle: 'ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ', mandiTitle: 'ಲೈವ್ ಮಂಡಿ ಬೆಲೆಗಳು', newsTitle: 'ಕೃಷಿ ಸುದ್ದಿಗಳು', schemesTitle: 'ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು', myCropsTitle: 'ನೋಂದಾಯಿಸಿದ ಬೆಳೆಗಳು', buyersTitle: 'ಖರೀದಿದಾರರ ಸಂಪರ್ಕಗಳು', quickActionsTitle: 'ತ್ವರಿತ ಕ್ರಿಯೆಗಳು', expertTitle: 'ತಜ್ಞರನ್ನು ಸಂಪರ್ಕಿಸಿ', today: 'ಇಂದು', threeDays: '3 ದಿನಗಳು', oneWeek: '1 ವಾರ', tenDays: '10 ದಿನಗಳು', fifteenDays: '15 ದಿನಗಳು', readFull: 'ಪೂರ್ಣ ಲೇಖನ ಓದಿ', applyNow: 'ಇದೀಗ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ', viewDetails: 'ವಿವರಗಳನ್ನು ವೀಕ್ಷಿಸಿ', connect: 'ಸಂಪರ್ಕಿಸಿ', registerCrop: 'ಹೊಸ ಬೆಳೆ ನೋಂದಾಯಿಸಿ', all: 'ಎಲ್ಲಾ', myCrops: 'ನನ್ನ ಬೆಳೆಗಳು', government: 'ಸರ್ಕಾರ', technology: 'ತಂತ್ರಜ್ಞಾನ', market: 'ಮಾರುಕಟ್ಟೆ', weather: 'ಹವಾಮಾನ', noArticles: 'ಲೇಖನಗಳು ಕಂಡುಬಂದಿಲ್ಲ', loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ', listening: 'ಆಲಿಸುತ್ತಿದೆ...', tapToSpeak: 'ಮಾತನಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ', knowMore: 'ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ', setPrice: 'ಬೆಲೆ ನಿರ್ಧರಿಸಿ', contactForPrice: 'ಬೆಲೆಗಾಗಿ ಸಂಪರ್ಕಿಸಿ', pricePerQuintal: 'ಪ್ರತಿ ಕ್ವಿಂಟಾಲ್ ಬೆಲೆ', expectedOutput: 'ನಿರೀಕ್ಷಿತ ಉತ್ಪನ್ನ', harvestDate: 'ಕಟಾವಿನ ದಿನಾಂಕ', acres: 'ಎಕರೆ', statusGrowing: 'ಬೆಳೆಯುತ್ತಿದೆ', statusHarvest: 'ಕಟಾವಿಗೆ ಸಿದ್ಧ', buyerNew: 'ಹೊಸದು', buyerNegotiating: 'ಮಾತುಕತೆ ನಡೆಯುತ್ತಿದೆ', buyerConnected: 'ಸಂಪರ್ಕಿತವಾಗಿದೆ', cropType: 'ಬೆಳೆಯ ಪ್ರಕಾರ', farmLocation: 'farm ಸ್ಥಳ', area: 'ವಿಸ್ತೀರ್ಣ', expectedProduceDate: 'ನಿರೀಕ್ಷಿತ ಉತ್ಪನ್ನ ದಿನಾಂಕ', cancel: 'ರದ್ದುಮಾಡಿ', register: 'ನೋಂದಾಯಿಸಿ', edit: 'ಸಂಪಾದಿಸಿ', delete: 'ಅಳಿಸಿ', close: 'ಮುಚ್ಚಿ' },
+  mr: { weatherTitle: 'हवामान अंदाज', mandiTitle: 'लाइव मंडी भाव', newsTitle: 'शेती बातम्या', schemesTitle: 'सरकारी योजना', myCropsTitle: 'माझी नोंदणीकृत पिके', buyersTitle: 'खरेदीदार संपर्क', quickActionsTitle: 'झटपट क्रिया', expertTitle: 'तज्ञांशी संपर्क साधा', today: 'आज', threeDays: '3 दिवस', oneWeek: '1 आठवडा', tenDays: '10 दिवस', fifteenDays: '15 दिवस', readFull: 'संपूर्ण लेख वाचा', applyNow: 'आता अर्ज करा', viewDetails: 'तपशील पहा', connect: 'संपर्क साधा', registerCrop: 'नवीन पीक नोंदणी करा', all: 'सर्व', myCrops: 'माझी पिके', government: 'सरकार', technology: 'तंत्रज्ञान', market: 'बाजार', weather: 'हवामान', noArticles: 'लेख सापडले नाहीत', loading: 'लोड होत आहे', listening: 'ऐकत आहे...', tapToSpeak: 'बोलण्यासाठी टॅप करा', knowMore: 'अधिक जाणून घ्या', setPrice: 'किंमत निश्चित करा', contactForPrice: 'किंमतीसाठी संपर्क साधा', pricePerQuintal: 'प्रति क्विंटल किंमत', expectedOutput: 'अपेक्षित उत्पादन', harvestDate: 'कापणीची तारीख', acres: 'एकरी', statusGrowing: 'वाढते आहे', statusHarvest: 'कापणीस तयार', buyerNew: 'नवीन', buyerNegotiating: 'चर्चा सुरू आहे', buyerConnected: 'जोडलेले', cropType: 'पिकाचा प्रकार', farmLocation: 'शेताचे ठिकाण', area: 'क्षेत्रफळ', expectedProduceDate: 'अपेक्षित उत्पादन तारीख', cancel: 'रद्द करा', register: 'नोंदणी करा', edit: 'संपादित करा', delete: 'हटवा', close: 'बंद करा' },
+  gu: { weatherTitle: 'વાતાવરણ અંદાજ', mandiTitle: 'લાઇવ મંડી ભાવ', newsTitle: 'કૃષિ સમાચાર', schemesTitle: 'સરકારી યોજનાઓ', myCropsTitle: 'મારી નોંધાયેલ પાક', buyersTitle: 'ખરીદદાર કનેક્શન્સ', quickActionsTitle: 'ઝડપી ક્રિયાઓ', expertTitle: 'તજ્ઞોનો સંપર્ક કરો', today: 'આજે', threeDays: '3 દિવસ', oneWeek: '1 અઠવાડિયું', tenDays: '10 દિવસ', fifteenDays: '15 દિવસ', readFull: 'સંપૂર્ણ લેખ વાંચો', applyNow: 'હવે અરજી કરો', viewDetails: 'વિગતો જુઓ', connect: 'કનેક્ટ કરો', registerCrop: 'નવો પાક નોંધાવો', all: 'બધા', myCrops: 'મારા પાક', government: 'સરકાર', technology: 'ટેકનોલોજી', market: 'બજાર', weather: 'વાતાવરણ', noArticles: 'કોઈ લેખ મળ્યો નથી', loading: 'લોડ થઈ રહ્યું છે', listening: 'સાંભળી રહ્યું છે...', tapToSpeak: 'બોલવા માટે ટેપ કરો', knowMore: 'વધુ જાણો', setPrice: 'કીમત નક્કી કરો', contactForPrice: 'કીમત માટે સંપર્ક કરો', pricePerQuintal: 'પ્રતિ ક્વિન્ટલ કીમત', expectedOutput: 'અપેક્ષિત ઉત્પાદન', harvestDate: 'કાપણીની તારીખ', acres: 'એકર', statusGrowing: 'વધી રહ્યું છે', statusHarvest: 'કાપણી માટે તૈયાર', buyerNew: 'નવું', buyerNegotiating: 'વાટાઘાટ ચાલી રહી છે', buyerConnected: 'કનેક્ટેડ', cropType: 'પાકનો પ્રકાર', farmLocation: 'ખેતરનું સ્થાન', area: 'વિસ્તાર', expectedProduceDate: 'અપેક્ષિત ઉત્પાદન તારીખ', cancel: 'રદ કરો', register: 'નોંધાવો', edit: 'સંપાદિત કરો', delete: 'કાઢી નાખો', close: 'બંધ કરો' },
+  bn: { weatherTitle: 'আবহাওয়ার পূর্বাভাস', mandiTitle: 'সরাসরি মণ্ডি দর', newsTitle: 'কৃষি সংবাদ', schemesTitle: 'সরকারি প্রকল্প', myCropsTitle: 'আমার নিবন্ধিত ফসল', buyersTitle: 'ক্রেতা সংযোগ', quickActionsTitle: 'দ্রুত কর্ম', expertTitle: 'বিশেষজ্ঞদের সাথে যোগাযোগ করুন', today: 'আজ', threeDays: '3 দিন', oneWeek: '1 সপ্তাহ', tenDays: '10 দিন', fifteenDays: '15 দিন', readFull: 'সম্পূর্ণ নিবন্ধ পড়ুন', applyNow: 'এখন আবেদন করুন', viewDetails: 'বিশদ দেখুন', connect: 'সংযোগ করুন', registerCrop: 'নতুন ফসল নিবন্ধন করুন', all: 'সব', myCrops: 'আমার ফসল', government: 'সরকার', technology: 'প্রযুক্তি', market: 'বাজার', weather: 'আবহাওয়া', noArticles: 'কোনো নিবন্ধ পাওয়া যায়নি', loading: 'লোড হচ্ছে', listening: 'শুনছি...', tapToSpeak: 'বলতে ট্যাপ করুন', knowMore: 'আরও জানুন', setPrice: 'মূল্য নির্ধারণ করুন', contactForPrice: 'মূল্যের জন্য যোগাযোগ করুন', pricePerQuintal: 'প্রতি কুইন্টাল মূল্য', expectedOutput: 'প্রত্যাশিত ফলন', harvestDate: 'কাটার তারিখ', acres: 'একর', statusGrowing: 'বৃদ্ধি পাচ্ছে', statusHarvest: 'কাটার জন্য প্রস্তুত', buyerNew: 'নতুন', buyerNegotiating: 'আলোচনা চলছে', buyerConnected: 'সংযুক্ত', cropType: 'ফসলের প্রকার', farmLocation: 'খামারের অবস্থান', area: 'এলাকা', expectedProduceDate: 'প্রত্যাশিত উৎপাদনের তারিখ', cancel: 'বাতিল করুন', register: 'নিবন্ধন করুন', edit: 'সম্পাদনা করুন', delete: 'মুছুন', close: 'বন্ধ করুন' },
+  pa: { weatherTitle: 'ਮੌਸਮ ਦੀ ਭਵਿੱਖਬਾਣੀ', mandiTitle: 'ਲਾਈਵ ਮੰਡੀ ਰੇਟ', newsTitle: 'ਖੇਤੀਬਾੜੀ ਖ਼ਬਰਾਂ', schemesTitle: 'ਸਰਕਾਰੀ ਸਕੀਮਾਂ', myCropsTitle: 'ਮੇਰੀ ਰਜਿਸਟਰਡ ਫਸਲਾਂ', buyersTitle: 'ਖ਼ਰੀਦਦਾਰ ਕਨੈਕਸ਼ਨ', quickActionsTitle: 'ਤੁਰੰਤ ਐਕਸ਼ਨ', expertTitle: 'ਮਾਹਿਰਾਂ ਨਾਲ ਸੰਪਰਕ ਕਰੋ', today: 'ਅੱਜ', threeDays: '3 ਦਿਨ', oneWeek: '1 ਹਫ਼ਤਾ', tenDays: '10 ਦਿਨ', fifteenDays: '15 ਦਿਨ', readFull: 'ਪੂਰਾ ਲੇਖ ਪੜ੍ਹੋ', applyNow: 'ਹੁਣੇ ਅਪਲਾਈ ਕਰੋ', viewDetails: 'ਵੇਰਵੇ ਵੇਖੋ', connect: 'ਜੁੜੋ', registerCrop: 'ਨਵੀਂ ਫਸਲ ਰਜਿਸਟਰ ਕਰੋ', all: 'ਸਾਰੇ', myCrops: 'ਮੇਰੀਆਂ ਫਸਲਾਂ', government: 'ਸਰਕਾਰ', technology: 'ਟੈਕਨੋਲੋਜੀ', market: 'ਮੰਡੀ', weather: 'ਮੌਸਮ', noArticles: 'ਕੋਈ ਲੇਖ ਨਹੀਂ ਮਿਲਿਆ', loading: 'ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ', listening: 'ਸੁਣ ਰਿਹਾ ਹੈ...', tapToSpeak: 'ਬੋਲਣ ਲਈ ਟੈਪ ਕਰੋ', knowMore: 'ਹੋਰ ਜਾਣੋ', setPrice: 'ਕੀਮਤ ਨਿਰਧਾਰਤ ਕਰੋ', contactForPrice: 'ਕੀਮਤ ਲਈ ਸੰਪਰਕ ਕਰੋ', pricePerQuintal: 'ਪ੍ਰਤੀ ਕੁਇੰਟਲ ਕੀਮਤ', expectedOutput: 'ਅਨੁਮਾਨਿਤ ਪੈਦਾਵਾਰ', harvestDate: 'ਵਾਢੀ ਦੀ ਮਿਤੀ', acres: 'ਏਕੜ', statusGrowing: 'ਵਧ ਰਹੀ ਹੈ', statusHarvest: 'ਵਾਢੀ ਲਈ ਤਿਆਰ', buyerNew: 'ਨਵਾਂ', buyerNegotiating: 'ਗੱਲਬਾਤ ਚੱਲ ਰਹੀ ਹੈ', buyerConnected: 'ਜੁੜਿਆ ਹੋਇਆ', cropType: 'ਫਸਲ ਦੀ ਕਿਸਮ', farmLocation: 'ਖੇਤ ਦੀ ਥਾਂ', area: 'ਖੇਤਰ', expectedProduceDate: 'ਅਨੁਮਾਨਿਤ ਪੈਦਾਵਾਰ ਮਿਤੀ', cancel: 'ਰੱਦ ਕਰੋ', register: 'ਰਜਿਸਟਰ ਕਰੋ', edit: 'ਸੋਧੋ', delete: 'ਹਟਾਓ', close: 'ਬੰਦ ਕਰੋ' },
+  or: { weatherTitle: 'ପାଣିପାଗ ପୂର୍ବାଭାସ', mandiTitle: 'ଲାଇଭ୍ ମଣ୍ଡି ଦର', newsTitle: 'କୃଷି ସମାଚାର', schemesTitle: 'ସରକାରୀ ଯୋଜନା', myCropsTitle: 'ମୋର ପଞ୍ଜୀକୃତ ଫସଲ', buyersTitle: 'କ୍ରେତା ସଂଯୋଗ', quickActionsTitle: 'ଶୀଘ୍ର କାର୍ଯ୍ୟ', expertTitle: 'ବିଶେଷଜ୍ଞଙ୍କ ସହ ଯୋଗାଯୋଗ କରନ୍ତୁ', today: 'ଆଜି', threeDays: '3 ଦିନ', oneWeek: '1 ସପ୍ତାହ', tenDays: '10 ଦିନ', fifteenDays: '15 ଦିନ', readFull: 'ସମ୍ପୂର୍ଣ୍ଣ ପ୍ରବନ୍ଧ ପଢନ୍ତୁ', applyNow: 'ଏବେ ଆବେଦନ କରନ୍ତୁ', viewDetails: 'ବିବରଣୀ ଦେଖନ୍ତୁ', connect: 'ସଂଯୋଗ କରନ୍ତୁ', registerCrop: 'ନୂଆ ଫସଲ ପଞ୍ଜୀକରଣ କରନ୍ତୁ', all: 'ସମସ୍ତ', myCrops: 'ମୋର ଫସଲ', government: 'ସରକାର', technology: 'ପ୍ରଯୁକ୍ତିବିଦ୍ୟା', market: 'ବଜାର', weather: 'ପାଣିପାଗ', noArticles: 'କୌଣସି ପ୍ରବନ୍ଧ ମିଳିଲା ନାହିଁ', loading: 'ଲୋଡ୍ ହେଉଛି', listening: 'ଶୁଣୁଛି...', tapToSpeak: 'କହିବାକୁ ଟ୍ୟାପ୍ କରନ୍ତୁ', knowMore: 'ଅଧିକ ଜାଣନ୍ତୁ', setPrice: 'ମୂଲ୍ୟ ନିର୍ଧାରଣ କରନ୍ତୁ', contactForPrice: 'ମୂଲ୍ୟ ପାଇଁ ସମ୍ପର୍କ କରନ୍ତୁ', pricePerQuintal: 'ପ୍ରତି କ୍ବିଣ୍ଟାଲ୍ ମୂଲ୍ୟ', expectedOutput: 'ପ୍ରତ୍ୟାଶିତ ଫଳନ', harvestDate: 'କାଟଣୀ ତାରିଖ', acres: 'ଏକର', statusGrowing: 'ବଢ଼ୁଛି', statusHarvest: 'କାଟଣୀ ପାଇଁ ପ୍ରସ୍ତୁତ', buyerNew: 'ନୂଆ', buyerNegotiating: 'ଆଲୋଚନା ଚାଲିଛି', buyerConnected: 'ସଂଯୁକ୍ତ', cropType: 'ଫସଲ ପ୍ରକାର', farmLocation: 'ଫାର୍ମ ସ୍ଥାନ', area: 'କ୍ଷେତ୍ର', expectedProduceDate: 'ପ୍ରତ୍ୟାଶିତ ଉତ୍ପାଦନ ତାରିଖ', cancel: 'ବାତିଲ୍ କରନ୍ତୁ', register: 'ପଞ୍ଜୀକରଣ କରନ୍ତୁ', edit: 'ସମ୍ପାଦନା କରନ୍ତୁ', delete: 'ବିଲୋପ କରନ୍ତୁ', close: 'ବନ୍ଦ କରନ୍ତୁ' },
+  ml: { weatherTitle: 'കാലാവസ്ഥാ പ്രവചനം', mandiTitle: 'തത്സമയ മണ്ഡി വിലകൾ', newsTitle: 'കൃഷി വാർത്തകൾ', schemesTitle: 'സർക്കാർ പദ്ധതികൾ', myCropsTitle: 'എന്റെ രജിസ്റ്റർ ചെയ്ത വിളകൾ', buyersTitle: 'വാങ്ങുന്നവരുടെ ബന്ധങ്ങൾ', quickActionsTitle: 'ദ്രുത പ്രവർത്തനങ്ങൾ', expertTitle: 'വിദഗ്ധരുമായി ബന്ധപ്പെടുക', today: 'ഇന്ന്', threeDays: '3 ദിവസം', oneWeek: '1 ആഴ്ച', tenDays: '10 ദിവസം', fifteenDays: '15 ദിവസം', readFull: 'പൂർണ്ണ ലേഖനം വായിക്കുക', applyNow: 'ഇപ്പോൾ അപേക്ഷിക്കുക', viewDetails: 'വിശദാംശങ്ങൾ കാണുക', connect: 'ബന്ധപ്പെടുക', registerCrop: 'പുതിയ വിള രജിസ്റ്റർ ചെയ്യുക', all: 'എല്ലാം', myCrops: 'എന്റെ വിളകൾ', government: 'സർക്കാർ', technology: 'സാങ്കേതികവിദ്യ', market: 'വിപണി', weather: 'കാലാവസ്ഥ', noArticles: 'ലേഖനങ്ങളൊന്നും കണ്ടെത്തിയില്ല', loading: 'ലോഡ് ചെയ്യുന്നു', listening: 'ശ്രദ്ധിക്കുന്നു...', tapToSpeak: 'സംസാരിക്കാൻ ടാപ്പ് ചെയ്യുക', knowMore: 'കൂടുതൽ അറിയുക', setPrice: 'വില നിശ്ചയിക്കുക', contactForPrice: 'വിലയ്ക്കായി ബന്ധപ്പെടുക', pricePerQuintal: 'ഓരോ ക്വിന്റലിനും വില', expectedOutput: 'പ്രതീക്ഷിക്കുന്ന വിളവ്', harvestDate: 'കൊയ്ത്ത് തീയതി', acres: 'ഏക്കർ', statusGrowing: 'വളരുന്നു', statusHarvest: 'കൊയ്ത്തിന് തയ്യാർ', buyerNew: 'പുതിയത്', buyerNegotiating: 'ചർച്ച നടക്കുന്നു', buyerConnected: 'ബന്ധിപ്പിച്ചു', cropType: 'വിളയുടെ തരം', farmLocation: 'വളപ്പിന്റെ സ്ഥലം', area: 'സ്ഥലം', expectedProduceDate: 'പ്രതീക്ഷിക്കുന്ന വിളവിന്റെ തീയതി', cancel: 'റദ്ദാക്കുക', register: 'രജിസ്റ്റർ ചെയ്യുക', edit: 'എഡിറ്റ് ചെയ്യുക', delete: 'നീക്കം ചെയ്യുക', close: 'അടയ്ക്കുക' },
+  as: { weatherTitle: 'বতৰ পূৰ্বাণী', mandiTitle: 'লাইভ মণ্ডী মূল্য', newsTitle: 'কৃষি সংবাদ', schemesTitle: 'চৰকাৰী আঁচনি', myCropsTitle: 'মোৰ পঞ্জীয়ন কৃত শস্য', buyersTitle: 'ক্ৰেতা সংযোগ', quickActionsTitle: 'দ্রুত কাৰ্য্য', expertTitle: 'বিশেষজ্ঞৰ সৈতে সংযোগ কৰক', today: 'আজি', threeDays: '3 দিন', oneWeek: '1 সপ্তাহ', tenDays: '10 দিন', fifteenDays: '15 দিন', readFull: 'সম্পূৰ্ণ প্ৰবন্ধ পঢ়ক', applyNow: 'এতিয়া আবেদন কৰক', viewDetails: 'বিবৰণ চাওক', connect: 'সংযোগ কৰক', registerCrop: 'নতুন শস্য পঞ্জীয়ন কৰক', all: 'সকলো', myCrops: 'মোৰ শস্য', government: 'চৰকাৰ', technology: 'প্ৰযুক্তি', market: 'বজাৰ', weather: 'বতৰ', noArticles: 'কোনো প্ৰবন্ধ পোৱা নগ’ল', loading: 'লোড হৈ আছে', listening: 'শুনিছে...', tapToSpeak: 'ক’বলৈ টেপ কৰক', knowMore: 'আৰু জানক', setPrice: 'মূল্য নিৰ্ধাৰণ কৰক', contactForPrice: 'মূল্যৰ বাবে সংযোগ কৰক', pricePerQuintal: 'প্ৰতি কুইন্টাল মূল্য', expectedOutput: 'প্ৰত্যাশিত উৎপাদন', harvestDate: 'দায়া তাৰিখ', acres: 'একৰ', statusGrowing: 'বঢ়ি আছে', statusHarvest: 'দায়াৰ বাবে সাজু', buyerNew: 'নতুন', buyerNegotiating: 'আলোচনা চলি আছে', buyerConnected: 'সংযুক্ত', cropType: 'শস্যৰ প্ৰকাৰ', farmLocation: 'খেতিৰ স্থান', area: 'ক্ষেত্ৰ', expectedProduceDate: 'প্ৰত্যাশিত উৎপাদন তাৰিখ', cancel: 'বাতিল কৰক', register: 'পঞ্জীয়ন কৰক', edit: 'সম্পাদনা কৰক', delete: 'বিলোপ কৰক', close: 'বন্ধ কৰক' },
 };
 
 /* ------------------------------------------------------------------ */
@@ -680,6 +679,47 @@ export default function Dashboard() {
                     </div>
                   )}
 
+                  {/* Enhanced Weather Metrics */}
+                  {weatherDays.length > 0 && (
+                    <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 mb-5">
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Droplets className="w-4 h-4 text-blue-500 mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Humidity</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].humidity}%</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Sun className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">UV Index</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].uvIndex}</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Eye className="w-4 h-4 text-cyan-500 mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Visibility</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].visibility} km</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Sunrise className="w-4 h-4 text-harvest-gold mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Sunrise</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].sunrise}</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Sunset className="w-4 h-4 text-soil-brown mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Sunset</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].sunset}</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Gauge className="w-4 h-4 text-purple-500 mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Pressure</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].pressure}</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <CloudDrizzle className="w-4 h-4 text-indigo-500 mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Dew Point</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].dewPoint}°C</p>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Forecast Cards */}
                   <div className={`grid gap-2 ${weatherDays.length <= 3 ? 'grid-cols-3' : weatherDays.length <= 7 ? 'grid-cols-4 sm:grid-cols-7' : 'grid-cols-4 sm:grid-cols-5 lg:grid-cols-7 xl:grid-cols-10'}`}>
                     {weatherDays.map((day, i) => {
@@ -835,65 +875,6 @@ export default function Dashboard() {
                   </Badge>
                 )}
               </motion.a>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* ====== LOANS & BANK OFFERS ====== */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45, duration: 0.4 }}
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
-              <CreditCard className="w-5 h-5 text-purple-500" />
-            </div>
-            <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('loansTitle')}</h3>
-          </div>
-          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
-            {LOANS.map((loan, i) => (
-              <motion.div
-                key={loan.type}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.45 + i * 0.06 }}
-                className="min-w-[260px] snap-start"
-              >
-                <Card className="border-border-light shadow-card hover:shadow-card-hover transition-all h-full">
-                  <CardContent className="p-5">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
-                        <loan.icon className="w-5 h-5 text-purple-500" />
-                      </div>
-                      <div>
-                        <h4 className="font-poppins font-semibold text-sm text-text-primary">{loan.type}</h4>
-                        <p className="text-xs text-text-muted">{loan.bank}</p>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3 mb-4">
-                      <div className="text-center">
-                        <p className="text-[10px] text-text-muted">{t('pricePerQuintal') === 'Price per Quintal' ? 'Amount' : t('pricePerQuintal')}</p>
-                        <p className="text-xs font-semibold text-text-primary">{loan.amount}</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-[10px] text-text-muted">{t('pricePerQuintal') === 'Price per Quintal' ? 'Interest' : t('pricePerQuintal')}</p>
-                        <p className="text-xs font-semibold text-text-primary">{loan.interest}</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-[10px] text-text-muted">{t('pricePerQuintal') === 'Price per Quintal' ? 'Tenure' : t('pricePerQuintal')}</p>
-                        <p className="text-xs font-semibold text-text-primary">{loan.tenure}</p>
-                      </div>
-                    </div>
-                    <Button
-                      className="w-full bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl h-10 text-sm"
-                      onClick={() => window.open(`https://www.google.com/search?q=${encodeURIComponent(loan.type + ' application ' + loan.bank)}`, '_blank')}
-                    >
-                      {t('applyNow')}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
             ))}
           </div>
         </motion.div>
