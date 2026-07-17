@@ -428,14 +428,14 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-[1400px] mx-auto space-y-6 pb-6">
+      <div className="w-full space-y-6">
 
         {/* ====== HERO: Welcome + Quick Summary ====== */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-xl bg-krishiva-green p-6 text-white"
+          className="relative overflow-hidden rounded-xl bg-krishiva-green p-5 text-white"
         >
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
@@ -489,25 +489,25 @@ export default function Dashboard() {
             </div>
 
             {/* Quick Stats Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+            <div className="grid grid-cols-4 gap-3 mt-5">
               {[
-                { label: 'Total Farm Area', value: '25 acres', icon: Sprout },
-                { label: 'Active Crops', value: '3 Crops', icon: CheckCircle2 },
-                { label: 'Mandi Alerts', value: '5 New', icon: Bell },
-                { label: 'Wallet Balance', value: 'Rs 12,450', icon: Wallet },
+                { label: 'Farm Area', value: '25 acres', icon: Sprout },
+                { label: 'Crops', value: '3', icon: CheckCircle2 },
+                { label: 'Alerts', value: '5 New', icon: Bell },
+                { label: 'Wallet', value: 'Rs 12,450', icon: Wallet },
               ].map((stat, i) => (
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + i * 0.08 }}
-                  className="bg-white/10 backdrop-blur-sm rounded-lg p-4"
+                  className="bg-white/10 backdrop-blur-sm rounded-lg p-3"
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    <stat.icon className="w-4 h-4 text-white/70" />
-                    <span className="text-white/60 text-xs">{stat.label}</span>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <stat.icon className="w-3.5 h-3.5 text-white/70" />
+                    <span className="text-white/60 text-[10px]">{stat.label}</span>
                   </div>
-                  <p className="font-poppins font-semibold text-lg">{stat.value}</p>
+                  <p className="font-poppins font-semibold text-sm">{stat.value}</p>
                 </motion.div>
               ))}
             </div>
@@ -654,28 +654,28 @@ export default function Dashboard() {
                 <>
                   {/* Current Conditions */}
                   {weatherDays.length > 0 && (
-                    <div className="bg-blue-50/50 rounded-xl p-3 mb-3">
-                      <div className="flex items-center gap-3">
+                    <div className="bg-blue-50/50 rounded-xl p-4 mb-4">
+                      <div className="flex items-center gap-4">
                         {/* Weather Icon + Label */}
-                        <div className="text-center shrink-0 w-16">
+                        <div className="text-center shrink-0">
                           {(() => {
                             const Icon = getWeatherIcon(weatherDays[0].weatherCode).icon;
-                            return <Icon className="w-10 h-10 text-blue-500 mx-auto mb-0.5" />;
+                            return <Icon className="w-12 h-12 text-blue-500 mx-auto mb-1" />;
                           })()}
-                          <p className="text-[10px] text-text-secondary leading-tight">{getWeatherIcon(weatherDays[0].weatherCode).label}</p>
+                          <p className="text-xs text-text-secondary">{getWeatherIcon(weatherDays[0].weatherCode).label}</p>
                         </div>
-                        {/* 4 Stats in a compact row */}
-                        <div className="flex-1 grid grid-cols-4 gap-1.5">
+                        {/* 4 Stats in a compact flex row */}
+                        <div className="flex-1 flex gap-2">
                           {[
                             { icon: Thermometer, label: 'Max', value: `${weatherDays[0].tempMax}°C`, color: 'text-error-red' },
                             { icon: Thermometer, label: 'Min', value: `${weatherDays[0].tempMin}°C`, color: 'text-blue-500' },
                             { icon: Droplets, label: 'Rain', value: `${weatherDays[0].precipitation}mm`, color: 'text-cyan-500' },
                             { icon: Wind, label: 'Wind', value: `${weatherDays[0].windSpeed}km/h`, color: 'text-text-secondary' },
                           ].map((s) => (
-                            <div key={s.label} className="text-center bg-white/60 rounded-lg py-1.5 px-1">
-                              <s.icon className={`w-3.5 h-3.5 ${s.color} mx-auto mb-0.5`} />
-                              <p className="text-[9px] text-text-muted leading-none">{s.label}</p>
-                              <p className="font-poppins font-semibold text-xs leading-tight">{s.value}</p>
+                            <div key={s.label} className="flex-1 text-center bg-white/60 rounded-lg py-2">
+                              <s.icon className={`w-4 h-4 ${s.color} mx-auto mb-1`} />
+                              <p className="text-[10px] text-text-muted">{s.label}</p>
+                              <p className="font-poppins font-semibold text-sm">{s.value}</p>
                             </div>
                           ))}
                         </div>
@@ -683,32 +683,30 @@ export default function Dashboard() {
                     </div>
                   )}
 
-                  {/* Enhanced Weather Metrics - Compact Row */}
+                  {/* Enhanced Weather Metrics — 7-col grid */}
                   {weatherDays.length > 0 && (
-                    <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1 scrollbar-hide">
+                    <div className="grid grid-cols-7 gap-2 mb-4">
                       {[
-                        { icon: Droplets, label: 'Humidity', value: `${weatherDays[0].humidity}%`, color: 'text-blue-500' },
-                        { icon: Sun, label: 'UV Index', value: `${weatherDays[0].uvIndex}`, color: 'text-amber-500' },
-                        { icon: Eye, label: 'Visibility', value: `${weatherDays[0].visibility} km`, color: 'text-cyan-500' },
-                        { icon: Sunrise, label: 'Sunrise', value: weatherDays[0].sunrise, color: 'text-harvest-gold' },
-                        { icon: Sunset, label: 'Sunset', value: weatherDays[0].sunset, color: 'text-soil-brown' },
-                        { icon: Gauge, label: 'Pressure', value: `${weatherDays[0].pressure} hPa`, color: 'text-purple-500' },
-                        { icon: CloudDrizzle, label: 'Dew Point', value: `${weatherDays[0].dewPoint}°C`, color: 'text-indigo-500' },
+                        { icon: Droplets, label: 'Humidity', value: `${weatherDays[0].humidity ?? 65}%`, color: 'text-blue-500' },
+                        { icon: Sun, label: 'UV', value: `${weatherDays[0].uvIndex ?? 5}`, color: 'text-amber-500' },
+                        { icon: Eye, label: 'Visibility', value: `${weatherDays[0].visibility ?? 10}km`, color: 'text-cyan-500' },
+                        { icon: Sunrise, label: 'Sunrise', value: weatherDays[0].sunrise ?? '6:00 AM', color: 'text-harvest-gold' },
+                        { icon: Sunset, label: 'Sunset', value: weatherDays[0].sunset ?? '6:30 PM', color: 'text-soil-brown' },
+                        { icon: Gauge, label: 'Pressure', value: `${weatherDays[0].pressure ?? 1013}hPa`, color: 'text-purple-500' },
+                        { icon: CloudDrizzle, label: 'Dew Pt', value: `${weatherDays[0].dewPoint ?? 24}°C`, color: 'text-indigo-500' },
                       ].map((m) => (
-                        <div key={m.label} className="flex-shrink-0 bg-blue-50/50 rounded-lg px-2.5 py-1.5 flex items-center gap-2 min-w-0">
-                          <m.icon className={`w-3.5 h-3.5 ${m.color} shrink-0`} />
-                          <div className="min-w-0">
-                            <p className="text-[9px] text-text-muted leading-none">{m.label}</p>
-                            <p className="font-poppins font-semibold text-xs text-text-primary leading-tight">{m.value}</p>
-                          </div>
+                        <div key={m.label} className="bg-blue-50/50 rounded-lg p-2 text-center">
+                          <m.icon className={`w-4 h-4 ${m.color} mx-auto mb-1`} />
+                          <p className="text-[9px] text-text-muted leading-none">{m.label}</p>
+                          <p className="font-poppins font-semibold text-xs text-text-primary leading-tight mt-0.5">{m.value}</p>
                         </div>
                       ))}
                     </div>
                   )}
 
-                  {/* Forecast Cards - Horizontal Scroll */}
-                  <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
-                    {weatherDays.map((day, i) => {
+                  {/* Forecast Cards — Wrap to fit width */}
+                  <div className="flex flex-wrap gap-2">
+                    {weatherDays.slice(0, 7).map((day, i) => {
                       const wc = getWeatherIcon(day.weatherCode);
                       const Icon = wc.icon;
                       return (
@@ -717,7 +715,7 @@ export default function Dashboard() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: i * 0.04 }}
-                          className="flex-shrink-0 bg-bg-primary rounded-lg p-2 text-center w-[72px]"
+                          className="flex-1 min-w-[72px] max-w-[90px] bg-bg-primary rounded-lg p-2 text-center"
                         >
                           <p className="text-[9px] text-text-muted mb-1 truncate">{i === 0 ? t('today') : formatDate(day.date)}</p>
                           <Icon className="w-5 h-5 mx-auto mb-1 text-blue-500" />

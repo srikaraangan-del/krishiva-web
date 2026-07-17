@@ -57,7 +57,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Desktop Sidebar */}
       <aside
         className={`hidden lg:flex flex-col fixed left-0 top-0 h-full bg-white border-r border-border-light z-40 transition-all duration-300 ${
-          collapsed ? 'w-[72px]' : 'w-[260px]'
+          collapsed ? 'w-[72px]' : 'w-[240px]'
         }`}
       >
         {/* Logo */}
@@ -97,7 +97,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {!collapsed && (
                 <span className="font-inter font-medium text-sm truncate">{item.label}</span>
               )}
-              {/* Tooltip for collapsed */}
               {collapsed && (
                 <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-text-primary text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                   {item.label}
@@ -177,22 +176,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main Content Area */}
       <div className={`flex-1 flex flex-col min-h-[100dvh] transition-all duration-300 ${
-        collapsed ? 'lg:ml-[72px]' : 'lg:ml-[260px]'
+        collapsed ? 'lg:ml-[72px]' : 'lg:ml-[240px]'
       }`}>
-        {/* Top App Bar */}
-        <header className="h-16 bg-white border-b border-border-light flex items-center px-4 sticky top-0 z-30">
+        {/* Top App Bar — No page title, just actions */}
+        <header className="h-16 bg-white border-b border-border-light flex items-center justify-end px-6 sticky top-0 z-30">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-lg hover:bg-bg-primary mr-2"
+            className="lg:hidden p-2 rounded-lg hover:bg-bg-primary mr-auto"
           >
             <Menu className="w-5 h-5 text-text-secondary" />
           </button>
 
-          <h1 className="font-poppins font-semibold text-base text-text-primary capitalize">
-            {location.pathname === '/dashboard' ? 'Dashboard' : location.pathname.split('/').pop()?.replace(/-/g, ' ')}
-          </h1>
-
-          <div className="ml-auto flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <button className="p-2 rounded-xl hover:bg-bg-primary transition-colors relative">
               <Search className="w-5 h-5 text-text-secondary" />
             </button>
@@ -206,7 +201,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </header>
 
-        {/* Page Content */}
+        {/* Page Content — Full width, consistent padding */}
         <main className="flex-1 p-6 overflow-auto pb-24 lg:pb-6">
           {children}
         </main>
