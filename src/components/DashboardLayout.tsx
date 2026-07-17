@@ -57,7 +57,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Desktop Sidebar */}
       <aside
         className={`hidden lg:flex flex-col fixed left-0 top-0 h-full bg-white border-r border-border-light z-40 transition-all duration-300 ${
-          collapsed ? 'w-[72px]' : 'w-[220px]'
+          collapsed ? 'w-[72px]' : 'w-[260px]'
         }`}
       >
         {/* Logo */}
@@ -97,6 +97,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {!collapsed && (
                 <span className="font-inter font-medium text-sm truncate">{item.label}</span>
               )}
+              {/* Tooltip for collapsed */}
               {collapsed && (
                 <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-text-primary text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                   {item.label}
@@ -176,18 +177,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main Content Area */}
       <div className={`flex-1 flex flex-col min-h-[100dvh] transition-all duration-300 ${
-        collapsed ? 'lg:ml-[72px]' : 'lg:ml-[220px]'
+        collapsed ? 'lg:ml-[72px]' : 'lg:ml-[260px]'
       }`}>
-        {/* Top Bar — Actions only, flush right */}
-        <header className="h-16 bg-white border-b border-border-light flex items-center justify-end px-6 sticky top-0 z-30">
+        {/* Top App Bar */}
+        <header className="h-16 bg-white border-b border-border-light flex items-center px-4 sticky top-0 z-30">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-lg hover:bg-bg-primary mr-auto"
+            className="lg:hidden p-2 rounded-lg hover:bg-bg-primary mr-2"
           >
             <Menu className="w-5 h-5 text-text-secondary" />
           </button>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 ml-auto">
             <button className="p-2 rounded-xl hover:bg-bg-primary transition-colors relative">
               <Search className="w-5 h-5 text-text-secondary" />
             </button>
@@ -202,7 +203,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 px-5 py-5 overflow-y-auto overflow-x-hidden pb-24 lg:pb-5">
+        <main className="flex-1 p-4 sm:p-6 overflow-y-auto overflow-x-hidden">
           {children}
         </main>
 

@@ -338,12 +338,11 @@ export default function Dashboard() {
     async function fetchWeather() {
       try {
         const res = await fetch(
-          'https://api.open-meteo.com/v1/forecast?latitude=16.3067&longitude=80.4365&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode,windspeed_10m_max,uv_index_max,sunrise,sunset&timezone=Asia/Kolkata&forecast_days=16&current=relative_humidity_2m,surface_pressure,visibility,dew_point_2m'
+          'https://api.open-meteo.com/v1/forecast?latitude=16.3067&longitude=80.4365&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode,windspeed_10m_max&timezone=Asia/Kolkata&forecast_days=16'
         );
         if (!res.ok) throw new Error('Weather fetch failed');
         const data = await res.json();
         if (cancelled) return;
-        const current = data.current || {};
         const days: WeatherDay[] = data.daily.time.map((t: string, i: number) => ({
           date: t,
           tempMax: data.daily.temperature_2m_max[i],
@@ -351,13 +350,6 @@ export default function Dashboard() {
           precipitation: data.daily.precipitation_sum[i],
           windSpeed: data.daily.windspeed_10m_max[i],
           weatherCode: data.daily.weathercode[i],
-          humidity: current.relative_humidity_2m ?? 65,
-          uvIndex: data.daily.uv_index_max?.[i] ?? 5,
-          visibility: current.visibility ? Math.round(current.visibility / 1000) : 10,
-          sunrise: data.daily.sunrise?.[i] ? new Date(data.daily.sunrise[i]).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : '6:00 AM',
-          sunset: data.daily.sunset?.[i] ? new Date(data.daily.sunset[i]).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : '6:30 PM',
-          pressure: current.surface_pressure ? Math.round(current.surface_pressure) : 1013,
-          dewPoint: current.dew_point_2m ? Math.round(current.dew_point_2m) : 24,
         }));
         setWeatherData(days);
       } catch {
@@ -428,81 +420,90 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="w-full space-y-5">
+      <div className="max-w-[1200px] mx-auto space-y-6 pb-6">
 
-        {/* ====== STAT CARDS + Language ====== */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex-1" />
-          <div className="relative" ref={langRef}>
-            <button
-              onClick={() => setLangOpen(!langOpen)}
-              className="flex items-center gap-2 bg-white border border-border-light hover:border-krishiva-green transition-colors rounded-xl px-3 py-2 text-sm text-text-secondary"
-            >
-              <Globe className="w-4 h-4 text-krishiva-green" />
-              <span>{LANGUAGES.find(l => l.code === selectedLang)?.native}</span>
-            </button>
-            <AnimatePresence>
-              {langOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -5, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -5, scale: 0.95 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-border-light z-50 p-3"
-                >
-                  <p className="text-xs text-text-muted mb-2 px-2">Select Language</p>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {LANGUAGES.map((lang) => (
-                      <button
-                        key={lang.code}
-                        onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
-                        className={`flex items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium border transition-all ${
-                          selectedLang === lang.code
-                            ? 'border-krishiva-green bg-krishiva-green text-white'
-                            : 'border-border-light text-text-secondary hover:border-border-green'
-                        }`}
-                      >
-                        {selectedLang === lang.code && <Check className="w-3 h-3" />}
-                        <span>{lang.native}</span>
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* ====== STAT CARDS ====== */}
+        {/* ====== HERO: Welcome + Quick Summary ====== */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+          transition={{ duration: 0.5 }}
+          className="relative overflow-hidden rounded-3xl bg-krishiva-green p-6 sm:p-8 text-white"
         >
-          {[
-            { label: 'Total Farm Area', value: '25', sub: 'acres', icon: Sprout, color: 'bg-green-50 text-green-600' },
-            { label: 'Active Crops', value: '3', sub: 'crops growing', icon: CheckCircle2, color: 'bg-blue-50 text-blue-600' },
-            { label: 'Mandi Alerts', value: '5', sub: 'new today', icon: Bell, color: 'bg-amber-50 text-amber-600' },
-            { label: 'Wallet Balance', value: '12,450', sub: 'Indian Rupees', icon: Wallet, color: 'bg-purple-50 text-purple-600' },
-          ].map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.06 }}
-              className="bg-white rounded-xl border border-border-light p-5 flex items-center justify-between"
-            >
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
+          <div className="relative z-10">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <p className="text-xs text-text-muted mb-1">{stat.label}</p>
-                <p className="font-poppins font-bold text-2xl text-text-primary">{stat.value}</p>
-                <p className="text-[10px] text-text-secondary mt-0.5">{stat.sub}</p>
+                <h1 className="font-poppins font-bold text-2xl sm:text-3xl mb-1">Welcome back, Rajesh!</h1>
+                <p className="text-white/70 text-sm">Here&apos;s what&apos;s happening on your farm today</p>
               </div>
-              <div className={`w-11 h-11 rounded-xl ${stat.color} flex items-center justify-center shrink-0`}>
-                <stat.icon className="w-5 h-5" />
+              <div className="flex items-center gap-2">
+                {/* Language Selector */}
+                <div className="relative" ref={langRef}>
+                  <button
+                    onClick={() => setLangOpen(!langOpen)}
+                    className="flex items-center gap-2 bg-white/15 hover:bg-white/25 transition-colors rounded-xl px-3 py-2 text-sm"
+                  >
+                    <Globe className="w-4 h-4" />
+                    <span>{LANGUAGES.find(l => l.code === selectedLang)?.native}</span>
+                  </button>
+                  <AnimatePresence>
+                    {langOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-border-light z-50 p-3"
+                      >
+                        <p className="text-xs text-text-muted mb-2 px-2">{t('all') === 'All' ? 'Select Language' : t('all') === 'सभी' ? 'भाषा चुनें' : 'Select Language'}</p>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {LANGUAGES.map((lang) => (
+                            <button
+                              key={lang.code}
+                              onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
+                              className={`flex items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium border transition-all ${
+                                selectedLang === lang.code
+                                  ? 'border-krishiva-green bg-krishiva-green text-white'
+                                  : 'border-border-light text-text-secondary hover:border-border-green'
+                              }`}
+                            >
+                              {selectedLang === lang.code && <Check className="w-3 h-3" />}
+                              <span>{lang.native}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
-            </motion.div>
-          ))}
+            </div>
+
+            {/* Quick Stats Row */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+              {[
+                { label: 'Total Farm Area', value: '25 acres', icon: Sprout },
+                { label: 'Active Crops', value: '3 Crops', icon: CheckCircle2 },
+                { label: 'Mandi Alerts', value: '5 New', icon: Bell },
+                { label: 'Wallet Balance', value: 'Rs 12,450', icon: Wallet },
+              ].map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + i * 0.08 }}
+                  className="bg-white/10 backdrop-blur-sm rounded-xl p-3"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <stat.icon className="w-4 h-4 text-white/70" />
+                    <span className="text-white/60 text-xs">{stat.label}</span>
+                  </div>
+                  <p className="font-poppins font-semibold text-lg">{stat.value}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </motion.div>
 
         {/* ====== MANDI TICKER ====== */}
@@ -511,12 +512,12 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.4 }}
         >
-          <Card className="border-border-light shadow-card">
+          <Card className="border-border-light shadow-card overflow-hidden">
             <CardContent className="p-0">
               <div className="flex items-center gap-3 px-4 py-3 border-b border-border-light bg-amber-50/50">
                 <TrendingUp className="w-5 h-5 text-harvest-gold shrink-0" />
                 <h3 className="font-poppins font-semibold text-sm text-text-primary shrink-0">{t('mandiTitle')}</h3>
-                <div className="flex-1 overflow-hidden max-w-full" ref={tickerRef}>
+                <div className="flex-1 overflow-hidden" ref={tickerRef}>
                   <div className="flex gap-6 animate-scroll-x whitespace-nowrap" style={{ animation: 'scroll-x 30s linear infinite' }}>
                     {[...MANDI_PRICES, ...MANDI_PRICES].map((item, idx) => (
                       <button
@@ -594,7 +595,7 @@ export default function Dashboard() {
           id="weather"
         >
           <Card className="border-border-light shadow-card">
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
@@ -635,7 +636,7 @@ export default function Dashboard() {
               {weatherLoading ? (
                 <div className="space-y-3">
                   <Skeleton className="h-24 w-full rounded-xl" />
-                  <div className="grid grid-cols-7 gap-2">
+                  <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
                     {Array.from({ length: 7 }).map((_, i) => (
                       <Skeleton key={i} className="h-32 rounded-xl" />
                     ))}
@@ -645,59 +646,83 @@ export default function Dashboard() {
                 <>
                   {/* Current Conditions */}
                   {weatherDays.length > 0 && (
-                    <div className="bg-blue-50/50 rounded-xl p-4 mb-4">
-                      <div className="flex items-center gap-4">
-                        {/* Weather Icon + Label */}
-                        <div className="text-center shrink-0">
-                          {(() => {
-                            const Icon = getWeatherIcon(weatherDays[0].weatherCode).icon;
-                            return <Icon className="w-12 h-12 text-blue-500 mx-auto mb-1" />;
-                          })()}
-                          <p className="text-xs text-text-secondary">{getWeatherIcon(weatherDays[0].weatherCode).label}</p>
+                    <div className="flex flex-col sm:flex-row items-center gap-6 bg-blue-50/50 rounded-2xl p-5 mb-5">
+                      <div className="text-center">
+                        {(() => {
+                          const Icon = getWeatherIcon(weatherDays[0].weatherCode).icon;
+                          return <Icon className="w-16 h-16 text-blue-500 mx-auto mb-2" />;
+                        })()}
+                        <p className="text-sm text-text-secondary">{getWeatherIcon(weatherDays[0].weatherCode).label}</p>
+                      </div>
+                      <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
+                        <div className="text-center">
+                          <Thermometer className="w-5 h-5 text-error-red mx-auto mb-1" />
+                          <p className="text-xs text-text-muted">Max Temp</p>
+                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].tempMax}&deg;C</p>
                         </div>
-                        {/* 4 Stats in a compact flex row */}
-                        <div className="flex-1 flex gap-2">
-                          {[
-                            { icon: Thermometer, label: 'Max', value: `${weatherDays[0].tempMax}°C`, color: 'text-error-red' },
-                            { icon: Thermometer, label: 'Min', value: `${weatherDays[0].tempMin}°C`, color: 'text-blue-500' },
-                            { icon: Droplets, label: 'Rain', value: `${weatherDays[0].precipitation}mm`, color: 'text-cyan-500' },
-                            { icon: Wind, label: 'Wind', value: `${weatherDays[0].windSpeed}km/h`, color: 'text-text-secondary' },
-                          ].map((s) => (
-                            <div key={s.label} className="flex-1 text-center bg-white/60 rounded-lg py-2">
-                              <s.icon className={`w-4 h-4 ${s.color} mx-auto mb-1`} />
-                              <p className="text-[10px] text-text-muted">{s.label}</p>
-                              <p className="font-poppins font-semibold text-sm">{s.value}</p>
-                            </div>
-                          ))}
+                        <div className="text-center">
+                          <Thermometer className="w-5 h-5 text-blue-500 mx-auto mb-1" />
+                          <p className="text-xs text-text-muted">Min Temp</p>
+                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].tempMin}&deg;C</p>
+                        </div>
+                        <div className="text-center">
+                          <Droplets className="w-5 h-5 text-cyan-500 mx-auto mb-1" />
+                          <p className="text-xs text-text-muted">Rainfall</p>
+                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].precipitation} mm</p>
+                        </div>
+                        <div className="text-center">
+                          <Wind className="w-5 h-5 text-text-secondary mx-auto mb-1" />
+                          <p className="text-xs text-text-muted">Wind</p>
+                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].windSpeed} km/h</p>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Enhanced Weather Metrics — 7-col grid */}
+                  {/* Enhanced Weather Metrics */}
                   {weatherDays.length > 0 && (
-                    <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 mb-4">
-                      {[
-                        { icon: Droplets, label: 'Humidity', value: `${weatherDays[0].humidity ?? 65}%`, color: 'text-blue-500' },
-                        { icon: Sun, label: 'UV', value: `${weatherDays[0].uvIndex ?? 5}`, color: 'text-amber-500' },
-                        { icon: Eye, label: 'Visibility', value: `${weatherDays[0].visibility ?? 10}km`, color: 'text-cyan-500' },
-                        { icon: Sunrise, label: 'Sunrise', value: weatherDays[0].sunrise ?? '6:00 AM', color: 'text-harvest-gold' },
-                        { icon: Sunset, label: 'Sunset', value: weatherDays[0].sunset ?? '6:30 PM', color: 'text-soil-brown' },
-                        { icon: Gauge, label: 'Pressure', value: `${weatherDays[0].pressure ?? 1013}hPa`, color: 'text-purple-500' },
-                        { icon: CloudDrizzle, label: 'Dew Pt', value: `${weatherDays[0].dewPoint ?? 24}°C`, color: 'text-indigo-500' },
-                      ].map((m) => (
-                        <div key={m.label} className="bg-blue-50/50 rounded-lg p-2 text-center">
-                          <m.icon className={`w-4 h-4 ${m.color} mx-auto mb-1`} />
-                          <p className="text-[9px] text-text-muted leading-none">{m.label}</p>
-                          <p className="font-poppins font-semibold text-xs text-text-primary leading-tight mt-0.5">{m.value}</p>
-                        </div>
-                      ))}
+                    <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 mb-5">
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Droplets className="w-4 h-4 text-blue-500 mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Humidity</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].humidity}%</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Sun className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">UV Index</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].uvIndex}</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Eye className="w-4 h-4 text-cyan-500 mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Visibility</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].visibility} km</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Sunrise className="w-4 h-4 text-harvest-gold mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Sunrise</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].sunrise}</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Sunset className="w-4 h-4 text-soil-brown mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Sunset</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].sunset}</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <Gauge className="w-4 h-4 text-purple-500 mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Pressure</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].pressure}</p>
+                      </div>
+                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                        <CloudDrizzle className="w-4 h-4 text-indigo-500 mx-auto mb-1" />
+                        <p className="text-xs text-text-muted">Dew Point</p>
+                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].dewPoint}°C</p>
+                      </div>
                     </div>
                   )}
 
-                  {/* Forecast Cards — Wrap to fit width */}
-                  <div className="flex flex-wrap gap-2">
-                    {weatherDays.slice(0, 7).map((day, i) => {
+                  {/* Forecast Cards */}
+                  <div className="grid gap-2 grid-cols-4 sm:grid-cols-7">
+                    {weatherDays.map((day, i) => {
                       const wc = getWeatherIcon(day.weatherCode);
                       const Icon = wc.icon;
                       return (
@@ -706,16 +731,16 @@ export default function Dashboard() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: i * 0.04 }}
-                          className="flex-1 min-w-[72px] max-w-[90px] bg-bg-primary rounded-lg p-2 text-center"
+                          className="bg-bg-primary rounded-xl p-3 text-center"
                         >
-                          <p className="text-[9px] text-text-muted mb-1 truncate">{i === 0 ? t('today') : formatDate(day.date)}</p>
-                          <Icon className="w-5 h-5 mx-auto mb-1 text-blue-500" />
-                          <p className="font-semibold text-xs text-text-primary">{day.tempMax}&deg;</p>
-                          <p className="text-[10px] text-text-muted">{day.tempMin}&deg;</p>
+                          <p className="text-[10px] text-text-muted mb-1.5">{i === 0 ? t('today') : formatDate(day.date)}</p>
+                          <Icon className="w-6 h-6 mx-auto mb-1.5 text-blue-500" />
+                          <p className="font-semibold text-sm text-text-primary">{day.tempMax}&deg;</p>
+                          <p className="text-xs text-text-muted">{day.tempMin}&deg;</p>
                           {day.precipitation > 0 && (
-                            <div className="flex items-center justify-center gap-0.5 mt-0.5">
-                              <Droplets className="w-2.5 h-2.5 text-cyan-500" />
-                              <span className="text-[9px] text-cyan-600">{day.precipitation}mm</span>
+                            <div className="flex items-center justify-center gap-0.5 mt-1">
+                              <Droplets className="w-3 h-3 text-cyan-500" />
+                              <span className="text-[10px] text-cyan-600">{day.precipitation}mm</span>
                             </div>
                           )}
                         </motion.div>
@@ -735,7 +760,7 @@ export default function Dashboard() {
           transition={{ delay: 0.35, duration: 0.4 }}
         >
           <Card className="border-border-light shadow-card">
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
@@ -994,7 +1019,7 @@ export default function Dashboard() {
             </div>
             <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('quickActionsTitle')}</h3>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-4 gap-3">
             {QUICK_ACTIONS.map((action, i) => (
               <motion.button
                 key={action.label}
@@ -1009,7 +1034,7 @@ export default function Dashboard() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.6 + i * 0.04 }}
-                className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-border-light shadow-card hover:shadow-card-hover transition-all group cursor-pointer"
+                className="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-border-light shadow-card hover:shadow-card-hover transition-all group cursor-pointer"
               >
                 <div className={`w-12 h-12 rounded-xl ${action.color} flex items-center justify-center`}>
                   <action.icon className="w-6 h-6" />
