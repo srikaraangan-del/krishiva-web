@@ -428,14 +428,14 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="w-full space-y-6 pb-6">
+      <div className="max-w-[1400px] mx-auto space-y-6 pb-6">
 
         {/* ====== HERO: Welcome + Quick Summary ====== */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-2xl bg-krishiva-green p-5 sm:p-6 lg:p-8 text-white"
+          className="relative overflow-hidden rounded-xl bg-krishiva-green p-6 text-white"
         >
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
@@ -489,7 +489,7 @@ export default function Dashboard() {
             </div>
 
             {/* Quick Stats Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
               {[
                 { label: 'Total Farm Area', value: '25 acres', icon: Sprout },
                 { label: 'Active Crops', value: '3 Crops', icon: CheckCircle2 },
@@ -501,7 +501,7 @@ export default function Dashboard() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + i * 0.08 }}
-                  className="bg-white/10 backdrop-blur-sm rounded-xl p-3"
+                  className="bg-white/10 backdrop-blur-sm rounded-lg p-4"
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <stat.icon className="w-4 h-4 text-white/70" />
@@ -603,7 +603,7 @@ export default function Dashboard() {
           id="weather"
         >
           <Card className="border-border-light shadow-card">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
@@ -835,7 +835,7 @@ export default function Dashboard() {
             </div>
             <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('schemesTitle')}</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {SCHEMES.map((scheme, i) => (
               <motion.a
                 key={scheme.name}
@@ -1005,7 +1005,7 @@ export default function Dashboard() {
             </div>
             <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('quickActionsTitle')}</h3>
           </div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {QUICK_ACTIONS.map((action, i) => (
               <motion.button
                 key={action.label}
@@ -1020,7 +1020,7 @@ export default function Dashboard() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.6 + i * 0.04 }}
-                className="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-border-light shadow-card hover:shadow-card-hover transition-all group cursor-pointer"
+                className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-border-light shadow-card hover:shadow-card-hover transition-all group cursor-pointer"
               >
                 <div className={`w-12 h-12 rounded-xl ${action.color} flex items-center justify-center`}>
                   <action.icon className="w-6 h-6" />

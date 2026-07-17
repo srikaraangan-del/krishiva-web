@@ -188,17 +188,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Menu className="w-5 h-5 text-text-secondary" />
           </button>
 
-          <div className="flex items-center gap-2 text-sm text-text-muted">
-            <span>Dashboard</span>
-            {location.pathname !== '/dashboard' && (
-              <>
-                <span>/</span>
-                <span className="text-text-primary font-medium capitalize">
-                  {location.pathname.split('/').pop()?.replace('-', ' ')}
-                </span>
-              </>
-            )}
-          </div>
+          <h1 className="font-poppins font-semibold text-base text-text-primary capitalize">
+            {location.pathname === '/dashboard' ? 'Dashboard' : location.pathname.split('/').pop()?.replace(/-/g, ' ')}
+          </h1>
 
           <div className="ml-auto flex items-center gap-3">
             <button className="p-2 rounded-xl hover:bg-bg-primary transition-colors relative">
@@ -215,7 +207,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto pb-24 lg:pb-8">
+        <main className="flex-1 p-6 overflow-auto pb-24 lg:pb-6">
           {children}
         </main>
 
