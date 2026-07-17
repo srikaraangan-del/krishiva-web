@@ -53,7 +53,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <div className="min-h-[100dvh] bg-bg-primary flex">
+    <div className="min-h-[100dvh] bg-bg-primary flex overflow-x-hidden">
       {/* Desktop Sidebar */}
       <aside
         className={`hidden lg:flex flex-col fixed left-0 top-0 h-full bg-white border-r border-border-light z-40 transition-all duration-300 ${
@@ -202,7 +202,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 px-5 py-5 overflow-auto pb-24 lg:pb-5">
+        <main className="flex-1 px-5 py-5 overflow-y-auto overflow-x-hidden pb-24 lg:pb-5">
           {children}
         </main>
 

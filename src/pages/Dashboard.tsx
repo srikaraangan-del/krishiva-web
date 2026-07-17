@@ -428,14 +428,11 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="w-full max-w-[1360px] mx-auto space-y-5">
+      <div className="w-full space-y-5">
 
-        {/* ====== PAGE HEADER: Title + Subtitle + Language ====== */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="font-poppins font-bold text-2xl text-text-primary">Dashboard</h1>
-            <p className="text-sm text-text-secondary mt-0.5">Welcome back, Rajesh! Here&apos;s what&apos;s happening on your farm.</p>
-          </div>
+        {/* ====== STAT CARDS + Language ====== */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1" />
           <div className="relative" ref={langRef}>
             <button
               onClick={() => setLangOpen(!langOpen)}
@@ -476,7 +473,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* ====== STAT CARDS: Reference Design Pattern ====== */}
+        {/* ====== STAT CARDS ====== */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -519,7 +516,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-3 px-4 py-3 border-b border-border-light bg-amber-50/50">
                 <TrendingUp className="w-5 h-5 text-harvest-gold shrink-0" />
                 <h3 className="font-poppins font-semibold text-sm text-text-primary shrink-0">{t('mandiTitle')}</h3>
-                <div className="flex-1 overflow-hidden" ref={tickerRef}>
+                <div className="flex-1 overflow-hidden max-w-full" ref={tickerRef}>
                   <div className="flex gap-6 animate-scroll-x whitespace-nowrap" style={{ animation: 'scroll-x 30s linear infinite' }}>
                     {[...MANDI_PRICES, ...MANDI_PRICES].map((item, idx) => (
                       <button
@@ -679,7 +676,7 @@ export default function Dashboard() {
 
                   {/* Enhanced Weather Metrics — 7-col grid */}
                   {weatherDays.length > 0 && (
-                    <div className="grid grid-cols-7 gap-2 mb-4">
+                    <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 mb-4">
                       {[
                         { icon: Droplets, label: 'Humidity', value: `${weatherDays[0].humidity ?? 65}%`, color: 'text-blue-500' },
                         { icon: Sun, label: 'UV', value: `${weatherDays[0].uvIndex ?? 5}`, color: 'text-amber-500' },
