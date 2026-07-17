@@ -201,8 +201,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </header>
 
-        {/* Page Content — Full width, consistent padding */}
-        <main className="flex-1 p-6 overflow-auto pb-24 lg:pb-6">
+        {/* Page Content */}
+        <main className="flex-1 px-4 py-5 lg:px-8 lg:py-6 overflow-auto pb-24 lg:pb-8">
           {children}
         </main>
 
