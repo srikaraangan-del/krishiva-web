@@ -428,90 +428,84 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-[1200px] mx-auto space-y-6">
+      <div className="w-full space-y-6">
 
-        {/* ====== HERO: Welcome + Quick Summary ====== */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-xl bg-krishiva-green p-5 text-white"
-        >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
-          <div className="relative z-10">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h1 className="font-poppins font-bold text-2xl sm:text-3xl mb-1">Welcome back, Rajesh!</h1>
-                <p className="text-white/70 text-sm">Here&apos;s what&apos;s happening on your farm today</p>
-              </div>
-              <div className="flex items-center gap-2">
-                {/* Language Selector */}
-                <div className="relative" ref={langRef}>
-                  <button
-                    onClick={() => setLangOpen(!langOpen)}
-                    className="flex items-center gap-2 bg-white/15 hover:bg-white/25 transition-colors rounded-xl px-3 py-2 text-sm"
-                  >
-                    <Globe className="w-4 h-4" />
-                    <span>{LANGUAGES.find(l => l.code === selectedLang)?.native}</span>
-                  </button>
-                  <AnimatePresence>
-                    {langOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -5, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -5, scale: 0.95 }}
-                        transition={{ duration: 0.15 }}
-                        className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-border-light z-50 p-3"
-                      >
-                        <p className="text-xs text-text-muted mb-2 px-2">{t('all') === 'All' ? 'Select Language' : t('all') === 'सभी' ? 'भाषा चुनें' : 'Select Language'}</p>
-                        <div className="grid grid-cols-3 gap-1.5">
-                          {LANGUAGES.map((lang) => (
-                            <button
-                              key={lang.code}
-                              onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
-                              className={`flex items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium border transition-all ${
-                                selectedLang === lang.code
-                                  ? 'border-krishiva-green bg-krishiva-green text-white'
-                                  : 'border-border-light text-text-secondary hover:border-border-green'
-                              }`}
-                            >
-                              {selectedLang === lang.code && <Check className="w-3 h-3" />}
-                              <span>{lang.native}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Stats Row */}
-            <div className="grid grid-cols-4 gap-3 mt-5">
-              {[
-                { label: 'Farm Area', value: '25 acres', icon: Sprout },
-                { label: 'Crops', value: '3', icon: CheckCircle2 },
-                { label: 'Alerts', value: '5 New', icon: Bell },
-                { label: 'Wallet', value: 'Rs 12,450', icon: Wallet },
-              ].map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + i * 0.08 }}
-                  className="bg-white/10 backdrop-blur-sm rounded-lg p-3"
-                >
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <stat.icon className="w-3.5 h-3.5 text-white/70" />
-                    <span className="text-white/60 text-[10px]">{stat.label}</span>
-                  </div>
-                  <p className="font-poppins font-semibold text-sm">{stat.value}</p>
-                </motion.div>
-              ))}
-            </div>
+        {/* ====== PAGE HEADER: Title + Subtitle + Language ====== */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="font-poppins font-bold text-2xl text-text-primary">Dashboard</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Welcome back, Rajesh! Here&apos;s what&apos;s happening on your farm.</p>
           </div>
+          <div className="relative" ref={langRef}>
+            <button
+              onClick={() => setLangOpen(!langOpen)}
+              className="flex items-center gap-2 bg-white border border-border-light hover:border-krishiva-green transition-colors rounded-xl px-3 py-2 text-sm text-text-secondary"
+            >
+              <Globe className="w-4 h-4 text-krishiva-green" />
+              <span>{LANGUAGES.find(l => l.code === selectedLang)?.native}</span>
+            </button>
+            <AnimatePresence>
+              {langOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-border-light z-50 p-3"
+                >
+                  <p className="text-xs text-text-muted mb-2 px-2">Select Language</p>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {LANGUAGES.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
+                        className={`flex items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium border transition-all ${
+                          selectedLang === lang.code
+                            ? 'border-krishiva-green bg-krishiva-green text-white'
+                            : 'border-border-light text-text-secondary hover:border-border-green'
+                        }`}
+                      >
+                        {selectedLang === lang.code && <Check className="w-3 h-3" />}
+                        <span>{lang.native}</span>
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* ====== STAT CARDS: Reference Design Pattern ====== */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+        >
+          {[
+            { label: 'Total Farm Area', value: '25', sub: 'acres', icon: Sprout, color: 'bg-green-50 text-green-600' },
+            { label: 'Active Crops', value: '3', sub: 'crops growing', icon: CheckCircle2, color: 'bg-blue-50 text-blue-600' },
+            { label: 'Mandi Alerts', value: '5', sub: 'new today', icon: Bell, color: 'bg-amber-50 text-amber-600' },
+            { label: 'Wallet Balance', value: '12,450', sub: 'Indian Rupees', icon: Wallet, color: 'bg-purple-50 text-purple-600' },
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+              className="bg-white rounded-xl border border-border-light p-5 flex items-center justify-between"
+            >
+              <div>
+                <p className="text-xs text-text-muted mb-1">{stat.label}</p>
+                <p className="font-poppins font-bold text-2xl text-text-primary">{stat.value}</p>
+                <p className="text-[10px] text-text-secondary mt-0.5">{stat.sub}</p>
+              </div>
+              <div className={`w-11 h-11 rounded-xl ${stat.color} flex items-center justify-center shrink-0`}>
+                <stat.icon className="w-5 h-5" />
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
 
         {/* ====== MANDI TICKER ====== */}

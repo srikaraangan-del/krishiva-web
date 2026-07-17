@@ -57,7 +57,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Desktop Sidebar */}
       <aside
         className={`hidden lg:flex flex-col fixed left-0 top-0 h-full bg-white border-r border-border-light z-40 transition-all duration-300 ${
-          collapsed ? 'w-[72px]' : 'w-[240px]'
+          collapsed ? 'w-[72px]' : 'w-[220px]'
         }`}
       >
         {/* Logo */}
@@ -176,9 +176,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main Content Area */}
       <div className={`flex-1 flex flex-col min-h-[100dvh] transition-all duration-300 ${
-        collapsed ? 'lg:ml-[72px]' : 'lg:ml-[240px]'
+        collapsed ? 'lg:ml-[72px]' : 'lg:ml-[220px]'
       }`}>
-        {/* Top App Bar — No page title, just actions */}
+        {/* Top Bar — Actions only, flush right */}
         <header className="h-16 bg-white border-b border-border-light flex items-center justify-end px-6 sticky top-0 z-30">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -202,7 +202,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 px-4 py-5 lg:px-8 lg:py-6 overflow-auto pb-24 lg:pb-8">
+        <main className="flex-1 p-6 overflow-auto pb-24 lg:pb-6">
           {children}
         </main>
 
