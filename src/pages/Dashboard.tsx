@@ -338,11 +338,12 @@ export default function Dashboard() {
     async function fetchWeather() {
       try {
         const res = await fetch(
-          'https://api.open-meteo.com/v1/forecast?latitude=16.3067&longitude=80.4365&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode,windspeed_10m_max&timezone=Asia/Kolkata&forecast_days=16'
+          'https://api.open-meteo.com/v1/forecast?latitude=16.3067&longitude=80.4365&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode,windspeed_10m_max,uv_index_max,sunrise,sunset&timezone=Asia/Kolkata&forecast_days=16&current=relative_humidity_2m,surface_pressure,visibility,dew_point_2m'
         );
         if (!res.ok) throw new Error('Weather fetch failed');
         const data = await res.json();
         if (cancelled) return;
+        const current = data.current || {};
         const days: WeatherDay[] = data.daily.time.map((t: string, i: number) => ({
           date: t,
           tempMax: data.daily.temperature_2m_max[i],
@@ -350,6 +351,13 @@ export default function Dashboard() {
           precipitation: data.daily.precipitation_sum[i],
           windSpeed: data.daily.windspeed_10m_max[i],
           weatherCode: data.daily.weathercode[i],
+          humidity: current.relative_humidity_2m ?? 65,
+          uvIndex: data.daily.uv_index_max?.[i] ?? 5,
+          visibility: current.visibility ? Math.round(current.visibility / 1000) : 10,
+          sunrise: data.daily.sunrise?.[i] ? new Date(data.daily.sunrise[i]).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : '6:00 AM',
+          sunset: data.daily.sunset?.[i] ? new Date(data.daily.sunset[i]).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : '6:30 PM',
+          pressure: current.surface_pressure ? Math.round(current.surface_pressure) : 1013,
+          dewPoint: current.dew_point_2m ? Math.round(current.dew_point_2m) : 24,
         }));
         setWeatherData(days);
       } catch {
@@ -646,86 +654,60 @@ export default function Dashboard() {
                 <>
                   {/* Current Conditions */}
                   {weatherDays.length > 0 && (
-                    <div className="bg-blue-50/50 rounded-2xl p-5 mb-5">
-                      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 items-center">
+                    <div className="bg-blue-50/50 rounded-xl p-3 mb-3">
+                      <div className="flex items-center gap-3">
                         {/* Weather Icon + Label */}
-                        <div className="text-center sm:text-left">
+                        <div className="text-center shrink-0 w-16">
                           {(() => {
                             const Icon = getWeatherIcon(weatherDays[0].weatherCode).icon;
-                            return <Icon className="w-14 h-14 text-blue-500 mx-auto sm:mx-0 mb-1" />;
+                            return <Icon className="w-10 h-10 text-blue-500 mx-auto mb-0.5" />;
                           })()}
-                          <p className="text-sm text-text-secondary">{getWeatherIcon(weatherDays[0].weatherCode).label}</p>
+                          <p className="text-[10px] text-text-secondary leading-tight">{getWeatherIcon(weatherDays[0].weatherCode).label}</p>
                         </div>
-                        {/* 4 Stats in a clean row */}
-                        <div className="sm:col-span-4 grid grid-cols-4 gap-3">
-                          <div className="text-center bg-white/60 rounded-xl p-3">
-                            <Thermometer className="w-4 h-4 text-error-red mx-auto mb-1" />
-                            <p className="text-[10px] text-text-muted">Max Temp</p>
-                            <p className="font-poppins font-semibold text-sm">{weatherDays[0].tempMax}&deg;C</p>
-                          </div>
-                          <div className="text-center bg-white/60 rounded-xl p-3">
-                            <Thermometer className="w-4 h-4 text-blue-500 mx-auto mb-1" />
-                            <p className="text-[10px] text-text-muted">Min Temp</p>
-                            <p className="font-poppins font-semibold text-sm">{weatherDays[0].tempMin}&deg;C</p>
-                          </div>
-                          <div className="text-center bg-white/60 rounded-xl p-3">
-                            <Droplets className="w-4 h-4 text-cyan-500 mx-auto mb-1" />
-                            <p className="text-[10px] text-text-muted">Rainfall</p>
-                            <p className="font-poppins font-semibold text-sm">{weatherDays[0].precipitation} mm</p>
-                          </div>
-                          <div className="text-center bg-white/60 rounded-xl p-3">
-                            <Wind className="w-4 h-4 text-text-secondary mx-auto mb-1" />
-                            <p className="text-[10px] text-text-muted">Wind</p>
-                            <p className="font-poppins font-semibold text-sm">{weatherDays[0].windSpeed} km/h</p>
-                          </div>
+                        {/* 4 Stats in a compact row */}
+                        <div className="flex-1 grid grid-cols-4 gap-1.5">
+                          {[
+                            { icon: Thermometer, label: 'Max', value: `${weatherDays[0].tempMax}°C`, color: 'text-error-red' },
+                            { icon: Thermometer, label: 'Min', value: `${weatherDays[0].tempMin}°C`, color: 'text-blue-500' },
+                            { icon: Droplets, label: 'Rain', value: `${weatherDays[0].precipitation}mm`, color: 'text-cyan-500' },
+                            { icon: Wind, label: 'Wind', value: `${weatherDays[0].windSpeed}km/h`, color: 'text-text-secondary' },
+                          ].map((s) => (
+                            <div key={s.label} className="text-center bg-white/60 rounded-lg py-1.5 px-1">
+                              <s.icon className={`w-3.5 h-3.5 ${s.color} mx-auto mb-0.5`} />
+                              <p className="text-[9px] text-text-muted leading-none">{s.label}</p>
+                              <p className="font-poppins font-semibold text-xs leading-tight">{s.value}</p>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Enhanced Weather Metrics */}
+                  {/* Enhanced Weather Metrics - Compact Row */}
                   {weatherDays.length > 0 && (
-                    <div className="grid grid-cols-4 lg:grid-cols-7 gap-2 mb-5">
-                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
-                        <Droplets className="w-4 h-4 text-blue-500 mx-auto mb-1" />
-                        <p className="text-[10px] text-text-muted">Humidity</p>
-                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].humidity}%</p>
-                      </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
-                        <Sun className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-                        <p className="text-[10px] text-text-muted">UV Index</p>
-                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].uvIndex}</p>
-                      </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
-                        <Eye className="w-4 h-4 text-cyan-500 mx-auto mb-1" />
-                        <p className="text-[10px] text-text-muted">Visibility</p>
-                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].visibility}km</p>
-                      </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
-                        <Sunrise className="w-4 h-4 text-harvest-gold mx-auto mb-1" />
-                        <p className="text-[10px] text-text-muted">Sunrise</p>
-                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].sunrise}</p>
-                      </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
-                        <Sunset className="w-4 h-4 text-soil-brown mx-auto mb-1" />
-                        <p className="text-[10px] text-text-muted">Sunset</p>
-                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].sunset}</p>
-                      </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
-                        <Gauge className="w-4 h-4 text-purple-500 mx-auto mb-1" />
-                        <p className="text-[10px] text-text-muted">Pressure</p>
-                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].pressure}hPa</p>
-                      </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
-                        <CloudDrizzle className="w-4 h-4 text-indigo-500 mx-auto mb-1" />
-                        <p className="text-[10px] text-text-muted">Dew Point</p>
-                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].dewPoint}°C</p>
-                      </div>
+                    <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1 scrollbar-hide">
+                      {[
+                        { icon: Droplets, label: 'Humidity', value: `${weatherDays[0].humidity}%`, color: 'text-blue-500' },
+                        { icon: Sun, label: 'UV Index', value: `${weatherDays[0].uvIndex}`, color: 'text-amber-500' },
+                        { icon: Eye, label: 'Visibility', value: `${weatherDays[0].visibility} km`, color: 'text-cyan-500' },
+                        { icon: Sunrise, label: 'Sunrise', value: weatherDays[0].sunrise, color: 'text-harvest-gold' },
+                        { icon: Sunset, label: 'Sunset', value: weatherDays[0].sunset, color: 'text-soil-brown' },
+                        { icon: Gauge, label: 'Pressure', value: `${weatherDays[0].pressure} hPa`, color: 'text-purple-500' },
+                        { icon: CloudDrizzle, label: 'Dew Point', value: `${weatherDays[0].dewPoint}°C`, color: 'text-indigo-500' },
+                      ].map((m) => (
+                        <div key={m.label} className="flex-shrink-0 bg-blue-50/50 rounded-lg px-2.5 py-1.5 flex items-center gap-2 min-w-0">
+                          <m.icon className={`w-3.5 h-3.5 ${m.color} shrink-0`} />
+                          <div className="min-w-0">
+                            <p className="text-[9px] text-text-muted leading-none">{m.label}</p>
+                            <p className="font-poppins font-semibold text-xs text-text-primary leading-tight">{m.value}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   )}
 
-                  {/* Forecast Cards */}
-                  <div className="grid gap-2 grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7">
+                  {/* Forecast Cards - Horizontal Scroll */}
+                  <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
                     {weatherDays.map((day, i) => {
                       const wc = getWeatherIcon(day.weatherCode);
                       const Icon = wc.icon;
@@ -735,16 +717,16 @@ export default function Dashboard() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: i * 0.04 }}
-                          className="bg-bg-primary rounded-xl p-3 text-center"
+                          className="flex-shrink-0 bg-bg-primary rounded-lg p-2 text-center w-[72px]"
                         >
-                          <p className="text-[10px] text-text-muted mb-1.5">{i === 0 ? t('today') : formatDate(day.date)}</p>
-                          <Icon className="w-6 h-6 mx-auto mb-1.5 text-blue-500" />
-                          <p className="font-semibold text-sm text-text-primary">{day.tempMax}&deg;</p>
-                          <p className="text-xs text-text-muted">{day.tempMin}&deg;</p>
+                          <p className="text-[9px] text-text-muted mb-1 truncate">{i === 0 ? t('today') : formatDate(day.date)}</p>
+                          <Icon className="w-5 h-5 mx-auto mb-1 text-blue-500" />
+                          <p className="font-semibold text-xs text-text-primary">{day.tempMax}&deg;</p>
+                          <p className="text-[10px] text-text-muted">{day.tempMin}&deg;</p>
                           {day.precipitation > 0 && (
-                            <div className="flex items-center justify-center gap-0.5 mt-1">
-                              <Droplets className="w-3 h-3 text-cyan-500" />
-                              <span className="text-[10px] text-cyan-600">{day.precipitation}mm</span>
+                            <div className="flex items-center justify-center gap-0.5 mt-0.5">
+                              <Droplets className="w-2.5 h-2.5 text-cyan-500" />
+                              <span className="text-[9px] text-cyan-600">{day.precipitation}mm</span>
                             </div>
                           )}
                         </motion.div>
