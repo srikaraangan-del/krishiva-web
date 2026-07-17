@@ -428,7 +428,7 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="w-full space-y-6">
+      <div className="w-full max-w-[1360px] mx-auto space-y-5">
 
         {/* ====== PAGE HEADER: Title + Subtitle + Language ====== */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
