@@ -636,7 +636,7 @@ export default function Dashboard() {
               {weatherLoading ? (
                 <div className="space-y-3">
                   <Skeleton className="h-24 w-full rounded-xl" />
-                  <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
+                  <div className="grid grid-cols-7 gap-2">
                     {Array.from({ length: 7 }).map((_, i) => (
                       <Skeleton key={i} className="h-32 rounded-xl" />
                     ))}
@@ -721,7 +721,7 @@ export default function Dashboard() {
                   )}
 
                   {/* Forecast Cards */}
-                  <div className="grid gap-2 grid-cols-4 sm:grid-cols-7">
+                  <div className={`grid gap-2 ${weatherDays.length <= 3 ? 'grid-cols-3' : weatherDays.length <= 7 ? 'grid-cols-4 sm:grid-cols-7' : 'grid-cols-4 sm:grid-cols-5 lg:grid-cols-7 xl:grid-cols-10'}`}>
                     {weatherDays.map((day, i) => {
                       const wc = getWeatherIcon(day.weatherCode);
                       const Icon = wc.icon;

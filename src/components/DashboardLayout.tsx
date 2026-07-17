@@ -53,7 +53,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <div className="min-h-[100dvh] bg-bg-primary flex overflow-x-hidden">
+    <div className="min-h-[100dvh] bg-bg-primary flex">
       {/* Desktop Sidebar */}
       <aside
         className={`hidden lg:flex flex-col fixed left-0 top-0 h-full bg-white border-r border-border-light z-40 transition-all duration-300 ${
@@ -188,7 +188,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Menu className="w-5 h-5 text-text-secondary" />
           </button>
 
-          <div className="flex items-center gap-3 ml-auto">
+          <div className="flex items-center gap-2 text-sm text-text-muted">
+            <span>Dashboard</span>
+            {location.pathname !== '/dashboard' && (
+              <>
+                <span>/</span>
+                <span className="text-text-primary font-medium capitalize">
+                  {location.pathname.split('/').pop()?.replace('-', ' ')}
+                </span>
+              </>
+            )}
+          </div>
+
+          <div className="ml-auto flex items-center gap-3">
             <button className="p-2 rounded-xl hover:bg-bg-primary transition-colors relative">
               <Search className="w-5 h-5 text-text-secondary" />
             </button>
@@ -203,7 +215,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-6 overflow-y-auto overflow-x-hidden">
+        <main className="flex-1 p-4 sm:p-6 overflow-auto">
           {children}
         </main>
 
