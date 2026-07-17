@@ -420,7 +420,7 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-[1400px] mx-auto space-y-6 pb-6 px-0 sm:px-2">
+      <div className="w-full space-y-6 pb-6">
 
         {/* ====== HERO: Welcome + Quick Summary ====== */}
         <motion.div
@@ -646,34 +646,38 @@ export default function Dashboard() {
                 <>
                   {/* Current Conditions */}
                   {weatherDays.length > 0 && (
-                    <div className="flex flex-col sm:flex-row items-center gap-6 bg-blue-50/50 rounded-2xl p-5 mb-5">
-                      <div className="text-center">
-                        {(() => {
-                          const Icon = getWeatherIcon(weatherDays[0].weatherCode).icon;
-                          return <Icon className="w-16 h-16 text-blue-500 mx-auto mb-2" />;
-                        })()}
-                        <p className="text-sm text-text-secondary">{getWeatherIcon(weatherDays[0].weatherCode).label}</p>
-                      </div>
-                      <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
-                        <div className="text-center">
-                          <Thermometer className="w-5 h-5 text-error-red mx-auto mb-1" />
-                          <p className="text-xs text-text-muted">Max Temp</p>
-                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].tempMax}&deg;C</p>
+                    <div className="bg-blue-50/50 rounded-2xl p-5 mb-5">
+                      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 items-center">
+                        {/* Weather Icon + Label */}
+                        <div className="text-center sm:text-left">
+                          {(() => {
+                            const Icon = getWeatherIcon(weatherDays[0].weatherCode).icon;
+                            return <Icon className="w-14 h-14 text-blue-500 mx-auto sm:mx-0 mb-1" />;
+                          })()}
+                          <p className="text-sm text-text-secondary">{getWeatherIcon(weatherDays[0].weatherCode).label}</p>
                         </div>
-                        <div className="text-center">
-                          <Thermometer className="w-5 h-5 text-blue-500 mx-auto mb-1" />
-                          <p className="text-xs text-text-muted">Min Temp</p>
-                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].tempMin}&deg;C</p>
-                        </div>
-                        <div className="text-center">
-                          <Droplets className="w-5 h-5 text-cyan-500 mx-auto mb-1" />
-                          <p className="text-xs text-text-muted">Rainfall</p>
-                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].precipitation} mm</p>
-                        </div>
-                        <div className="text-center">
-                          <Wind className="w-5 h-5 text-text-secondary mx-auto mb-1" />
-                          <p className="text-xs text-text-muted">Wind</p>
-                          <p className="font-poppins font-semibold text-lg">{weatherDays[0].windSpeed} km/h</p>
+                        {/* 4 Stats in a clean row */}
+                        <div className="sm:col-span-4 grid grid-cols-4 gap-3">
+                          <div className="text-center bg-white/60 rounded-xl p-3">
+                            <Thermometer className="w-4 h-4 text-error-red mx-auto mb-1" />
+                            <p className="text-[10px] text-text-muted">Max Temp</p>
+                            <p className="font-poppins font-semibold text-sm">{weatherDays[0].tempMax}&deg;C</p>
+                          </div>
+                          <div className="text-center bg-white/60 rounded-xl p-3">
+                            <Thermometer className="w-4 h-4 text-blue-500 mx-auto mb-1" />
+                            <p className="text-[10px] text-text-muted">Min Temp</p>
+                            <p className="font-poppins font-semibold text-sm">{weatherDays[0].tempMin}&deg;C</p>
+                          </div>
+                          <div className="text-center bg-white/60 rounded-xl p-3">
+                            <Droplets className="w-4 h-4 text-cyan-500 mx-auto mb-1" />
+                            <p className="text-[10px] text-text-muted">Rainfall</p>
+                            <p className="font-poppins font-semibold text-sm">{weatherDays[0].precipitation} mm</p>
+                          </div>
+                          <div className="text-center bg-white/60 rounded-xl p-3">
+                            <Wind className="w-4 h-4 text-text-secondary mx-auto mb-1" />
+                            <p className="text-[10px] text-text-muted">Wind</p>
+                            <p className="font-poppins font-semibold text-sm">{weatherDays[0].windSpeed} km/h</p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -681,41 +685,41 @@ export default function Dashboard() {
 
                   {/* Enhanced Weather Metrics */}
                   {weatherDays.length > 0 && (
-                    <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 mb-5">
-                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                    <div className="grid grid-cols-4 lg:grid-cols-7 gap-2 mb-5">
+                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
                         <Droplets className="w-4 h-4 text-blue-500 mx-auto mb-1" />
-                        <p className="text-xs text-text-muted">Humidity</p>
-                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].humidity}%</p>
+                        <p className="text-[10px] text-text-muted">Humidity</p>
+                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].humidity}%</p>
                       </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
                         <Sun className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-                        <p className="text-xs text-text-muted">UV Index</p>
-                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].uvIndex}</p>
+                        <p className="text-[10px] text-text-muted">UV Index</p>
+                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].uvIndex}</p>
                       </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
                         <Eye className="w-4 h-4 text-cyan-500 mx-auto mb-1" />
-                        <p className="text-xs text-text-muted">Visibility</p>
-                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].visibility} km</p>
+                        <p className="text-[10px] text-text-muted">Visibility</p>
+                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].visibility}km</p>
                       </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
                         <Sunrise className="w-4 h-4 text-harvest-gold mx-auto mb-1" />
-                        <p className="text-xs text-text-muted">Sunrise</p>
-                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].sunrise}</p>
+                        <p className="text-[10px] text-text-muted">Sunrise</p>
+                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].sunrise}</p>
                       </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
                         <Sunset className="w-4 h-4 text-soil-brown mx-auto mb-1" />
-                        <p className="text-xs text-text-muted">Sunset</p>
-                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].sunset}</p>
+                        <p className="text-[10px] text-text-muted">Sunset</p>
+                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].sunset}</p>
                       </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
                         <Gauge className="w-4 h-4 text-purple-500 mx-auto mb-1" />
-                        <p className="text-xs text-text-muted">Pressure</p>
-                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].pressure}</p>
+                        <p className="text-[10px] text-text-muted">Pressure</p>
+                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].pressure}hPa</p>
                       </div>
-                      <div className="bg-blue-50/50 rounded-xl p-2.5 text-center">
+                      <div className="bg-blue-50/50 rounded-xl p-2 text-center">
                         <CloudDrizzle className="w-4 h-4 text-indigo-500 mx-auto mb-1" />
-                        <p className="text-xs text-text-muted">Dew Point</p>
-                        <p className="font-poppins font-semibold text-sm">{weatherDays[0].dewPoint}°C</p>
+                        <p className="text-[10px] text-text-muted">Dew Point</p>
+                        <p className="font-poppins font-semibold text-xs">{weatherDays[0].dewPoint}°C</p>
                       </div>
                     </div>
                   )}
