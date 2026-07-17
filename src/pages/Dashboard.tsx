@@ -420,14 +420,14 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-[1200px] mx-auto space-y-6 pb-6">
+      <div className="max-w-[1400px] mx-auto space-y-6 pb-6 px-0 sm:px-2">
 
         {/* ====== HERO: Welcome + Quick Summary ====== */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-3xl bg-krishiva-green p-6 sm:p-8 text-white"
+          className="relative overflow-hidden rounded-2xl bg-krishiva-green p-5 sm:p-6 lg:p-8 text-white"
         >
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
@@ -512,7 +512,7 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.4 }}
         >
-          <Card className="border-border-light shadow-card overflow-hidden">
+          <Card className="border-border-light shadow-card">
             <CardContent className="p-0">
               <div className="flex items-center gap-3 px-4 py-3 border-b border-border-light bg-amber-50/50">
                 <TrendingUp className="w-5 h-5 text-harvest-gold shrink-0" />
@@ -721,7 +721,7 @@ export default function Dashboard() {
                   )}
 
                   {/* Forecast Cards */}
-                  <div className={`grid gap-2 ${weatherDays.length <= 3 ? 'grid-cols-3' : weatherDays.length <= 7 ? 'grid-cols-4 sm:grid-cols-7' : 'grid-cols-4 sm:grid-cols-5 lg:grid-cols-7 xl:grid-cols-10'}`}>
+                  <div className="grid gap-2 grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7">
                     {weatherDays.map((day, i) => {
                       const wc = getWeatherIcon(day.weatherCode);
                       const Icon = wc.icon;
@@ -760,7 +760,7 @@ export default function Dashboard() {
           transition={{ delay: 0.35, duration: 0.4 }}
         >
           <Card className="border-border-light shadow-card">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
@@ -849,7 +849,7 @@ export default function Dashboard() {
             </div>
             <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('schemesTitle')}</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {SCHEMES.map((scheme, i) => (
               <motion.a
                 key={scheme.name}
