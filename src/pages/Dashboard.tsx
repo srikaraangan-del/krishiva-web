@@ -463,7 +463,7 @@ export default function Dashboard() {
                         transition={{ duration: 0.15 }}
                         className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-border-light z-50 p-3"
                       >
-                        <p className="text-xs text-text-muted mb-2 px-2">{t('all') === 'All' ? 'Select Language' : t('all') === 'सभी' ? 'भाषा चुनें' : 'Select Language'}</p>
+                        <p className="text-[8px] text-text-muted leading-none mb-2 px-2">{t('all') === 'All' ? 'Select Language' : t('all') === 'सभी' ? 'भाषा चुनें' : 'Select Language'}</p>
                         <div className="grid grid-cols-3 gap-1.5">
                           {LANGUAGES.map((lang) => (
                             <button
@@ -557,7 +557,7 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between mb-3">
                         <div>
                           <p className="font-poppins font-semibold text-lg text-text-primary">{selectedMandi.commodity}</p>
-                          <p className="text-xs text-text-muted">Current market rate across major mandis</p>
+                          <p className="text-[7px] text-text-muted leading-none">Current market rate across major mandis</p>
                         </div>
                         <button onClick={() => setSelectedMandi(null)} className="p-1.5 rounded-lg hover:bg-white transition-colors">
                           <X className="w-4 h-4 text-text-muted" />
@@ -571,8 +571,8 @@ export default function Dashboard() {
                           { mandi: 'Kurnool', price: selectedMandi.price - 50, change: selectedMandi.change - 20 },
                         ].map((m) => (
                           <div key={m.mandi} className="bg-white rounded-xl p-3 border border-border-light">
-                            <p className="text-xs text-text-muted">{m.mandi}</p>
-                            <p className="font-semibold text-sm text-text-primary">Rs {m.price.toLocaleString()}/q</p>
+                            <p className="text-[7px] text-text-muted leading-none">{m.mandi}</p>
+                            <p className="font-semibold text-[10px] leading-none text-text-primary">Rs {m.price.toLocaleString()}/q</p>
                             <div className="flex items-center gap-1 mt-0.5">
                               {m.change >= 0 ? (
                                 <TrendingUp className="w-3 h-3 text-success-green" />
@@ -609,7 +609,7 @@ export default function Dashboard() {
                     <Cloud className="w-4 h-4 text-blue-500" />
                   </div>
                   <div>
-                    <h3 className="font-poppins font-semibold text-sm text-text-primary leading-tight">{t('weatherTitle')}</h3>
+                    <h3 className="font-poppins font-semibold text-[10px] text-text-primary leading-tight">{t('weatherTitle')}</h3>
                     <p className="text-[10px] text-text-muted flex items-center gap-1">
                       <MapPin className="w-2.5 h-2.5" /> Guntur, AP
                     </p>
@@ -739,13 +739,13 @@ export default function Dashboard() {
           transition={{ delay: 0.35, duration: 0.4 }}
         >
           <Card className="border-border-light shadow-card">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-1 pt-2 px-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
-                    <Newspaper className="w-5 h-5 text-red-500" />
+                  <div className="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center">
+                    <Newspaper className="w-3.5 h-3.5 text-red-500" />
                   </div>
-                  <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('newsTitle')}</h3>
+                  <h3 className="font-poppins font-semibold text-xs leading-tight text-text-primary">{t('newsTitle')}</h3>
                 </div>
                 <div className="flex gap-1.5 flex-wrap">
                   {[
@@ -759,7 +759,7 @@ export default function Dashboard() {
                     <button
                       key={cat.key}
                       onClick={() => setNewsCategory(cat.key)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                      className={`px-1.5 py-0.5 rounded text-[9px] font-medium transition-all ${
                         newsCategory === cat.key
                           ? 'bg-krishiva-green text-white'
                           : 'bg-bg-primary text-text-secondary hover:bg-krishiva-green/10'
@@ -771,7 +771,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-5">
+            <CardContent className="p-2">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={newsCategory}
@@ -823,10 +823,10 @@ export default function Dashboard() {
           id="schemes"
         >
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
-              <Landmark className="w-5 h-5 text-orange-500" />
+            <div className="w-7 h-7 rounded-lg bg-orange-50 flex items-center justify-center">
+              <Landmark className="w-3.5 h-3.5 text-orange-500" />
             </div>
-            <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('schemesTitle')}</h3>
+            <h3 className="font-poppins font-semibold text-xs leading-tight text-text-primary">{t('schemesTitle')}</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {SCHEMES.map((scheme, i) => (
@@ -838,15 +838,15 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + i * 0.06 }}
-                className={`block bg-white rounded-2xl p-5 border-l-4 ${scheme.borderColor} shadow-card hover:shadow-card-hover transition-all group`}
+                className={`block bg-white rounded-xl p-3 border-l-4 ${scheme.borderColor} shadow-card hover:shadow-card-hover transition-all group`}
               >
                 <div className="flex items-start justify-between mb-3">
-                  <div className={`w-10 h-10 rounded-xl ${scheme.bgColor} flex items-center justify-center`}>
-                    <scheme.icon className="w-5 h-5 text-text-primary" />
+                  <div className={`w-7 h-7 rounded-lg ${scheme.bgColor} flex items-center justify-center`}>
+                    <scheme.icon className="w-3.5 h-3.5 text-text-primary" />
                   </div>
                   <ExternalLink className="w-4 h-4 text-text-muted group-hover:text-krishiva-green transition-colors" />
                 </div>
-                <h4 className="font-poppins font-semibold text-sm text-text-primary mb-1">{scheme.name}</h4>
+                <h4 className="font-poppins font-semibold text-[10px] leading-none text-text-primary mb-1">{scheme.name}</h4>
                 <p className="text-xs text-text-secondary mb-3">{scheme.description}</p>
                 {scheme.amount && (
                   <Badge className="bg-krishiva-green/10 text-krishiva-green border-krishiva-green/20 text-[10px]">
@@ -865,10 +865,10 @@ export default function Dashboard() {
           transition={{ delay: 0.5, duration: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
-              <Sprout className="w-5 h-5 text-green-500" />
+            <div className="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center">
+              <Sprout className="w-3.5 h-3.5 text-green-500" />
             </div>
-            <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('myCropsTitle')}</h3>
+            <h3 className="font-poppins font-semibold text-xs leading-tight text-text-primary">{t('myCropsTitle')}</h3>
           </div>
           <div className="space-y-3">
             {crops.map((crop, i) => (
@@ -879,26 +879,26 @@ export default function Dashboard() {
                 transition={{ delay: 0.5 + i * 0.06 }}
               >
                 <Card className="border-border-light shadow-card hover:shadow-card-hover transition-all">
-                  <CardContent className="p-4">
+                  <CardContent className="p-2">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
-                          <Sprout className="w-5 h-5 text-green-500" />
+                        <div className="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center">
+                          <Sprout className="w-3.5 h-3.5 text-green-500" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="font-poppins font-semibold text-sm text-text-primary">{crop.name}</p>
+                            <p className="font-poppins font-semibold text-[10px] leading-none text-text-primary">{crop.name}</p>
                             <Badge variant="outline" className={`text-[10px] h-5 ${getStatusBadgeColor(crop.status)}`}>
                               {crop.status}
                             </Badge>
                           </div>
-                          <p className="text-xs text-text-muted">{crop.acres} acres &middot; Expected: {crop.output} &middot; Harvest: {crop.harvestDate}</p>
+                          <p className="text-[7px] text-text-muted leading-none">{crop.acres} acres &middot; Expected: {crop.output} &middot; Harvest: {crop.harvestDate}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="text-right">
-                          <p className="text-xs text-text-muted">Price</p>
-                          <p className="font-semibold text-sm text-text-primary">{crop.price}</p>
+                          <p className="text-[7px] text-text-muted leading-none">Price</p>
+                          <p className="font-semibold text-[10px] leading-none text-text-primary">{crop.price}</p>
                         </div>
                         <div className="flex items-center gap-1">
                           <Button variant="ghost" size="sm" className="text-text-secondary text-xs h-8 px-2">
@@ -935,10 +935,10 @@ export default function Dashboard() {
           transition={{ delay: 0.55, duration: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-500" />
+            <div className="w-6 h-6 rounded-md bg-blue-50 flex items-center justify-center">
+              <Users className="w-3.5 h-3.5 text-blue-500" />
             </div>
-            <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('buyersTitle')}</h3>
+            <h3 className="font-poppins font-semibold text-xs leading-tight text-text-primary">{t('buyersTitle')}</h3>
           </div>
           <div className="space-y-3">
             {BUYERS.map((buyer, i) => (
@@ -949,20 +949,20 @@ export default function Dashboard() {
                 transition={{ delay: 0.55 + i * 0.06 }}
               >
                 <Card className="border-border-light shadow-card hover:shadow-card-hover transition-all">
-                  <CardContent className="p-4">
+                  <CardContent className="p-2">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-semibold text-sm">
+                        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-semibold text-[10px] leading-none">
                           {buyer.name.charAt(0)}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="font-poppins font-semibold text-sm text-text-primary">{buyer.name}</p>
+                            <p className="font-poppins font-semibold text-[10px] leading-none text-text-primary">{buyer.name}</p>
                             <Badge variant="outline" className={`text-[10px] h-5 ${getStatusBadgeColor(buyer.status)}`}>
                               {buyer.status}
                             </Badge>
                           </div>
-                          <p className="text-xs text-text-muted">Interested in: {buyer.commodity} &middot; Qty: {buyer.quantity}</p>
+                          <p className="text-[7px] text-text-muted leading-none">Interested in: {buyer.commodity} &middot; Qty: {buyer.quantity}</p>
                         </div>
                       </div>
                       <Button
@@ -993,10 +993,10 @@ export default function Dashboard() {
           transition={{ delay: 0.6, duration: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center">
               <Star className="w-5 h-5 text-gray-500" />
             </div>
-            <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('quickActionsTitle')}</h3>
+            <h3 className="font-poppins font-semibold text-xs leading-tight text-text-primary">{t('quickActionsTitle')}</h3>
           </div>
           <div className="grid grid-cols-4 gap-3">
             {QUICK_ACTIONS.map((action, i) => (
@@ -1013,7 +1013,7 @@ export default function Dashboard() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.6 + i * 0.04 }}
-                className="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-border-light shadow-card hover:shadow-card-hover transition-all group cursor-pointer"
+                className="flex flex-col items-center gap-1 p-2 bg-white rounded-xl border border-border-light shadow-card hover:shadow-card-hover transition-all group cursor-pointer"
               >
                 <div className={`w-12 h-12 rounded-xl ${action.color} flex items-center justify-center`}>
                   <action.icon className="w-6 h-6" />
@@ -1065,11 +1065,11 @@ export default function Dashboard() {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="w-20 h-20 rounded-full bg-krishiva-green/10 flex items-center justify-center mx-auto mb-4 relative">
-                  <Mic className="w-10 h-10 text-krishiva-green" />
+                  <Mic className="w-8 h-8 text-krishiva-green" />
                   <span className="absolute inset-0 rounded-full bg-krishiva-green/20 animate-ping" />
                 </div>
-                <h3 className="font-poppins font-semibold text-lg text-text-primary mb-2">{t('listening')}</h3>
-                <p className="text-sm text-text-secondary mb-4">{t('tapToSpeak')}</p>
+                <h3 className="font-poppins font-semibold text-xs leading-tight text-text-primary mb-2">{t('listening')}</h3>
+                <p className="text-[8px] text-text-secondary leading-none mb-4">{t('tapToSpeak')}</p>
                 <Button
                   variant="outline"
                   className="rounded-xl border-error-red text-error-red hover:bg-error-red hover:text-white"
