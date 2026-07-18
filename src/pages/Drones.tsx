@@ -236,7 +236,7 @@ export default function Drones() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-[1200px] mx-auto space-y-8 pb-8">
+      <div className="space-y-5">
         {/* ── Hero Banner ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

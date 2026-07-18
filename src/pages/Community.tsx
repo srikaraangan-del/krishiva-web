@@ -374,7 +374,7 @@ export default function Community() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-[1000px] mx-auto space-y-6 pb-8">
+      <div className="space-y-5">
         {/* ─── Hero Banner ─── */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}

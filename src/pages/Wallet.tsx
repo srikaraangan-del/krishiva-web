@@ -189,7 +189,7 @@ export default function WalletPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-[1200px] mx-auto space-y-6 pb-6">
+      <div className="space-y-5">
         {/* ---- Balance Overview Card ---- */}
         <motion.div
           initial={{ opacity: 0, y: 20, scale: 0.98 }}

@@ -346,7 +346,7 @@ export default function Machinery() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-[1200px] mx-auto space-y-6 pb-8">
+      <div className="space-y-5">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

@@ -261,7 +261,7 @@ export default function Labor() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-[1200px] mx-auto space-y-6 pb-8">
+      <div className="space-y-5">
         {/* ── Page Header ── */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

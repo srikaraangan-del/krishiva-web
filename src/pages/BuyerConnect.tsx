@@ -428,7 +428,7 @@ export default function BuyerConnect() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-[1200px] mx-auto space-y-6 pb-8">
+      <div className="space-y-5">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

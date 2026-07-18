@@ -431,7 +431,7 @@ export default function Feed() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-3xl mx-auto space-y-5">
+      <div className="space-y-5">
         {/* Page Header */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}

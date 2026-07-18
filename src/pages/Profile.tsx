@@ -226,7 +226,7 @@ export default function Profile() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-[1200px] mx-auto space-y-6 pb-6">
+      <div className="space-y-5">
         {/* ---- Profile Header ---- */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
