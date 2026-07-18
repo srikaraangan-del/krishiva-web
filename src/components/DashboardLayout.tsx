@@ -61,7 +61,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }`}
       >
         {/* Logo */}
-        <div className="h-16 flex items-center px-4 border-b border-border-light">
+        <div className="h-12 flex items-center px-3 border-b border-border-light">
           <Link to="/" className="flex items-center gap-2 min-w-0">
             <div className="w-9 h-9 rounded-xl bg-krishiva-green flex items-center justify-center shrink-0">
               <Leaf className="w-5 h-5 text-white" />
@@ -180,30 +180,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         collapsed ? 'lg:ml-[72px]' : 'lg:ml-[260px]'
       }`}>
         {/* Top App Bar */}
-        <header className="h-16 bg-white border-b border-border-light flex items-center px-4 sticky top-0 z-30">
+        <header className="h-12 bg-white border-b border-border-light flex items-center px-3 sticky top-0 z-30">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-lg hover:bg-bg-primary mr-2"
+            className="lg:hidden p-1.5 rounded-lg hover:bg-bg-primary mr-2"
           >
-            <Menu className="w-5 h-5 text-text-secondary" />
+            <Menu className="w-4 h-4 text-text-secondary" />
           </button>
 
-          <div className="ml-auto flex items-center gap-3">
-            <button className="p-2 rounded-xl hover:bg-bg-primary transition-colors relative">
-              <Search className="w-5 h-5 text-text-secondary" />
+          <div className="ml-auto flex items-center gap-2">
+            <button className="p-1.5 rounded-lg hover:bg-bg-primary transition-colors relative">
+              <Search className="w-4 h-4 text-text-secondary" />
             </button>
-            <button className="p-2 rounded-xl hover:bg-bg-primary transition-colors relative">
-              <Bell className="w-5 h-5 text-text-secondary" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-error-red rounded-full" />
+            <button className="p-1.5 rounded-lg hover:bg-bg-primary transition-colors relative">
+              <Bell className="w-4 h-4 text-text-secondary" />
+              <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-error-red rounded-full" />
             </button>
-            <div className="w-9 h-9 rounded-full bg-krishiva-green flex items-center justify-center text-white font-medium text-sm">
+            <div className="w-7 h-7 rounded-full bg-krishiva-green flex items-center justify-center text-white font-medium text-xs">
               RP
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-6 overflow-auto">
+        <main className="flex-1 p-3 sm:p-4 overflow-auto">
           {children}
         </main>
 
