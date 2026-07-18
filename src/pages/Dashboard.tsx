@@ -429,29 +429,29 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-5">
+      <div className="space-y-3">
 
         {/* ====== HERO: Welcome + Quick Summary ====== */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="relative overflow-hidden rounded-2xl bg-krishiva-green p-4 text-white"
+          transition={{ duration: 0.3 }}
+          className="relative overflow-hidden rounded-xl bg-krishiva-green p-3 text-white"
         >
           <div className="relative z-10">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h1 className="font-poppins font-bold text-xl mb-0.5">Welcome back, Rajesh!</h1>
-                <p className="text-white/70 text-xs">Here&apos;s what&apos;s happening on your farm today</p>
+                <h1 className="font-poppins font-bold text-lg leading-tight">Welcome back, Rajesh!</h1>
+                <p className="text-white/70 text-[11px]">Here&apos;s what&apos;s happening on your farm</p>
               </div>
               <div className="flex items-center gap-2">
                 {/* Language Selector */}
                 <div className="relative" ref={langRef}>
                   <button
                     onClick={() => setLangOpen(!langOpen)}
-                    className="flex items-center gap-2 bg-white/15 hover:bg-white/25 transition-colors rounded-xl px-3 py-2 text-sm"
+                    className="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 transition-colors rounded-lg px-2.5 py-1.5 text-xs"
                   >
-                    <Globe className="w-4 h-4" />
+                    <Globe className="w-3.5 h-3.5" />
                     <span>{LANGUAGES.find(l => l.code === selectedLang)?.native}</span>
                   </button>
                   <AnimatePresence>
@@ -488,25 +488,25 @@ export default function Dashboard() {
             </div>
 
             {/* Quick Stats Row */}
-            <div className="grid grid-cols-4 gap-2 mt-4">
+            <div className="grid grid-cols-4 gap-1.5 mt-2">
               {[
-                { label: 'Farm Area', value: '25ac', icon: Sprout },
+                { label: 'Area', value: '25ac', icon: Sprout },
                 { label: 'Crops', value: '3', icon: CheckCircle2 },
                 { label: 'Alerts', value: '5', icon: Bell },
                 { label: 'Wallet', value: '12.4k', icon: Wallet },
               ].map((stat, i) => (
                 <motion.div
                   key={stat.label}
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + i * 0.05 }}
-                  className="bg-white/10 backdrop-blur-sm rounded-lg p-2"
+                  transition={{ delay: 0.15 + i * 0.04 }}
+                  className="bg-white/10 backdrop-blur-sm rounded-md p-1.5"
                 >
-                  <div className="flex items-center gap-1 mb-0.5">
-                    <stat.icon className="w-3 h-3 text-white/60" />
-                    <span className="text-white/50 text-[10px]">{stat.label}</span>
+                  <div className="flex items-center gap-1 mb-0">
+                    <stat.icon className="w-2.5 h-2.5 text-white/50" />
+                    <span className="text-white/40 text-[9px]">{stat.label}</span>
                   </div>
-                  <p className="font-poppins font-semibold text-sm">{stat.value}</p>
+                  <p className="font-poppins font-semibold text-xs">{stat.value}</p>
                 </motion.div>
               ))}
             </div>
@@ -515,15 +515,15 @@ export default function Dashboard() {
 
         {/* ====== MANDI TICKER ====== */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.4 }}
+          transition={{ delay: 0.15, duration: 0.3 }}
         >
           <Card className="border-border-light shadow-card overflow-hidden">
             <CardContent className="p-0">
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-border-light bg-amber-50/50">
-                <TrendingUp className="w-5 h-5 text-harvest-gold shrink-0" />
-                <h3 className="font-poppins font-semibold text-sm text-text-primary shrink-0">{t('mandiTitle')}</h3>
+              <div className="flex items-center gap-2 px-3 py-2 border-b border-border-light bg-amber-50/50">
+                <TrendingUp className="w-4 h-4 text-harvest-gold shrink-0" />
+                <h3 className="font-poppins font-semibold text-xs text-text-primary shrink-0">{t('mandiTitle')}</h3>
                 <div className="flex-1 overflow-hidden" ref={tickerRef}>
                   <div className="flex gap-6 animate-scroll-x whitespace-nowrap" style={{ animation: 'scroll-x 30s linear infinite' }}>
                     {[...MANDI_PRICES, ...MANDI_PRICES].map((item, idx) => (
@@ -602,21 +602,21 @@ export default function Dashboard() {
           id="weather"
         >
           <Card className="border-border-light shadow-card">
-            <CardHeader className="pb-2">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <CardHeader className="pb-2 pt-4 px-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <Cloud className="w-5 h-5 text-blue-500" />
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                    <Cloud className="w-4 h-4 text-blue-500" />
                   </div>
                   <div>
-                    <h3 className="font-poppins font-semibold text-lg text-text-primary">{t('weatherTitle')}</h3>
-                    <p className="text-xs text-text-muted flex items-center gap-1">
-                      <MapPin className="w-3 h-3" /> Guntur, Andhra Pradesh
+                    <h3 className="font-poppins font-semibold text-sm text-text-primary leading-tight">{t('weatherTitle')}</h3>
+                    <p className="text-[10px] text-text-muted flex items-center gap-1">
+                      <MapPin className="w-2.5 h-2.5" /> Guntur, AP
                     </p>
                   </div>
                 </div>
                 {/* Filter Pills */}
-                <div className="flex gap-1.5 flex-wrap">
+                <div className="flex gap-1">
                   {[
                     { key: 'Today', tKey: 'today' },
                     { key: '3 Days', tKey: 'threeDays' },
@@ -627,7 +627,7 @@ export default function Dashboard() {
                     <button
                       key={filter.key}
                       onClick={() => setWeatherFilter(filter.key)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                      className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all ${
                         weatherFilter === filter.key
                           ? 'bg-krishiva-green text-white'
                           : 'bg-bg-primary text-text-secondary hover:bg-krishiva-green/10'
@@ -639,13 +639,13 @@ export default function Dashboard() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-5">
+            <CardContent className="p-3">
               {weatherLoading ? (
-                <div className="space-y-3">
-                  <Skeleton className="h-16 w-full rounded-xl" />
-                  <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
+                <div className="space-y-2">
+                  <Skeleton className="h-12 w-full rounded-lg" />
+                  <div className="grid grid-cols-7 gap-1">
                     {Array.from({ length: 7 }).map((_, i) => (
-                      <Skeleton key={i} className="h-20 rounded-lg" />
+                      <Skeleton key={i} className="h-14 rounded-md" />
                     ))}
                   </div>
                 </div>
@@ -653,25 +653,25 @@ export default function Dashboard() {
                 <>
                   {/* Current Conditions */}
                   {weatherDays.length > 0 && (
-                    <div className="flex items-center gap-3 bg-blue-50/50 rounded-xl p-3 mb-3">
-                      <div className="text-center shrink-0 w-14">
+                    <div className="flex items-center gap-2 bg-blue-50/50 rounded-lg p-2 mb-2">
+                      <div className="text-center shrink-0 w-10">
                         {(() => {
                           const Icon = getWeatherIcon(weatherDays[0].weatherCode).icon;
-                          return <Icon className="w-10 h-10 text-blue-500 mx-auto mb-0.5" />;
+                          return <Icon className="w-7 h-7 text-blue-500 mx-auto" />;
                         })()}
-                        <p className="text-[10px] text-text-secondary leading-tight">{getWeatherIcon(weatherDays[0].weatherCode).label}</p>
+                        <p className="text-[9px] text-text-secondary leading-tight">{getWeatherIcon(weatherDays[0].weatherCode).label}</p>
                       </div>
-                      <div className="flex-1 grid grid-cols-4 gap-2">
+                      <div className="flex-1 grid grid-cols-4 gap-1">
                         {[
                           { icon: Thermometer, label: 'Max', value: `${weatherDays[0].tempMax}°C`, color: 'text-error-red' },
                           { icon: Thermometer, label: 'Min', value: `${weatherDays[0].tempMin}°C`, color: 'text-blue-500' },
                           { icon: Droplets, label: 'Rain', value: `${weatherDays[0].precipitation}mm`, color: 'text-cyan-500' },
                           { icon: Wind, label: 'Wind', value: `${weatherDays[0].windSpeed}km/h`, color: 'text-text-secondary' },
                         ].map((s) => (
-                          <div key={s.label} className="text-center bg-white/60 rounded-lg py-1.5">
-                            <s.icon className={`w-3.5 h-3.5 ${s.color} mx-auto mb-0.5`} />
-                            <p className="text-[9px] text-text-muted leading-none">{s.label}</p>
-                            <p className="font-poppins font-semibold text-xs leading-tight">{s.value}</p>
+                          <div key={s.label} className="text-center bg-white/60 rounded-md py-1">
+                            <s.icon className={`w-3 h-3 ${s.color} mx-auto`} />
+                            <p className="text-[8px] text-text-muted leading-none">{s.label}</p>
+                            <p className="font-poppins font-semibold text-[11px] leading-tight">{s.value}</p>
                           </div>
                         ))}
                       </div>
@@ -680,46 +680,46 @@ export default function Dashboard() {
 
                   {/* Enhanced Weather Metrics */}
                   {weatherDays.length > 0 && (
-                    <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5 mb-3">
+                    <div className="grid grid-cols-7 gap-1 mb-2">
                       {[
-                        { icon: Droplets, label: 'Humidity', value: `${weatherDays[0].humidity}%`, color: 'text-blue-500' },
+                        { icon: Droplets, label: 'Hum', value: `${weatherDays[0].humidity}%`, color: 'text-blue-500' },
                         { icon: Sun, label: 'UV', value: `${weatherDays[0].uvIndex}`, color: 'text-amber-500' },
-                        { icon: Eye, label: 'Visibility', value: `${weatherDays[0].visibility}km`, color: 'text-cyan-500' },
-                        { icon: Sunrise, label: 'Sunrise', value: weatherDays[0].sunrise, color: 'text-harvest-gold' },
-                        { icon: Sunset, label: 'Sunset', value: weatherDays[0].sunset, color: 'text-soil-brown' },
-                        { icon: Gauge, label: 'Pressure', value: `${weatherDays[0].pressure}hPa`, color: 'text-purple-500' },
-                        { icon: CloudDrizzle, label: 'Dew Pt', value: `${weatherDays[0].dewPoint}°C`, color: 'text-indigo-500' },
+                        { icon: Eye, label: 'Vis', value: `${weatherDays[0].visibility}km`, color: 'text-cyan-500' },
+                        { icon: Sunrise, label: 'Rise', value: weatherDays[0].sunrise, color: 'text-harvest-gold' },
+                        { icon: Sunset, label: 'Set', value: weatherDays[0].sunset, color: 'text-soil-brown' },
+                        { icon: Gauge, label: 'Pres', value: `${weatherDays[0].pressure}hPa`, color: 'text-purple-500' },
+                        { icon: CloudDrizzle, label: 'Dew', value: `${weatherDays[0].dewPoint}°C`, color: 'text-indigo-500' },
                       ].map((m) => (
-                        <div key={m.label} className="bg-blue-50/50 rounded-lg p-1.5 text-center">
-                          <m.icon className={`w-3.5 h-3.5 ${m.color} mx-auto mb-0.5`} />
-                          <p className="text-[9px] text-text-muted leading-none">{m.label}</p>
-                          <p className="font-poppins font-semibold text-[11px] text-text-primary leading-tight">{m.value}</p>
+                        <div key={m.label} className="bg-blue-50/50 rounded-md p-1 text-center">
+                          <m.icon className={`w-3 h-3 ${m.color} mx-auto`} />
+                          <p className="text-[7px] text-text-muted leading-none">{m.label}</p>
+                          <p className="font-poppins font-semibold text-[10px] text-text-primary leading-tight">{m.value}</p>
                         </div>
                       ))}
                     </div>
                   )}
 
                   {/* Forecast Cards */}
-                  <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
+                  <div className="grid grid-cols-7 gap-1">
                     {weatherDays.slice(0, 7).map((day, i) => {
                       const wc = getWeatherIcon(day.weatherCode);
                       const Icon = wc.icon;
                       return (
                         <motion.div
                           key={day.date}
-                          initial={{ opacity: 0, y: 8 }}
+                          initial={{ opacity: 0, y: 5 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: i * 0.03 }}
-                          className="bg-bg-primary rounded-lg p-2 text-center"
+                          transition={{ delay: i * 0.02 }}
+                          className="bg-bg-primary rounded-md p-1 text-center"
                         >
-                          <p className="text-[9px] text-text-muted mb-1">{i === 0 ? t('today') : formatDate(day.date)}</p>
-                          <Icon className="w-5 h-5 mx-auto mb-1 text-blue-500" />
-                          <p className="font-semibold text-xs text-text-primary">{day.tempMax}&deg;</p>
-                          <p className="text-[10px] text-text-muted">{day.tempMin}&deg;</p>
+                          <p className="text-[8px] text-text-muted mb-0">{i === 0 ? t('today') : formatDate(day.date)}</p>
+                          <Icon className="w-4 h-4 mx-auto text-blue-500" />
+                          <p className="font-semibold text-[11px] text-text-primary leading-tight">{day.tempMax}&deg;</p>
+                          <p className="text-[9px] text-text-muted">{day.tempMin}&deg;</p>
                           {day.precipitation > 0 && (
-                            <div className="flex items-center justify-center gap-0.5 mt-0.5">
-                              <Droplets className="w-2.5 h-2.5 text-cyan-500" />
-                              <span className="text-[9px] text-cyan-600">{day.precipitation}mm</span>
+                            <div className="flex items-center justify-center gap-0">
+                              <Droplets className="w-2 h-2 text-cyan-500" />
+                              <span className="text-[8px] text-cyan-600">{day.precipitation}mm</span>
                             </div>
                           )}
                         </motion.div>
