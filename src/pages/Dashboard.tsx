@@ -429,7 +429,7 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="w-full space-y-3">
+      <div className="w-full max-w-[1280px] space-y-3">
 
         {/* ====== HERO: Welcome + Quick Summary ====== */}
         <motion.div
