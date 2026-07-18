@@ -180,7 +180,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         collapsed ? 'lg:ml-[72px]' : 'lg:ml-[260px]'
       }`}>
         {/* Top App Bar */}
-        <header className="h-12 bg-white border-b border-border-light flex items-center px-3 sticky top-0 z-30">
+        <header className="h-12 bg-white border-b border-border-light flex items-center px-4 sticky top-0 z-30 shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
             className="lg:hidden p-1.5 rounded-lg hover:bg-bg-primary mr-2"
@@ -203,7 +203,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-3 sm:p-4 overflow-auto">
+        <main className="flex-1 p-4 overflow-auto">
           {children}
         </main>
 
