@@ -1,25 +1,9 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  Newspaper,
-  Tractor,
-  Users,
-  TrendingUp,
-  ShoppingCart,
-  Stethoscope,
-  MessageSquare,
-  GraduationCap,
-  Wallet,
-  User,
-  Menu,
-  X,
-  Bell,
-  Search,
-  ChevronLeft,
-  Leaf,
-  Home,
-  Mic,
+  LayoutDashboard, Newspaper, Tractor, Users, TrendingUp,
+  ShoppingCart, Stethoscope, MessageSquare, GraduationCap,
+  Wallet, User, X, Bell, Leaf, Home, Mic,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -47,74 +31,52 @@ const bottomNavItems = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
 
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <div className="min-h-[100dvh] bg-bg-primary flex">
-      {/* Desktop Sidebar */}
-      <aside
-        className={`hidden lg:flex flex-col fixed left-0 top-0 h-full bg-white border-r border-border-light z-40 transition-all duration-300 ${
-          collapsed ? 'w-[72px]' : 'w-[260px]'
-        }`}
-      >
+    <div className="min-h-[100dvh] bg-[#F8F9FA] flex">
+      {/* Desktop Sidebar — 220px fixed, clean minimal */}
+      <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-full w-[220px] bg-white border-r border-[#E5E7EB] z-40">
         {/* Logo */}
-        <div className="h-10 flex items-center px-3 border-b border-border-light">
-          <Link to="/" className="flex items-center gap-2 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-krishiva-green flex items-center justify-center shrink-0">
-              <Leaf className="w-5 h-5 text-white" />
+        <div className="h-14 flex items-center px-4 border-b border-[#E5E7EB] shrink-0">
+          <Link to="/" className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#2E7D32] flex items-center justify-center shrink-0">
+              <Leaf className="w-4.5 h-4.5 text-white" />
             </div>
-            {!collapsed && (
-              <span className="font-poppins font-bold text-lg text-text-primary truncate">
-                KRISHIVA
-              </span>
-            )}
+            <span className="font-poppins font-bold text-[15px] text-[#111827] tracking-tight">
+              KRISHIVA
+            </span>
           </Link>
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className={`ml-auto p-1.5 rounded-lg hover:bg-bg-primary transition-colors ${collapsed ? 'hidden' : 'block'}`}
-          >
-            <ChevronLeft className="w-4 h-4 text-text-muted" />
-          </button>
         </div>
 
         {/* Nav Items */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+        <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
           {sidebarItems.map((item) => (
             <Link
               key={item.href}
               to={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative ${
+              className={`flex items-center gap-3 px-3 h-9 rounded-lg transition-all duration-150 text-sm ${
                 isActive(item.href)
-                  ? 'bg-krishiva-green/10 text-krishiva-green border-l-[3px] border-krishiva-green'
-                  : 'text-text-secondary hover:bg-krishiva-green/5 hover:text-text-primary border-l-[3px] border-transparent'
+                  ? 'bg-[#2E7D32]/10 text-[#2E7D32] font-medium'
+                  : 'text-[#6B7280] hover:bg-[#F3F4F6] hover:text-[#111827]'
               }`}
-              title={collapsed ? item.label : undefined}
             >
-              <item.icon className="w-[22px] h-[22px] shrink-0" />
-              {!collapsed && (
-                <span className="font-inter font-medium text-sm truncate">{item.label}</span>
-              )}
-              {/* Tooltip for collapsed */}
-              {collapsed && (
-                <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-text-primary text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-                  {item.label}
-                </div>
-              )}
+              <item.icon className="w-[18px] h-[18px] shrink-0" strokeWidth={isActive(item.href) ? 2 : 1.5} />
+              <span className="truncate">{item.label}</span>
             </Link>
           ))}
         </nav>
 
         {/* Back to Home */}
-        <div className="p-3 border-t border-border-light">
+        <div className="p-3 border-t border-[#E5E7EB]">
           <Link
             to="/"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-text-secondary hover:bg-krishiva-green/5 hover:text-text-primary transition-all"
+            className="flex items-center gap-3 px-3 h-9 rounded-lg text-[#6B7280] hover:bg-[#F3F4F6] hover:text-[#111827] transition-all text-sm"
           >
-            <Home className="w-[22px] h-[22px] shrink-0" />
-            {!collapsed && <span className="font-medium text-sm">Back to Home</span>}
+            <Home className="w-[18px] h-[18px] shrink-0" strokeWidth={1.5} />
+            <span>Back to Home</span>
           </Link>
         </div>
       </aside>
@@ -131,42 +93,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               onClick={() => setSidebarOpen(false)}
             />
             <motion.aside
-              initial={{ x: -260 }}
+              initial={{ x: -220 }}
               animate={{ x: 0 }}
-              exit={{ x: -260 }}
-              transition={{ type: 'tween', duration: 0.3 }}
-              className="lg:hidden fixed left-0 top-0 h-full w-[260px] bg-white border-r border-border-light z-50 flex flex-col"
+              exit={{ x: -220 }}
+              transition={{ type: 'tween', duration: 0.25 }}
+              className="lg:hidden fixed left-0 top-0 h-full w-[220px] bg-white border-r border-[#E5E7EB] z-50 flex flex-col"
             >
-              <div className="h-16 flex items-center justify-between px-4 border-b border-border-light">
+              <div className="h-14 flex items-center justify-between px-4 border-b border-[#E5E7EB]">
                 <Link to="/" className="flex items-center gap-2">
-                  <div className="w-9 h-9 rounded-xl bg-krishiva-green flex items-center justify-center">
-                    <Leaf className="w-5 h-5 text-white" />
+                  <div className="w-8 h-8 rounded-lg bg-[#2E7D32] flex items-center justify-center">
+                    <Leaf className="w-4.5 h-4.5 text-white" />
                   </div>
-                  <span className="font-poppins font-bold text-lg text-text-primary">
-                    KRISHIVA
-                  </span>
+                  <span className="font-poppins font-bold text-[15px]">KRISHIVA</span>
                 </Link>
-                <button
-                  onClick={() => setSidebarOpen(false)}
-                  className="p-2 rounded-lg hover:bg-bg-primary"
-                >
-                  <X className="w-5 h-5 text-text-secondary" />
+                <button onClick={() => setSidebarOpen(false)} className="p-2 rounded-lg hover:bg-gray-100">
+                  <X className="w-5 h-5 text-[#6B7280]" />
                 </button>
               </div>
-              <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+              <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
                 {sidebarItems.map((item) => (
                   <Link
                     key={item.href}
                     to={item.href}
                     onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+                    className={`flex items-center gap-3 px-3 h-9 rounded-lg transition-all text-sm ${
                       isActive(item.href)
-                        ? 'bg-krishiva-green/10 text-krishiva-green border-l-[3px] border-krishiva-green'
-                        : 'text-text-secondary hover:bg-krishiva-green/5 border-l-[3px] border-transparent'
+                        ? 'bg-[#2E7D32]/10 text-[#2E7D32] font-medium'
+                        : 'text-[#6B7280] hover:bg-[#F3F4F6]'
                     }`}
                   >
-                    <item.icon className="w-[22px] h-[22px]" />
-                    <span className="font-medium text-sm">{item.label}</span>
+                    <item.icon className="w-[18px] h-[18px]" strokeWidth={isActive(item.href) ? 2 : 1.5} />
+                    <span>{item.label}</span>
                   </Link>
                 ))}
               </nav>
@@ -176,51 +133,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </AnimatePresence>
 
       {/* Main Content Area */}
-      <div className={`flex-1 flex flex-col min-h-[100dvh] transition-all duration-300 ${
-        collapsed ? 'lg:ml-[72px]' : 'lg:ml-[260px]'
-      }`}>
-        {/* Top App Bar */}
-        <header className="h-10 bg-white border-b border-border-light flex items-center px-4 sticky top-0 z-30 shrink-0">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-1.5 rounded-lg hover:bg-bg-primary mr-2"
-          >
-            <Menu className="w-4 h-4 text-text-secondary" />
-          </button>
-
-          <div className="ml-auto flex items-center gap-2">
-            <button className="p-1.5 rounded-lg hover:bg-bg-primary transition-colors relative">
-              <Search className="w-4 h-4 text-text-secondary" />
-            </button>
-            <button className="p-1.5 rounded-lg hover:bg-bg-primary transition-colors relative">
-              <Bell className="w-4 h-4 text-text-secondary" />
-              <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-error-red rounded-full" />
-            </button>
-            <div className="w-7 h-7 rounded-full bg-krishiva-green flex items-center justify-center text-white font-medium text-xs">
-              RP
-            </div>
-          </div>
-        </header>
-
-        {/* Page Content */}
-        <main className="flex-1 p-3 overflow-auto">
+      <div className="flex-1 flex flex-col min-h-[100dvh] lg:ml-[220px]">
+        {/* Content with integrated header */}
+        <div className="flex-1 flex flex-col">
           {children}
-        </main>
+        </div>
 
         {/* Mobile Bottom Nav */}
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-[72px] bg-white border-t border-border-light z-30 flex items-center justify-around px-2">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-[#E5E7EB] z-30 flex items-center justify-around px-2">
           {bottomNavItems.map((item) => (
             <Link
               key={item.label}
               to={item.href}
-              className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-colors ${
-                isActive(item.href) || (item.href === '/dashboard' && location.pathname === '/dashboard')
-                  ? 'text-krishiva-green'
-                  : 'text-text-muted'
+              className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors ${
+                isActive(item.href) ? 'text-[#2E7D32]' : 'text-[#9CA3AF]'
               }`}
             >
-              <item.icon className="w-5 h-5" />
-              <span className="text-[11px] font-medium">{item.label}</span>
+              <item.icon className="w-5 h-5" strokeWidth={isActive(item.href) ? 2 : 1.5} />
+              <span className="text-[10px] font-medium">{item.label}</span>
             </Link>
           ))}
         </nav>
