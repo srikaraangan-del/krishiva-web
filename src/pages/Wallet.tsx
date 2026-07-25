@@ -24,6 +24,7 @@ import {
   Wheat,
   Users,
   MoreHorizontal,
+  Bell,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -189,6 +190,25 @@ export default function WalletPage() {
 
   return (
     <DashboardLayout>
+      <div className="min-h-full">
+        {/* Sticky Header */}
+        <header className="sticky top-0 z-30 bg-[#F8F9FA]/80 backdrop-blur-md border-b border-[#E5E7EB]">
+          <div className="max-w-[1400px] mx-auto h-14 flex items-center justify-between px-6">
+            <div className="flex items-center gap-3">
+              <h1 className="font-poppins font-bold text-xl text-[#111827]">Wallet</h1>
+              <span className="text-[#9CA3AF] text-sm">/</span>
+              <span className="text-[#6B7280] text-sm">Overview</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button className="p-2 rounded-lg hover:bg-[#E5E7EB]/50 transition-colors relative">
+                <Bell className="w-[18px] h-[18px] text-[#6B7280]" strokeWidth={1.5} />
+                <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-[#F8F9FA]" />
+              </button>
+              <div className="w-8 h-8 rounded-full bg-[#2E7D32] flex items-center justify-center text-white font-medium text-xs">RP</div>
+            </div>
+          </div>
+        </header>
+        {/* Main Content */}
       <div className="space-y-5">
         {/* ---- Balance Overview Card ---- */}
         <motion.div
@@ -719,6 +739,8 @@ export default function WalletPage() {
           </DialogContent>
         </Dialog>
       </div>
+      </div>
     </DashboardLayout>
   );
 }
+

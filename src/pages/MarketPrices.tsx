@@ -14,6 +14,7 @@ import {
   BarChart3,
   Calendar,
   Info,
+  Bell,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -259,344 +260,365 @@ export default function MarketPrices() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-5">
-        {/* Hero Banner */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
-        >
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-2">
-              <BarChart3 className="w-5 h-5 text-white/90" />
-              <span className="text-white/80 text-sm font-medium">Live Market Data</span>
+      <div className="min-h-full">
+        {/* Sticky Header */}
+        <header className="sticky top-0 z-30 bg-[#F8F9FA]/80 backdrop-blur-md border-b border-[#E5E7EB]">
+          <div className="max-w-[1400px] mx-auto h-14 flex items-center justify-between px-6">
+            <div className="flex items-center gap-3">
+              <h1 className="font-poppins font-bold text-xl text-[#111827]">Market Prices</h1>
+              <span className="text-[#9CA3AF] text-sm">/</span>
+              <span className="text-[#6B7280] text-sm">Overview</span>
             </div>
-            <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
-              Market Prices
-            </h1>
-            <p className="text-white/85 text-base max-w-lg">
-              Real-time mandi prices across India. Track trends and make informed decisions.
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Search Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          className="flex flex-col sm:flex-row sm:items-center gap-4"
-        >
-          <div className="flex gap-2 flex-wrap">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-              <Input
-                placeholder="Search crop or market..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-11 w-[220px] rounded-xl border-border-light pl-10"
-              />
-            </div>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted z-10" />
-              <select
-                value={locationFilter}
-                onChange={(e) => setLocationFilter(e.target.value)}
-                className="h-11 w-[180px] rounded-xl border border-border-light bg-white pl-10 pr-8 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-krishiva-green/20 appearance-none cursor-pointer"
-              >
-                {LOCATIONS.map((loc) => (
-                  <option key={loc} value={loc}>
-                    {loc === 'All' ? 'All Locations' : loc}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+            <div className="flex items-center gap-2">
+              <button className="p-2 rounded-lg hover:bg-[#E5E7EB]/50 transition-colors relative">
+                <Bell className="w-[18px] h-[18px] text-[#6B7280]" strokeWidth={1.5} />
+                <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-[#F8F9FA]" />
+              </button>
+              <div className="w-8 h-8 rounded-full bg-[#2E7D32] flex items-center justify-center text-white font-medium text-xs">RP</div>
             </div>
           </div>
-        </motion.div>
+        </header>
+        {/* Main Content */}
+        <div className="max-w-[1400px] mx-auto px-6 py-5 space-y-5">
+          {/* Hero Banner */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
+          >
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-2">
+                <BarChart3 className="w-5 h-5 text-white/90" />
+                <span className="text-white/80 text-sm font-medium">Live Market Data</span>
+              </div>
+              <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
+                Market Prices
+              </h1>
+              <p className="text-white/85 text-base max-w-lg">
+                Real-time mandi prices across India. Track trends and make informed decisions.
+              </p>
+            </div>
+          </motion.div>
 
-        {/* Price Summary Cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
-            {PRICE_SUMMARIES.map((item, i) => (
-              <motion.div
-                key={item.crop}
-                custom={i}
-                variants={cardVariants}
-                initial="hidden"
-                animate="visible"
-                onClick={() => setActiveTab(item.crop)}
-                className={`min-w-[160px] rounded-xl px-4 py-4 border shadow-sm flex-shrink-0 cursor-pointer transition-all hover:shadow-md ${item.bgColor}`}
-              >
-                <div className="flex items-center gap-1.5 mb-2">
-                  <Wheat className="w-3.5 h-3.5 text-krishiva-green" />
-                  <span className="text-sm font-semibold text-text-primary">{item.crop}</span>
-                </div>
-                <div className="text-lg font-bold text-text-primary">
-                  ₹{item.price.toLocaleString('en-IN')}/q
-                </div>
-                <div
-                  className={`flex items-center gap-0.5 text-xs font-medium mt-1 ${
-                    item.trend === 'up' ? 'text-success-green' : 'text-error-red'
+          {/* Search Bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="flex flex-col sm:flex-row sm:items-center gap-4"
+          >
+            <div className="flex gap-2 flex-wrap">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                <Input
+                  placeholder="Search crop or market..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-11 w-[220px] rounded-xl border-border-light pl-10"
+                />
+              </div>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted z-10" />
+                <select
+                  value={locationFilter}
+                  onChange={(e) => setLocationFilter(e.target.value)}
+                  className="h-11 w-[180px] rounded-xl border border-border-light bg-white pl-10 pr-8 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-krishiva-green/20 appearance-none cursor-pointer"
+                >
+                  {LOCATIONS.map((loc) => (
+                    <option key={loc} value={loc}>
+                      {loc === 'All' ? 'All Locations' : loc}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Price Summary Cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+              {PRICE_SUMMARIES.map((item, i) => (
+                <motion.div
+                  key={item.crop}
+                  custom={i}
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  onClick={() => setActiveTab(item.crop)}
+                  className={`min-w-[160px] rounded-xl px-4 py-4 border shadow-sm flex-shrink-0 cursor-pointer transition-all hover:shadow-md ${item.bgColor}`}
+                >
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <Wheat className="w-3.5 h-3.5 text-krishiva-green" />
+                    <span className="text-sm font-semibold text-text-primary">{item.crop}</span>
+                  </div>
+                  <div className="text-lg font-bold text-text-primary">
+                    ₹{item.price.toLocaleString('en-IN')}/q
+                  </div>
+                  <div
+                    className={`flex items-center gap-0.5 text-xs font-medium mt-1 ${
+                      item.trend === 'up' ? 'text-success-green' : 'text-error-red'
+                    }`}
+                  >
+                    {item.trend === 'up' ? (
+                      <ArrowUp className="w-3 h-3" />
+                    ) : (
+                      <ArrowDown className="w-3 h-3" />
+                    )}
+                    {item.change}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Filter Options */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="flex flex-col sm:flex-row gap-3 items-start sm:items-center"
+          >
+            <div className="flex items-center gap-2 text-sm text-text-secondary">
+              <Filter className="w-4 h-4" />
+              <span className="font-medium">Filters:</span>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {DATE_RANGES.map((range) => (
+                <button
+                  key={range}
+                  onClick={() => setDateRange(range)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    dateRange === range
+                      ? 'bg-krishiva-green text-white'
+                      : 'bg-white border border-border-light text-text-secondary hover:text-text-primary'
                   }`}
                 >
-                  {item.trend === 'up' ? (
-                    <ArrowUp className="w-3 h-3" />
-                  ) : (
-                    <ArrowDown className="w-3 h-3" />
-                  )}
-                  {item.change}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+                  {range}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2 ml-auto">
+              <Calendar className="w-4 h-4 text-text-muted" />
+              <span className="text-xs text-text-muted">Last updated: Today, 10:30 AM</span>
+            </div>
+          </motion.div>
 
-        {/* Filter Options */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="flex flex-col sm:flex-row gap-3 items-start sm:items-center"
-        >
-          <div className="flex items-center gap-2 text-sm text-text-secondary">
-            <Filter className="w-4 h-4" />
-            <span className="font-medium">Filters:</span>
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {DATE_RANGES.map((range) => (
+          {/* Crop Tabs */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex gap-1 bg-white rounded-xl border border-border-light p-1 overflow-x-auto"
+          >
+            {CROP_TABS.map((tab) => (
               <button
-                key={range}
-                onClick={() => setDateRange(range)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  dateRange === range
-                    ? 'bg-krishiva-green text-white'
-                    : 'bg-white border border-border-light text-text-secondary hover:text-text-primary'
+                key={tab}
+                onClick={() => {
+                  setActiveTab(tab);
+                  setSelectedCrop(null);
+                }}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                  activeTab === tab
+                    ? 'bg-krishiva-green text-white shadow-button'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-bg-primary'
                 }`}
               >
-                {range}
+                {tab}
               </button>
             ))}
-          </div>
-          <div className="flex items-center gap-2 ml-auto">
-            <Calendar className="w-4 h-4 text-text-muted" />
-            <span className="text-xs text-text-muted">Last updated: Today, 10:30 AM</span>
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* Crop Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="flex gap-1 bg-white rounded-xl border border-border-light p-1 overflow-x-auto"
-        >
-          {CROP_TABS.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => {
-                setActiveTab(tab);
-                setSelectedCrop(null);
-              }}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
-                activeTab === tab
-                  ? 'bg-krishiva-green text-white shadow-button'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-bg-primary'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </motion.div>
+          {/* Location-wise Price Table */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+          >
+            <Card className="border-border-light shadow-card overflow-hidden">
+              <CardContent className="p-0">
+                <div className="p-4 sm:p-5 border-b border-border-light flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-krishiva-green" />
+                  <h3 className="font-poppins font-semibold text-heading-sm text-text-primary">
+                    Location-wise Prices
+                  </h3>
+                  <span className="text-xs text-text-muted ml-2">
+                    ({filteredRows.length} results)
+                  </span>
+                </div>
 
-        {/* Location-wise Price Table */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-        >
-          <Card className="border-border-light shadow-card overflow-hidden">
-            <CardContent className="p-0">
-              <div className="p-4 sm:p-5 border-b border-border-light flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-krishiva-green" />
-                <h3 className="font-poppins font-semibold text-heading-sm text-text-primary">
-                  Location-wise Prices
-                </h3>
-                <span className="text-xs text-text-muted ml-2">
-                  ({filteredRows.length} results)
-                </span>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-bg-primary border-b border-border-light">
-                      <th className="text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3">
-                        Crop
-                      </th>
-                      <th className="text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3">
-                        Market (Mandi)
-                      </th>
-                      <th className="text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3">
-                        Price (₹/q)
-                      </th>
-                      <th className="text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3 hidden sm:table-cell">
-                        Change (₹)
-                      </th>
-                      <th className="text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3">
-                        Trend
-                      </th>
-                      <th className="text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3 hidden md:table-cell">
-                        Insight
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <AnimatePresence mode="wait">
-                      {filteredRows.map((row, i) => (
-                        <motion.tr
-                          key={row.id}
-                          custom={i}
-                          variants={cardVariants}
-                          initial="hidden"
-                          animate="visible"
-                          onClick={() => handleRowClick(row.crop)}
-                          className="border-b border-border-light last:border-0 hover:bg-bg-primary/50 cursor-pointer transition-colors"
-                        >
-                          <td className="px-4 py-3.5">
-                            <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-lg bg-krishiva-green/10 flex items-center justify-center">
-                                <Wheat className="w-4 h-4 text-krishiva-green" />
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-bg-primary border-b border-border-light">
+                        <th className="text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3">
+                          Crop
+                        </th>
+                        <th className="text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3">
+                          Market (Mandi)
+                        </th>
+                        <th className="text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3">
+                          Price (₹/q)
+                        </th>
+                        <th className="text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3 hidden sm:table-cell">
+                          Change (₹)
+                        </th>
+                        <th className="text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3">
+                          Trend
+                        </th>
+                        <th className="text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3 hidden md:table-cell">
+                          Insight
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <AnimatePresence mode="wait">
+                        {filteredRows.map((row, i) => (
+                          <motion.tr
+                            key={row.id}
+                            custom={i}
+                            variants={cardVariants}
+                            initial="hidden"
+                            animate="visible"
+                            onClick={() => handleRowClick(row.crop)}
+                            className="border-b border-border-light last:border-0 hover:bg-bg-primary/50 cursor-pointer transition-colors"
+                          >
+                            <td className="px-4 py-3.5">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-lg bg-krishiva-green/10 flex items-center justify-center">
+                                  <Wheat className="w-4 h-4 text-krishiva-green" />
+                                </div>
+                                <span className="font-semibold text-text-primary text-sm">{row.crop}</span>
                               </div>
-                              <span className="font-semibold text-text-primary text-sm">{row.crop}</span>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3.5">
-                            <div>
-                              <p className="font-medium text-text-primary text-sm">{row.market}</p>
-                              <p className="text-xs text-text-muted flex items-center gap-1">
-                                <MapPin className="w-3 h-3" />
-                                {row.state}
-                              </p>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3.5 text-right">
-                            <span className="font-bold text-text-primary">
-                              ₹{row.price.toLocaleString('en-IN')}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3.5 text-right hidden sm:table-cell">
-                            <span
-                              className={`text-sm font-medium ${
-                                row.change >= 0 ? 'text-success-green' : 'text-error-red'
-                              }`}
-                            >
-                              {row.change >= 0 ? '+' : ''}
-                              {row.change.toLocaleString('en-IN')}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3.5 text-right">
-                            <div className="flex items-center justify-end gap-1">
-                              {row.trend === 'up' ? (
-                                <TrendingUp className="w-4 h-4 text-success-green" />
-                              ) : (
-                                <TrendingDown className="w-4 h-4 text-error-red" />
-                              )}
+                            </td>
+                            <td className="px-4 py-3.5">
+                              <div>
+                                <p className="font-medium text-text-primary text-sm">{row.market}</p>
+                                <p className="text-xs text-text-muted flex items-center gap-1">
+                                  <MapPin className="w-3 h-3" />
+                                  {row.state}
+                                </p>
+                              </div>
+                            </td>
+                            <td className="px-4 py-3.5 text-right">
+                              <span className="font-bold text-text-primary">
+                                ₹{row.price.toLocaleString('en-IN')}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3.5 text-right hidden sm:table-cell">
                               <span
-                                className={`text-xs font-semibold ${
-                                  row.trend === 'up' ? 'text-success-green' : 'text-error-red'
+                                className={`text-sm font-medium ${
+                                  row.change >= 0 ? 'text-success-green' : 'text-error-red'
                                 }`}
                               >
-                                {row.changePercent}
+                                {row.change >= 0 ? '+' : ''}
+                                {row.change.toLocaleString('en-IN')}
                               </span>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3.5 hidden md:table-cell">
-                            <span className="text-xs text-text-secondary">{row.insight}</span>
-                          </td>
-                        </motion.tr>
-                      ))}
-                    </AnimatePresence>
-                  </tbody>
-                </table>
-              </div>
-
-              {filteredRows.length === 0 && (
-                <div className="py-12 text-center">
-                  <Search className="w-10 h-10 text-text-muted mx-auto mb-3" />
-                  <p className="text-text-secondary font-medium">No results found</p>
-                  <p className="text-text-muted text-sm mt-1">Try adjusting your filters</p>
+                            </td>
+                            <td className="px-4 py-3.5 text-right">
+                              <div className="flex items-center justify-end gap-1">
+                                {row.trend === 'up' ? (
+                                  <TrendingUp className="w-4 h-4 text-success-green" />
+                                ) : (
+                                  <TrendingDown className="w-4 h-4 text-error-red" />
+                                )}
+                                <span
+                                  className={`text-xs font-semibold ${
+                                    row.trend === 'up' ? 'text-success-green' : 'text-error-red'
+                                  }`}
+                                >
+                                  {row.changePercent}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-3.5 hidden md:table-cell">
+                              <span className="text-xs text-text-secondary">{row.insight}</span>
+                            </td>
+                          </motion.tr>
+                        ))}
+                      </AnimatePresence>
+                    </tbody>
+                  </table>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
 
-        {/* Trend Chart Section */}
-        <AnimatePresence>
-          {selectedCrop && TREND_CHARTS[selectedCrop] && (
-            <motion.div
-              key={selectedCrop}
-              initial={{ opacity: 0, y: 20, height: 0 }}
-              animate={{ opacity: 1, y: 0, height: 'auto' }}
-              exit={{ opacity: 0, y: 20, height: 0 }}
-              transition={{ duration: 0.35 }}
-            >
-              <Card className="border-border-light shadow-card overflow-hidden">
-                <CardContent className="p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <BarChart3 className="w-5 h-5 text-krishiva-green" />
-                      <h3 className="font-poppins font-semibold text-heading-sm text-text-primary">
-                        {selectedCrop} — 7 Day Price Trend
-                      </h3>
-                    </div>
-                    <button
-                      onClick={() => setSelectedCrop(null)}
-                      className="text-xs text-text-muted hover:text-text-primary transition-colors"
-                    >
-                      Close
-                    </button>
+                {filteredRows.length === 0 && (
+                  <div className="py-12 text-center">
+                    <Search className="w-10 h-10 text-text-muted mx-auto mb-3" />
+                    <p className="text-text-secondary font-medium">No results found</p>
+                    <p className="text-text-muted text-sm mt-1">Try adjusting your filters</p>
                   </div>
-                  <SimpleBarChart data={TREND_CHARTS[selectedCrop]} crop={selectedCrop} />
-                </CardContent>
-              </Card>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Quick Stats Footer */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-3"
-        >
-          {[
-            { label: 'Active Markets', value: '26', icon: MapPin },
-            { label: 'Crops Tracked', value: '6', icon: Wheat },
-            { label: 'Price Alerts Set', value: '3', icon: TrendingUp },
-            { label: 'Avg. Change', value: '+2.1%', icon: BarChart3 },
-          ].map((stat) => (
-            <Card key={stat.label} className="border-border-light shadow-card">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-krishiva-green/10 flex items-center justify-center shrink-0">
-                  <stat.icon className="w-5 h-5 text-krishiva-green" />
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-text-primary">{stat.value}</p>
-                  <p className="text-xs text-text-muted">{stat.label}</p>
-                </div>
+                )}
               </CardContent>
             </Card>
-          ))}
-        </motion.div>
+          </motion.div>
+
+          {/* Trend Chart Section */}
+          <AnimatePresence>
+            {selectedCrop && TREND_CHARTS[selectedCrop] && (
+              <motion.div
+                key={selectedCrop}
+                initial={{ opacity: 0, y: 20, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, y: 20, height: 0 }}
+                transition={{ duration: 0.35 }}
+              >
+                <Card className="border-border-light shadow-card overflow-hidden">
+                  <CardContent className="p-5">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <BarChart3 className="w-5 h-5 text-krishiva-green" />
+                        <h3 className="font-poppins font-semibold text-heading-sm text-text-primary">
+                          {selectedCrop} — 7 Day Price Trend
+                        </h3>
+                      </div>
+                      <button
+                        onClick={() => setSelectedCrop(null)}
+                        className="text-xs text-text-muted hover:text-text-primary transition-colors"
+                      >
+                        Close
+                      </button>
+                    </div>
+                    <SimpleBarChart data={TREND_CHARTS[selectedCrop]} crop={selectedCrop} />
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Quick Stats Footer */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+          >
+            {[
+              { label: 'Active Markets', value: '26', icon: MapPin },
+              { label: 'Crops Tracked', value: '6', icon: Wheat },
+              { label: 'Price Alerts Set', value: '3', icon: TrendingUp },
+              { label: 'Avg. Change', value: '+2.1%', icon: BarChart3 },
+            ].map((stat) => (
+              <Card key={stat.label} className="border-border-light shadow-card">
+                <CardContent className="p-4 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-krishiva-green/10 flex items-center justify-center shrink-0">
+                    <stat.icon className="w-5 h-5 text-krishiva-green" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-text-primary">{stat.value}</p>
+                    <p className="text-xs text-text-muted">{stat.label}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </DashboardLayout>
   );
 }
+

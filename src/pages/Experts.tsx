@@ -20,6 +20,7 @@ import {
   GraduationCap,
   Award,
   IndianRupee,
+  Bell,
 } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card } from '@/components/ui/card';
@@ -305,547 +306,335 @@ export default function Experts() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-5">
-        {/* ─── Hero Banner ─── */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: easeOut }}
-          className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
-        >
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-2">
-              <GraduationCap className="w-5 h-5 text-white/90" />
-              <span className="text-white/80 text-sm font-medium font-inter">Certified Professionals</span>
+      <div className="min-h-full">
+        {/* Sticky Header */}
+        <header className="sticky top-0 z-30 bg-[#F8F9FA]/80 backdrop-blur-md border-b border-[#E5E7EB]">
+          <div className="max-w-[1400px] mx-auto h-14 flex items-center justify-between px-6">
+            <div className="flex items-center gap-3">
+              <h1 className="font-poppins font-bold text-xl text-[#111827]">Experts</h1>
+              <span className="text-[#9CA3AF] text-sm">/</span>
+              <span className="text-[#6B7280] text-sm">Overview</span>
             </div>
-            <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
-              Connect with Agricultural Experts
-            </h1>
-            <p className="text-white/85 text-base font-inter max-w-lg">
-              Get personalized advice from certified professionals across farming, soil science, pest management, and more.
-            </p>
+            <div className="flex items-center gap-2">
+              <button className="p-2 rounded-lg hover:bg-[#E5E7EB]/50 transition-colors relative">
+                <Bell className="w-[18px] h-[18px] text-[#6B7280]" strokeWidth={1.5} />
+                <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-[#F8F9FA]" />
+              </button>
+              <div className="w-8 h-8 rounded-full bg-[#2E7D32] flex items-center justify-center text-white font-medium text-xs">RP</div>
+            </div>
           </div>
-        </motion.div>
+        </header>
+        {/* Main Content */}
+        <div className="max-w-[1400px] mx-auto px-6 py-5 space-y-5">
+          {/* ─── Hero Banner ─── */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: easeOut }}
+            className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
+          >
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-2">
+                <GraduationCap className="w-5 h-5 text-white/90" />
+                <span className="text-white/80 text-sm font-medium font-inter">Certified Professionals</span>
+              </div>
+              <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
+                Connect with Agricultural Experts
+              </h1>
+              <p className="text-white/85 text-base font-inter max-w-lg">
+                Get personalized advice from certified professionals across farming, soil science, pest management, and more.
+              </p>
+            </div>
+          </motion.div>
 
-        {/* ─── Categories ─── */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1, ease: easeOut }}
-          className="overflow-x-auto pb-2 -mx-4 px-4"
-        >
-          <div className="flex items-center gap-2.5 min-w-max">
-            {categories.map((cat, i) => (
-              <motion.button
-                key={cat.name}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.2, delay: i * 0.04 }}
-                onClick={() => setActiveCategory(cat.name)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full border text-sm font-medium transition-all whitespace-nowrap font-inter ${
-                  activeCategory === cat.name
-                    ? 'bg-krishiva-green text-white border-krishiva-green shadow-button'
-                    : 'bg-white text-text-secondary border-border-light hover:border-border-green hover:bg-krishiva-green/5'
-                }`}
-              >
-                <cat.icon className="w-4 h-4" />
-                {cat.name}
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
+          {/* ─── Categories ─── */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1, ease: easeOut }}
+            className="overflow-x-auto pb-2 -mx-4 px-4"
+          >
+            <div className="flex items-center gap-2.5 min-w-max">
+              {categories.map((cat, i) => (
+                <motion.button
+                  key={cat.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2, delay: i * 0.04 }}
+                  onClick={() => setActiveCategory(cat.name)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-full border text-sm font-medium transition-all whitespace-nowrap font-inter ${
+                    activeCategory === cat.name
+                      ? 'bg-krishiva-green text-white border-krishiva-green shadow-button'
+                      : 'bg-white text-text-secondary border-border-light hover:border-border-green hover:bg-krishiva-green/5'
+                  }`}
+                >
+                  <cat.icon className="w-4 h-4" />
+                  {cat.name}
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
 
-        {/* ─── Search ─── */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.15, ease: easeOut }}
-        >
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
-            <Input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by name, specialty, or crop..."
-              className="pl-12 h-14 rounded-xl border-border-light bg-white text-base font-inter focus:border-krishiva-green focus:ring-krishiva-green/15"
-            />
-          </div>
-        </motion.div>
+          {/* ─── Search ─── */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.15, ease: easeOut }}
+          >
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by name, specialty, or crop..."
+                className="pl-12 h-14 rounded-xl border-border-light bg-white text-base font-inter focus:border-krishiva-green focus:ring-krishiva-green/15"
+              />
+            </div>
+          </motion.div>
 
-        {/* ─── Expert Cards ─── */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="show"
-          className="grid grid-cols-1 md:grid-cols-2 gap-5"
-        >
-          {filteredExperts.map((expert) => (
-            <motion.div key={expert.id} variants={cardVariants}>
-              <Card className="rounded-2xl border-border-light overflow-hidden hover:shadow-card-hover hover:-translate-y-[3px] transition-all duration-200">
-                {/* Cover */}
-                <div className="h-20 bg-gradient-to-r from-krishiva-green/20 to-leaf-green/20 relative" />
-                {/* Profile Section */}
-                <div className="px-5 pb-5 -mt-9 relative">
-                  <div className="flex justify-center mb-3">
-                    <div className="relative">
-                      <div className={`w-[72px] h-[72px] rounded-full ${expert.avatarColor} border-4 border-white flex items-center justify-center`}>
-                        <span className="text-white font-poppins font-bold text-xl">{expert.initials}</span>
+          {/* ─── Expert Cards ─── */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 md:grid-cols-2 gap-5"
+          >
+            {filteredExperts.map((expert) => (
+              <motion.div key={expert.id} variants={cardVariants}>
+                <Card className="rounded-2xl border-border-light overflow-hidden hover:shadow-card-hover hover:-translate-y-[3px] transition-all duration-200">
+                  {/* Cover */}
+                  <div className="h-20 bg-gradient-to-r from-krishiva-green/20 to-leaf-green/20 relative" />
+                  {/* Profile Section */}
+                  <div className="px-5 pb-5 -mt-9 relative">
+                    <div className="flex justify-center mb-3">
+                      <div className="relative">
+                        <div className={`w-[72px] h-[72px] rounded-full ${expert.avatarColor} border-4 border-white flex items-center justify-center`}>
+                          <span className="text-white font-poppins font-bold text-xl">{expert.initials}</span>
+                        </div>
+                        {expert.availabilityType === 'now' && (
+                          <span className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-success-green rounded-full border-2 border-white" />
+                        )}
                       </div>
-                      {expert.availabilityType === 'now' && (
-                        <span className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-success-green rounded-full border-2 border-white" />
-                      )}
                     </div>
-                  </div>
-                  <div className="text-center mb-3">
-                    <h3 className="font-poppins font-semibold text-lg text-text-primary">{expert.name}</h3>
-                    <p className="text-text-secondary text-sm font-inter">{expert.title}</p>
-                    <p className="text-text-muted text-xs font-inter mt-0.5">{expert.experience} years experience</p>
-                  </div>
-                  {/* Credentials */}
-                  <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
-                    <Badge variant="outline" className="bg-[#3B82F6]/5 text-[#3B82F6] border-[#3B82F6]/20 text-xs">
-                      {expert.education}
-                    </Badge>
-                    <Badge variant="outline" className="bg-krishiva-green/5 text-krishiva-green border-krishiva-green/20 text-xs">
-                      {expert.certification}
-                    </Badge>
-                  </div>
-                  {/* Rating */}
-                  <div className="flex items-center justify-center gap-1.5 mb-3">
-                    <div className="flex items-center gap-0.5">
-                      {[1, 2, 3, 4, 5].map((s) => (
-                        <Star
-                          key={s}
-                          className={`w-4 h-4 ${s <= Math.floor(expert.rating) ? 'text-harvest-gold fill-harvest-gold' : 'text-border-light'}`}
-                        />
+                    <div className="text-center mb-3">
+                      <h3 className="font-poppins font-semibold text-lg text-text-primary">{expert.name}</h3>
+                      <p className="text-text-secondary text-sm font-inter">{expert.title}</p>
+                      <p className="text-text-muted text-xs font-inter mt-0.5">{expert.experience} years experience</p>
+                    </div>
+                    {/* Credentials */}
+                    <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
+                      <Badge variant="outline" className="bg-[#3B82F6]/5 text-[#3B82F6] border-[#3B82F6]/20 text-xs">
+                        {expert.education}
+                      </Badge>
+                      <Badge variant="outline" className="bg-krishiva-green/5 text-krishiva-green border-krishiva-green/20 text-xs">
+                        {expert.certification}
+                      </Badge>
+                    </div>
+                    {/* Rating */}
+                    <div className="flex items-center justify-center gap-1.5 mb-3">
+                      <div className="flex items-center gap-0.5">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star
+                            key={s}
+                            className={`w-4 h-4 ${s <= Math.floor(expert.rating) ? 'text-harvest-gold fill-harvest-gold' : 'text-border-light'}`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-text-secondary text-sm font-inter">
+                        {expert.rating} ({expert.reviews} reviews)
+                      </span>
+                    </div>
+                    {/* Languages */}
+                    <div className="flex flex-wrap items-center justify-center gap-1.5 mb-3">
+                      {expert.languages.map((lang) => (
+                        <span key={lang} className="flex items-center gap-1 text-xs text-text-muted font-inter">
+                          <Globe className="w-3 h-3" /> {lang}
+                        </span>
                       ))}
                     </div>
-                    <span className="text-text-secondary text-sm font-inter">
-                      {expert.rating} ({expert.reviews} reviews)
-                    </span>
-                  </div>
-                  {/* Languages */}
-                  <div className="flex flex-wrap items-center justify-center gap-1.5 mb-3">
-                    {expert.languages.map((lang) => (
-                      <span key={lang} className="flex items-center gap-1 text-xs text-text-muted font-inter">
-                        <Globe className="w-3 h-3" /> {lang}
-                      </span>
-                    ))}
-                  </div>
-                  {/* Price & Availability */}
-                  <div className="flex items-center justify-between mb-4 px-1">
-                    <div>
-                      <span className="font-poppins font-bold text-lg text-krishiva-green font-inter">₹{expert.price}/min</span>
+                    {/* Price & Availability */}
+                    <div className="flex items-center justify-between mb-4 px-1">
+                      <div>
+                        <span className="font-poppins font-bold text-lg text-krishiva-green font-inter">₹{expert.price}/min</span>
+                      </div>
+                      <Badge variant="outline" className={availabilityBadge(expert.availabilityType)}>
+                        {expert.availability}
+                      </Badge>
                     </div>
-                    <Badge variant="outline" className={availabilityBadge(expert.availabilityType)}>
-                      {expert.availability}
-                    </Badge>
+                    {/* Actions */}
+                    <div className="flex items-center gap-3">
+                      <Button
+                        onClick={() => { setSelectedExpert(expert); setShowProfile(true); }}
+                        variant="outline"
+                        className="flex-1 border-border-light text-text-secondary hover:bg-bg-primary rounded-xl font-inter"
+                      >
+                        View Profile
+                      </Button>
+                      <Button
+                        onClick={() => handleBook(expert)}
+                        className="flex-1 bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl font-inter shadow-button"
+                      >
+                        Book Now
+                      </Button>
+                    </div>
                   </div>
-                  {/* Actions */}
-                  <div className="flex items-center gap-3">
-                    <Button
-                      onClick={() => { setSelectedExpert(expert); setShowProfile(true); }}
-                      variant="outline"
-                      className="flex-1 border-border-light text-text-secondary hover:bg-bg-primary rounded-xl font-inter"
-                    >
-                      View Profile
-                    </Button>
-                    <Button
-                      onClick={() => handleBook(expert)}
-                      className="flex-1 bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl font-inter shadow-button"
-                    >
-                      Book Now
-                    </Button>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* ─── Consultation Types ─── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.3, ease: easeOut }}
-        >
-          <h2 className="font-poppins font-semibold text-xl text-text-primary mb-4">Consultation Types</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {consultationTypes.map((ct, i) => (
-              <motion.div
-                key={ct.type}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.35 + i * 0.05, ease: easeOut }}
-              >
-                <Card className="rounded-2xl border-border-light p-5 text-center hover:border-border-green hover:shadow-card transition-all cursor-pointer relative">
-                  {ct.popular && (
-                    <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 bg-harvest-gold text-text-primary text-[10px]">
-                      Most Popular
-                    </Badge>
-                  )}
-                  <div className="w-12 h-12 rounded-xl bg-krishiva-green/10 flex items-center justify-center mx-auto mb-3">
-                    <ct.icon className="w-6 h-6 text-krishiva-green" />
-                  </div>
-                  <h3 className="font-poppins font-semibold text-sm text-text-primary mb-1">{ct.type}</h3>
-                  <p className="text-krishiva-green font-bold text-sm font-inter">{ct.price}</p>
                 </Card>
               </motion.div>
             ))}
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* ─── My Consultations ─── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.4, ease: easeOut }}
-        >
-          <h2 className="font-poppins font-semibold text-xl text-text-primary mb-4">My Consultations</h2>
-          <Tabs value={consultationTab} onValueChange={setConsultationTab} className="mb-4">
-            <TabsList className="bg-white border border-border-light rounded-xl p-1">
-              <TabsTrigger
-                value="upcoming"
-                className="rounded-lg px-4 py-2 text-sm font-inter data-[state=active]:bg-krishiva-green data-[state=active]:text-white"
-              >
-                Upcoming
-              </TabsTrigger>
-              <TabsTrigger
-                value="past"
-                className="rounded-lg px-4 py-2 text-sm font-inter data-[state=active]:bg-krishiva-green data-[state=active]:text-white"
-              >
-                Past
-              </TabsTrigger>
-              <TabsTrigger
-                value="cancelled"
-                className="rounded-lg px-4 py-2 text-sm font-inter data-[state=active]:bg-krishiva-green data-[state=active]:text-white"
-              >
-                Cancelled
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-
-          <div className="space-y-4">
-            {myConsultations
-              .filter((c) => c.status === consultationTab)
-              .map((consultation, i) => (
+          {/* ─── Consultation Types ─── */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.3, ease: easeOut }}
+          >
+            <h2 className="font-poppins font-semibold text-xl text-text-primary mb-4">Consultation Types</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {consultationTypes.map((ct, i) => (
                 <motion.div
-                  key={consultation.id}
+                  key={ct.type}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: i * 0.06, ease: easeOut }}
+                  transition={{ duration: 0.3, delay: 0.35 + i * 0.05, ease: easeOut }}
                 >
-                  <Card className="rounded-2xl border-border-light p-5 hover:shadow-card-hover transition-all">
-                    <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                      <div className="flex items-center gap-3 flex-1">
-                        <div className={`w-12 h-12 rounded-full ${consultation.avatarColor} flex items-center justify-center shrink-0`}>
-                          <span className="text-white font-bold text-sm">{consultation.initials}</span>
-                        </div>
-                        <div>
-                          <h4 className="font-poppins font-semibold text-base text-text-primary">{consultation.expert}</h4>
-                          <p className="text-text-secondary text-sm font-inter">{consultation.type} &bull; {consultation.topic}</p>
-                          <div className="flex items-center gap-3 mt-1 text-xs text-text-muted font-inter">
-                            <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {consultation.date}</span>
-                            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {consultation.time}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 sm:flex-col sm:items-end">
-                        <Badge variant="outline" className={consultationStatusBadge(consultation.status)}>
-                          {consultation.status === 'completed' ? 'Completed' : 'Upcoming'}
-                        </Badge>
-                        <span className="font-poppins font-bold text-krishiva-green font-inter">₹{consultation.price}</span>
-                      </div>
+                  <Card className="rounded-2xl border-border-light p-5 text-center hover:border-border-green hover:shadow-card transition-all cursor-pointer relative">
+                    {ct.popular && (
+                      <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 bg-harvest-gold text-text-primary text-[10px]">
+                        Most Popular
+                      </Badge>
+                    )}
+                    <div className="w-12 h-12 rounded-xl bg-krishiva-green/10 flex items-center justify-center mx-auto mb-3">
+                      <ct.icon className="w-6 h-6 text-krishiva-green" />
                     </div>
-
-                    {/* Post-consultation summary */}
-                    {consultation.status === 'completed' && consultation.summary && (
-                      <div className="mt-4 pt-4 border-t border-border-light">
-                        <p className="text-text-secondary text-sm font-inter leading-relaxed">
-                          <span className="font-medium text-text-primary">Summary:</span> {consultation.summary}
-                        </p>
-                        <div className="flex items-center gap-3 mt-3">
-                          <Button variant="outline" size="sm" className="rounded-lg text-xs border-border-light font-inter">
-                            View Prescription
-                          </Button>
-                          <Button variant="outline" size="sm" className="rounded-lg text-xs border-border-light font-inter">
-                            Rate Expert
-                          </Button>
-                          <Button
-                            size="sm"
-                            className="rounded-lg text-xs bg-krishiva-green hover:bg-[#1B5E20] text-white font-inter"
-                            onClick={() => {
-                              const expert = experts.find((e) => e.name === consultation.expert);
-                              if (expert) handleBook(expert);
-                            }}
-                          >
-                            Rebook
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-
-                    {consultation.status === 'upcoming' && (
-                      <div className="mt-4 pt-4 border-t border-border-light flex items-center gap-3">
-                        <Button
-                          size="sm"
-                          className="rounded-lg text-xs bg-krishiva-green hover:bg-[#1B5E20] text-white font-inter"
-                        >
-                          <Video className="w-3.5 h-3.5 mr-1" /> Join Call
-                        </Button>
-                        <Button variant="outline" size="sm" className="rounded-lg text-xs border-border-light font-inter">
-                          Reschedule
-                        </Button>
-                        <Button variant="ghost" size="sm" className="rounded-lg text-xs text-error-red hover:text-error-red font-inter">
-                          Cancel
-                        </Button>
-                      </div>
-                    )}
+                    <h3 className="font-poppins font-semibold text-sm text-text-primary mb-1">{ct.type}</h3>
+                    <p className="text-krishiva-green font-bold text-sm font-inter">{ct.price}</p>
                   </Card>
                 </motion.div>
               ))}
-
-            {myConsultations.filter((c) => c.status === consultationTab).length === 0 && (
-              <div className="text-center py-10 text-text-muted text-sm font-inter">
-                No {consultationTab} consultations found.
-              </div>
-            )}
-          </div>
-        </motion.div>
-      </div>
-
-      {/* ─── Profile Dialog ─── */}
-      <Dialog open={showProfile} onOpenChange={setShowProfile}>
-        <DialogContent className="sm:max-w-[520px] rounded-[20px] p-0 overflow-hidden">
-          {selectedExpert && (
-            <>
-              <div className="h-24 bg-gradient-to-r from-krishiva-green/20 to-leaf-green/20" />
-              <div className="px-6 pb-6 -mt-12">
-                <div className="flex justify-center mb-4">
-                  <div className={`w-24 h-24 rounded-full ${selectedExpert.avatarColor} border-4 border-white flex items-center justify-center`}>
-                    <span className="text-white font-poppins font-bold text-2xl">{selectedExpert.initials}</span>
-                  </div>
-                </div>
-                <div className="text-center mb-5">
-                  <h3 className="font-poppins font-bold text-xl text-text-primary">{selectedExpert.name}</h3>
-                  <p className="text-text-secondary text-sm font-inter">{selectedExpert.title}</p>
-                  <div className="flex items-center justify-center gap-1.5 mt-2">
-                    <Star className="w-4 h-4 text-harvest-gold fill-harvest-gold" />
-                    <span className="text-sm text-text-secondary font-inter">{selectedExpert.rating} ({selectedExpert.reviews} reviews)</span>
-                  </div>
-                </div>
-                <div className="space-y-3 mb-5">
-                  <div className="flex items-center gap-3 text-sm text-text-secondary font-inter">
-                    <GraduationCap className="w-4 h-4 text-krishiva-green" />
-                    {selectedExpert.education}
-                  </div>
-                  <div className="flex items-center gap-3 text-sm text-text-secondary font-inter">
-                    <Award className="w-4 h-4 text-krishiva-green" />
-                    {selectedExpert.certification} &bull; {selectedExpert.experience} years
-                  </div>
-                  <div className="flex items-center gap-3 text-sm text-text-secondary font-inter">
-                    <Globe className="w-4 h-4 text-krishiva-green" />
-                    {selectedExpert.languages.join(', ')}
-                  </div>
-                </div>
-                <p className="text-text-secondary text-sm leading-relaxed mb-5 font-inter bg-bg-primary rounded-xl p-4">
-                  {selectedExpert.about}
-                </p>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-text-muted text-xs font-inter">Rate</span>
-                    <p className="font-poppins font-bold text-krishiva-green text-lg font-inter">₹{selectedExpert.price}/min</p>
-                  </div>
-                  <Button
-                    onClick={() => { setShowProfile(false); handleBook(selectedExpert); }}
-                    className="bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl px-6 shadow-button font-inter"
-                  >
-                    Book Consultation
-                  </Button>
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* ─── Booking Dialog ─── */}
-      <Dialog open={showBooking} onOpenChange={setShowBooking}>
-        <DialogContent className="sm:max-w-[500px] rounded-[20px] p-0 overflow-hidden">
-          {bookingConfirmed ? (
-            <div className="p-10 text-center">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                className="w-16 h-16 rounded-full bg-success-green/10 flex items-center justify-center mx-auto mb-4"
-              >
-                <Check className="w-8 h-8 text-success-green" />
-              </motion.div>
-              <h3 className="font-poppins font-bold text-xl text-text-primary mb-2">Booking Confirmed!</h3>
-              <p className="text-text-secondary text-sm font-inter">
-                Your consultation with {selectedExpert?.name} is scheduled.
-              </p>
             </div>
-          ) : (
-            <>
-              <DialogHeader className="p-6 pb-0">
-                <DialogTitle className="font-poppins font-semibold text-xl">
-                  Book with {selectedExpert?.name}
-                </DialogTitle>
-              </DialogHeader>
-              <div className="p-6 space-y-5">
-                {/* Step indicator */}
-                <div className="flex items-center gap-2 mb-2">
-                  {[1, 2, 3].map((s) => (
-                    <div
-                      key={s}
-                      className={`flex-1 h-2 rounded-full transition-colors ${
-                        s <= bookingStep ? 'bg-krishiva-green' : 'bg-border-light'
-                      }`}
-                    />
-                  ))}
-                </div>
+          </motion.div>
 
-                {bookingStep === 1 && (
-                  <>
-                    <div>
-                      <label className="text-sm font-medium text-text-primary mb-2 block font-inter flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-krishiva-green" /> Select Date
-                      </label>
-                      <div className="grid grid-cols-4 gap-2">
-                        {dates.map((d, i) => (
-                          <button
-                            key={d}
-                            onClick={() => setSelectedDate(i)}
-                            className={`py-2.5 rounded-xl text-xs font-medium transition-all border font-inter ${
-                              selectedDate === i
-                                ? 'bg-krishiva-green text-white border-krishiva-green'
-                                : 'bg-white text-text-secondary border-border-light hover:border-border-green'
-                            }`}
-                          >
-                            {d}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-text-primary mb-2 block font-inter flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-krishiva-green" /> Select Time Slot
-                      </label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {times.map((t, i) => (
-                          <button
-                            key={t}
-                            onClick={() => setSelectedTime(i)}
-                            className={`py-2.5 rounded-xl text-xs font-medium transition-all border font-inter ${
-                              selectedTime === i
-                                ? 'bg-krishiva-green text-white border-krishiva-green'
-                                : 'bg-white text-text-secondary border-border-light hover:border-border-green'
-                            }`}
-                          >
-                            {t}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                )}
+          {/* ─── My Consultations ─── */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.4, ease: easeOut }}
+          >
+            <h2 className="font-poppins font-semibold text-xl text-text-primary mb-4">My Consultations</h2>
+            <Tabs value={consultationTab} onValueChange={setConsultationTab} className="mb-4">
+              <TabsList className="bg-white border border-border-light rounded-xl p-1">
+                <TabsTrigger
+                  value="upcoming"
+                  className="rounded-lg px-4 py-2 text-sm font-inter data-[state=active]:bg-krishiva-green data-[state=active]:text-white"
+                >
+                  Upcoming
+                </TabsTrigger>
+                <TabsTrigger
+                  value="past"
+                  className="rounded-lg px-4 py-2 text-sm font-inter data-[state=active]:bg-krishiva-green data-[state=active]:text-white"
+                >
+                  Past
+                </TabsTrigger>
+                <TabsTrigger
+                  value="cancelled"
+                  className="rounded-lg px-4 py-2 text-sm font-inter data-[state=active]:bg-krishiva-green data-[state=active]:text-white"
+                >
+                  Cancelled
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
 
-                {bookingStep === 2 && (
-                  <>
-                    <div>
-                      <label className="text-sm font-medium text-text-primary mb-2 block font-inter">Consultation Type</label>
-                      <div className="space-y-2">
-                        {consultationTypes.map((ct, i) => (
-                          <button
-                            key={ct.type}
-                            onClick={() => setSelectedType(i)}
-                            className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${
-                              selectedType === i
-                                ? 'border-krishiva-green bg-krishiva-green/5'
-                                : 'border-border-light hover:border-border-green bg-white'
-                            }`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-lg bg-krishiva-green/10 flex items-center justify-center">
-                                <ct.icon className="w-5 h-5 text-krishiva-green" />
-                              </div>
-                              <div className="text-left">
-                                <p className="text-sm font-medium text-text-primary font-inter">{ct.type}</p>
-                                {ct.popular && (
-                                  <Badge className="bg-harvest-gold/10 text-harvest-gold text-[10px] mt-0.5">Most Popular</Badge>
-                                )}
-                              </div>
+            <div className="space-y-4">
+              {myConsultations
+                .filter((c) => c.status === consultationTab)
+                .map((consultation, i) => (
+                  <motion.div
+                    key={consultation.id}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: i * 0.06, ease: easeOut }}
+                  >
+                    <Card className="rounded-2xl border-border-light p-5 hover:shadow-card-hover transition-all">
+                      <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                        <div className="flex items-center gap-3 flex-1">
+                          <div className={`w-12 h-12 rounded-full ${consultation.avatarColor} flex items-center justify-center shrink-0`}>
+                            <span className="text-white font-bold text-sm">{consultation.initials}</span>
+                          </div>
+                          <div>
+                            <h4 className="font-poppins font-semibold text-base text-text-primary">{consultation.expert}</h4>
+                            <p className="text-text-secondary text-sm font-inter">{consultation.type} &bull; {consultation.topic}</p>
+                            <div className="flex items-center gap-3 mt-1 text-xs text-text-muted font-inter">
+                              <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {consultation.date}</span>
+                              <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {consultation.time}</span>
                             </div>
-                            <span className="text-krishiva-green font-bold text-sm font-inter">{ct.price}</span>
-                          </button>
-                        ))}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 sm:flex-col sm:items-end">
+                          <Badge variant="outline" className={consultationStatusBadge(consultation.status)}>
+                            {consultation.status === 'completed' ? 'Completed' : 'Upcoming'}
+                          </Badge>
+                          <span className="font-poppins font-bold text-krishiva-green font-inter">₹{consultation.price}</span>
+                        </div>
                       </div>
-                    </div>
-                  </>
-                )}
 
-                {bookingStep === 3 && (
-                  <>
-                    <div>
-                      <label className="text-sm font-medium text-text-primary mb-2 block font-inter">Describe Your Problem</label>
-                      <Textarea
-                        placeholder="Tell us about your crop issue, symptoms, or questions..."
-                        className="rounded-xl border-border-light focus:border-krishiva-green focus:ring-krishiva-green/15 resize-none"
-                        rows={4}
-                      />
-                    </div>
-                    <div className="bg-bg-primary rounded-xl p-4 space-y-2">
-                      <div className="flex items-center justify-between text-sm font-inter">
-                        <span className="text-text-secondary">Duration</span>
-                        <span className="text-text-primary font-medium">20 minutes</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm font-inter">
-                        <span className="text-text-secondary">Rate</span>
-                        <span className="text-text-primary font-medium">₹{selectedExpert?.price}/min</span>
-                      </div>
-                      <div className="border-t border-border-light pt-2 flex items-center justify-between">
-                        <span className="text-text-primary font-semibold font-inter">Total</span>
-                        <span className="font-poppins font-bold text-krishiva-green text-lg font-inter">
-                          ₹{20 * (selectedExpert?.price || 0)}
-                        </span>
-                      </div>
-                    </div>
-                  </>
-                )}
+                      {/* Post-consultation summary */}
+                      {consultation.status === 'completed' && consultation.summary && (
+                        <div className="mt-4 pt-4 border-t border-border-light">
+                          <p className="text-text-secondary text-sm font-inter leading-relaxed">
+                            <span className="font-medium text-text-primary">Summary:</span> {consultation.summary}
+                          </p>
+                          <div className="flex items-center gap-3 mt-3">
+                            <Button variant="outline" size="sm" className="rounded-lg text-xs border-border-light font-inter">
+                              View Prescription
+                            </Button>
+                            <Button variant="outline" size="sm" className="rounded-lg text-xs border-border-light font-inter">
+                              Rate Expert
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="rounded-lg text-xs bg-krishiva-green hover:bg-[#1B5E20] text-white font-inter"
+                              onClick={() => {
+                                const expert = experts.find((e) => e.name === consultation.expert);
+                                if (expert) handleBook(expert);
+                              }}
+                            >
+                              Rebook
+                            </Button>
+                          </div>
+                        </div>
+                      )}
 
-                <div className="flex items-center gap-3 pt-2">
-                  {bookingStep > 1 && (
-                    <Button
-                      variant="outline"
-                      onClick={() => setBookingStep(bookingStep - 1)}
-                      className="flex-1 rounded-xl border-border-light font-inter"
-                    >
-                      Back
-                    </Button>
-                  )}
-                  {bookingStep < 3 ? (
-                    <Button
-                      onClick={() => setBookingStep(bookingStep + 1)}
-                      className="flex-1 bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl shadow-button font-inter"
-                    >
-                      Continue
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={handleConfirmBooking}
-                      className="flex-1 bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl shadow-button font-inter"
-                    >
-                      Confirm Booking
-                    </Button>
-                  )}
+                      {consultation.status === 'upcoming' && (
+                        <div className="mt-4 pt-4 border-t border-border-light flex items-center gap-3">
+                          <Button
+                            size="sm"
+                            className="rounded-lg text-xs bg-krishiva-green hover:bg-[#1B5E20] text-white font-inter"
+                          >
+                            <Video className="w-3.5 h-3.5 mr-1" /> Join Call
+                          </Button>
+                          <Button variant="outline" size="sm" className="rounded-lg text-xs border-border-light font-inter">
+                            Reschedule
+                          </Button>
+                          <Button variant="ghost" size="sm" className="rounded-lg text-xs text-error-red hover:text-error-red font-inter">
+                            Cancel
+                          </Button>
+                        </div>
+                      )}
+                    </Card>
+                  </motion.div>
+                ))}
+
+              {myConsultations.filter((c) => c.status === consultationTab).length === 0 && (
+                <div className="text-center py-10 text-text-muted text-sm font-inter">
+                  No {consultationTab} consultations found.
                 </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      </div>
     </DashboardLayout>
   );
 }
+

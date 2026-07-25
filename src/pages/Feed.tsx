@@ -18,6 +18,7 @@ import {
   IndianRupee,
   Newspaper,
   CloudSun,
+  Bell,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -431,90 +432,111 @@ export default function Feed() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-5">
-        {/* Hero Banner */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
-        >
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-2">
-              <Newspaper className="w-5 h-5 text-white/90" />
-              <span className="text-white/80 text-sm font-medium">Latest Updates</span>
+      <div className="min-h-full">
+        {/* Sticky Header */}
+        <header className="sticky top-0 z-30 bg-[#F8F9FA]/80 backdrop-blur-md border-b border-[#E5E7EB]">
+          <div className="max-w-[1400px] mx-auto h-14 flex items-center justify-between px-6">
+            <div className="flex items-center gap-3">
+              <h1 className="font-poppins font-bold text-xl text-[#111827]">Smart Feed</h1>
+              <span className="text-[#9CA3AF] text-sm">/</span>
+              <span className="text-[#6B7280] text-sm">Overview</span>
             </div>
-            <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
-              Smart Feed
-            </h1>
-            <p className="text-white/85 text-base max-w-lg">
-              Stay updated with what matters for your farm — weather alerts, market trends, expert tips, and government announcements.
-            </p>
+            <div className="flex items-center gap-2">
+              <button className="p-2 rounded-lg hover:bg-[#E5E7EB]/50 transition-colors relative">
+                <Bell className="w-[18px] h-[18px] text-[#6B7280]" strokeWidth={1.5} />
+                <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-[#F8F9FA]" />
+              </button>
+              <div className="w-8 h-8 rounded-full bg-[#2E7D32] flex items-center justify-center text-white font-medium text-xs">RP</div>
+            </div>
           </div>
-        </motion.div>
-
-        {/* Category Filters */}
-        <FilterPills active={activeCategory} onChange={setActiveCategory} />
-
-        {/* Featured Alert */}
-        <AnimatePresence>
-          {alertVisible && <FeaturedAlert onDismiss={() => setAlertVisible(false)} />}
-        </AnimatePresence>
-
-        {/* Feed Cards */}
-        <AnimatePresence mode="wait">
+        </header>
+        {/* Main Content */}
+        <div className="max-w-[1400px] mx-auto px-6 py-5 space-y-5">
+          {/* Hero Banner */}
           <motion.div
-            key={activeCategory}
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            className="space-y-4"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
           >
-            {filteredItems.map((item) => (
-              <FeedCard key={item.id} item={item} />
-            ))}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Load More Indicator */}
-        {filteredItems.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="flex items-center justify-center py-6"
-          >
-            <div className="flex items-center gap-2 text-text-muted">
-              <div className="w-2 h-2 rounded-full bg-krishiva-green animate-pulse" />
-              <span className="text-sm">Showing {filteredItems.length} updates</span>
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-2">
+                <Newspaper className="w-5 h-5 text-white/90" />
+                <span className="text-white/80 text-sm font-medium">Latest Updates</span>
+              </div>
+              <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
+                Smart Feed
+              </h1>
+              <p className="text-white/85 text-base max-w-lg">
+                Stay updated with what matters for your farm — weather alerts, market trends, expert tips, and government announcements.
+              </p>
             </div>
           </motion.div>
-        )}
 
-        {/* Empty State */}
-        {filteredItems.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center py-16"
-          >
-            <Newspaper className="w-16 h-16 text-text-muted mb-4" />
-            <h3 className="font-poppins font-semibold text-lg text-text-primary mb-2">
-              No updates in this category
-            </h3>
-            <p className="text-text-secondary text-sm text-center max-w-sm">
-              Check back later or try another category to see more updates.
-            </p>
-            <button
-              onClick={() => setActiveCategory('All')}
-              className="mt-4 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors"
+          {/* Category Filters */}
+          <FilterPills active={activeCategory} onChange={setActiveCategory} />
+
+          {/* Featured Alert */}
+          <AnimatePresence>
+            {alertVisible && <FeaturedAlert onDismiss={() => setAlertVisible(false)} />}
+          </AnimatePresence>
+
+          {/* Feed Cards */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeCategory}
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="space-y-4"
             >
-              Show All Updates
-            </button>
-          </motion.div>
-        )}
+              {filteredItems.map((item) => (
+                <FeedCard key={item.id} item={item} />
+              ))}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Load More Indicator */}
+          {filteredItems.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="flex items-center justify-center py-6"
+            >
+              <div className="flex items-center gap-2 text-text-muted">
+                <div className="w-2 h-2 rounded-full bg-krishiva-green animate-pulse" />
+                <span className="text-sm">Showing {filteredItems.length} updates</span>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Empty State */}
+          {filteredItems.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center justify-center py-16"
+            >
+              <Newspaper className="w-16 h-16 text-text-muted mb-4" />
+              <h3 className="font-poppins font-semibold text-lg text-text-primary mb-2">
+                No updates in this category
+              </h3>
+              <p className="text-text-secondary text-sm text-center max-w-sm">
+                Check back later or try another category to see more updates.
+              </p>
+              <button
+                onClick={() => setActiveCategory('All')}
+                className="mt-4 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors"
+              >
+                Show All Updates
+              </button>
+            </motion.div>
+          )}
+        </div>
       </div>
     </DashboardLayout>
   );
 }
+

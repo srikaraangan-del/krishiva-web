@@ -19,6 +19,7 @@ import {
   Package,
   Users,
   FileText,
+  Bell,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -914,585 +915,113 @@ export default function FarmOS() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-5">
-        {/* Hero Banner */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
-        >
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-2">
-              <Tractor className="w-5 h-5 text-white/90" />
-              <span className="text-white/80 text-sm font-medium">Farm Management</span>
+      <div className="min-h-full">
+        {/* Sticky Header */}
+        <header className="sticky top-0 z-30 bg-[#F8F9FA]/80 backdrop-blur-md border-b border-[#E5E7EB]">
+          <div className="max-w-[1400px] mx-auto h-14 flex items-center justify-between px-6">
+            <div className="flex items-center gap-3">
+              <h1 className="font-poppins font-bold text-xl text-[#111827]">Farm OS</h1>
+              <span className="text-[#9CA3AF] text-sm">/</span>
+              <span className="text-[#6B7280] text-sm">Overview</span>
             </div>
-            <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
-              Farm OS
-            </h1>
-            <p className="text-white/85 text-base max-w-lg">
-              Manage your fields, track crops, monitor expenses, and analyze yields — all in one place.
-            </p>
+            <div className="flex items-center gap-2">
+              <button className="p-2 rounded-lg hover:bg-[#E5E7EB]/50 transition-colors relative">
+                <Bell className="w-[18px] h-[18px] text-[#6B7280]" strokeWidth={1.5} />
+                <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-[#F8F9FA]" />
+              </button>
+              <div className="w-8 h-8 rounded-full bg-[#2E7D32] flex items-center justify-center text-white font-medium text-xs">RP</div>
+            </div>
           </div>
-        </motion.div>
-
-        {/* Add Field Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          className="flex justify-end"
-        >
-          <button
-            onClick={openAddField}
-            className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors shadow-button"
-          >
-            <Plus className="w-4 h-4" />
-            Add Field
-          </button>
-        </motion.div>
-
-        {/* Tab Navigation */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white rounded-2xl border border-border-light shadow-card overflow-hidden"
-        >
-          <div className="flex overflow-x-auto scrollbar-hide">
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key as TabKey)}
-                  className={`relative flex items-center gap-2 px-5 py-3.5 text-sm font-medium whitespace-nowrap transition-colors shrink-0 ${
-                    isActive
-                      ? 'text-krishiva-green'
-                      : 'text-text-secondary hover:text-text-primary hover:bg-krishiva-green/5'
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeTabIndicator"
-                      className="absolute bottom-0 left-2 right-2 h-[3px] bg-krishiva-green rounded-t-full"
-                      transition={{ type: 'tween', duration: 0.2 }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </motion.div>
-
-        {/* Tab Content */}
-        <AnimatePresence mode="wait">
+        </header>
+        {/* Main Content */}
+        <div className="max-w-[1400px] mx-auto px-6 py-5 space-y-5">
+          {/* Hero Banner */}
           <motion.div
-            key={activeTab}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
+          >
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-2">
+                <Tractor className="w-5 h-5 text-white/90" />
+                <span className="text-white/80 text-sm font-medium">Farm Management</span>
+              </div>
+              <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
+                Farm OS
+              </h1>
+              <p className="text-white/85 text-base max-w-lg">
+                Manage your fields, track crops, monitor expenses, and analyze yields — all in one place.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Add Field Button */}
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3, ease: [0, 0, 0.2, 1] as [number, number, number, number] }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="flex justify-end"
           >
-            {renderTabContent()}
+            <button
+              onClick={openAddField}
+              className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors shadow-button"
+            >
+              <Plus className="w-4 h-4" />
+              Add Field
+            </button>
           </motion.div>
-        </AnimatePresence>
+
+          {/* Tab Navigation */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white rounded-2xl border border-border-light shadow-card overflow-hidden"
+          >
+            <div className="flex overflow-x-auto scrollbar-hide">
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key as TabKey)}
+                    className={`relative flex items-center gap-2 px-5 py-3.5 text-sm font-medium whitespace-nowrap transition-colors shrink-0 ${
+                      isActive
+                        ? 'text-krishiva-green'
+                        : 'text-text-secondary hover:text-text-primary hover:bg-krishiva-green/5'
+                    }`}
+                  >
+                    <tab.icon className="w-4 h-4" />
+                    {tab.label}
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeTabIndicator"
+                        className="absolute bottom-0 left-2 right-2 h-[3px] bg-krishiva-green rounded-t-full"
+                        transition={{ type: 'tween', duration: 0.2 }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* Tab Content */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: [0, 0, 0.2, 1] as [number, number, number, number] }}
+            >
+              {renderTabContent()}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
-
-      {/* ═══════════ DIALOGS ═══════════ */}
-
-      {/* ── Add Field Dialog ── */}
-      <Dialog open={addFieldOpen} onOpenChange={setAddFieldOpen}>
-        <DialogContent className="sm:max-w-[460px] rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
-              <Plus className="w-5 h-5 text-krishiva-green" /> Add New Field
-            </DialogTitle>
-            <DialogDescription className="text-text-muted text-sm font-inter">
-              Register a new field on your farm with its details.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div>
-              <Label className="text-sm font-medium font-inter">Field Name</Label>
-              <Input
-                value={fieldName}
-                onChange={(e) => setFieldName(e.target.value)}
-                placeholder="e.g., Field E"
-                className="mt-1.5 rounded-xl font-inter"
-              />
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Area (acres)</Label>
-              <Input
-                value={fieldArea}
-                onChange={(e) => setFieldArea(e.target.value)}
-                placeholder="e.g., 5"
-                type="number"
-                className="mt-1.5 rounded-xl font-inter"
-              />
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Crop Type</Label>
-              <Select value={fieldCropType} onValueChange={setFieldCropType}>
-                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
-                  <SelectValue placeholder="Select crop type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="cotton">Cotton</SelectItem>
-                  <SelectItem value="chili">Chili</SelectItem>
-                  <SelectItem value="paddy">Paddy</SelectItem>
-                  <SelectItem value="tomato">Tomato</SelectItem>
-                  <SelectItem value="wheat">Wheat</SelectItem>
-                  <SelectItem value="sugarcane">Sugarcane</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Soil Type</Label>
-              <Select value={fieldSoilType} onValueChange={setFieldSoilType}>
-                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
-                  <SelectValue placeholder="Select soil type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="loamy">Loamy</SelectItem>
-                  <SelectItem value="sandy">Sandy Loam</SelectItem>
-                  <SelectItem value="clay">Clay</SelectItem>
-                  <SelectItem value="silt">Silt Loam</SelectItem>
-                  <SelectItem value="black">Black Soil</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Water Source</Label>
-              <Select value={fieldWaterSource} onValueChange={setFieldWaterSource}>
-                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
-                  <SelectValue placeholder="Select water source" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="drip">Drip Irrigation</SelectItem>
-                  <SelectItem value="sprinkler">Sprinkler</SelectItem>
-                  <SelectItem value="flood">Flood Irrigation</SelectItem>
-                  <SelectItem value=" borewell">Borewell</SelectItem>
-                  <SelectItem value="canal">Canal Water</SelectItem>
-                  <SelectItem value="rain">Rain Fed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <button
-              onClick={handleAddField}
-              className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
-            >
-              <Plus className="w-4 h-4" /> Add Field
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* ── Add Crop Dialog ── */}
-      <Dialog open={addCropOpen} onOpenChange={setAddCropOpen}>
-        <DialogContent className="sm:max-w-[460px] rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
-              <Sprout className="w-5 h-5 text-blue-500" /> Add New Crop
-            </DialogTitle>
-            <DialogDescription className="text-text-muted text-sm font-inter">
-              Track a new crop planting on your farm.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div>
-              <Label className="text-sm font-medium font-inter">Crop Name</Label>
-              <Input
-                value={cropName}
-                onChange={(e) => setCropName(e.target.value)}
-                placeholder="e.g., Cotton"
-                className="mt-1.5 rounded-xl font-inter"
-              />
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Field</Label>
-              <Select value={cropField} onValueChange={setCropField}>
-                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
-                  <SelectValue placeholder="Select field" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Field A">Field A</SelectItem>
-                  <SelectItem value="Field B">Field B</SelectItem>
-                  <SelectItem value="Field C">Field C</SelectItem>
-                  <SelectItem value="Field D">Field D</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Area (acres)</Label>
-              <Input
-                value={cropArea}
-                onChange={(e) => setCropArea(e.target.value)}
-                placeholder="e.g., 5"
-                type="number"
-                className="mt-1.5 rounded-xl font-inter"
-              />
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Planting Date</Label>
-              <Input
-                value={cropPlantingDate}
-                onChange={(e) => setCropPlantingDate(e.target.value)}
-                type="date"
-                className="mt-1.5 rounded-xl font-inter"
-              />
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Expected Harvest Date</Label>
-              <Input
-                value={cropHarvestDate}
-                onChange={(e) => setCropHarvestDate(e.target.value)}
-                type="date"
-                className="mt-1.5 rounded-xl font-inter"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <button
-              onClick={handleAddCrop}
-              className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
-            >
-              <Sprout className="w-4 h-4" /> Add Crop
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* ── Log Expense Dialog ── */}
-      <Dialog open={logExpenseOpen} onOpenChange={setLogExpenseOpen}>
-        <DialogContent className="sm:max-w-[460px] rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
-              <IndianRupee className="w-5 h-5 text-error-red" /> Log Expense
-            </DialogTitle>
-            <DialogDescription className="text-text-muted text-sm font-inter">
-              Record a farm expense for your records.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div>
-              <Label className="text-sm font-medium font-inter">Expense Type</Label>
-              <Select value={expenseType} onValueChange={setExpenseType}>
-                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
-                  <SelectValue placeholder="Select expense type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="seeds">Seeds</SelectItem>
-                  <SelectItem value="fertilizer">Fertilizer</SelectItem>
-                  <SelectItem value="labor">Labor</SelectItem>
-                  <SelectItem value="equipment">Equipment</SelectItem>
-                  <SelectItem value="pesticide">Pesticide</SelectItem>
-                  <SelectItem value="irrigation">Irrigation</SelectItem>
-                  <SelectItem value="transport">Transport</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Amount (₹)</Label>
-              <Input
-                value={expenseAmount}
-                onChange={(e) => setExpenseAmount(e.target.value)}
-                placeholder="e.g., 5000"
-                type="number"
-                className="mt-1.5 rounded-xl font-inter"
-              />
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Date</Label>
-              <Input
-                value={expenseDate}
-                onChange={(e) => setExpenseDate(e.target.value)}
-                type="date"
-                className="mt-1.5 rounded-xl font-inter"
-              />
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Notes</Label>
-              <Textarea
-                value={expenseNotes}
-                onChange={(e) => setExpenseNotes(e.target.value)}
-                placeholder="Any additional details..."
-                className="mt-1.5 rounded-xl font-inter"
-                rows={3}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <button
-              onClick={handleLogExpense}
-              className="flex items-center gap-2 bg-error-red hover:bg-red-700 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
-            >
-              <IndianRupee className="w-4 h-4" /> Log Expense
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* ── View Details Dialog ── */}
-      <Dialog open={viewDetailsOpen} onOpenChange={setViewDetailsOpen}>
-        <DialogContent className="sm:max-w-[460px] rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
-              <FileText className="w-5 h-5 text-krishiva-green" /> Details
-            </DialogTitle>
-          </DialogHeader>
-          {selectedField && (
-            <div className="space-y-3 py-2">
-              <div className="bg-krishiva-green/5 rounded-xl p-4">
-                <h4 className="font-poppins font-semibold text-base text-text-primary">{selectedField.name}</h4>
-                <p className="text-text-muted text-sm font-inter">{selectedField.crop} cultivation</p>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-bg-primary rounded-xl p-3">
-                  <p className="text-text-muted text-xs font-inter">Size</p>
-                  <p className="text-text-primary text-sm font-medium font-inter">{selectedField.size} acres</p>
-                </div>
-                <div className="bg-bg-primary rounded-xl p-3">
-                  <p className="text-text-muted text-xs font-inter">Status</p>
-                  <p className="text-text-primary text-sm font-medium font-inter">{selectedField.status}</p>
-                </div>
-                <div className="bg-bg-primary rounded-xl p-3">
-                  <p className="text-text-muted text-xs font-inter">Soil Type</p>
-                  <p className="text-text-primary text-sm font-medium font-inter">{selectedField.soilType}</p>
-                </div>
-                <div className="bg-bg-primary rounded-xl p-3">
-                  <p className="text-text-muted text-xs font-inter">Water Source</p>
-                  <p className="text-text-primary text-sm font-medium font-inter">{selectedField.waterSource}</p>
-                </div>
-              </div>
-              <div className="bg-bg-primary rounded-xl p-3">
-                <p className="text-text-muted text-xs font-inter mb-1">Crop Color Code</p>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded" style={{ backgroundColor: selectedField.cropColor }} />
-                  <span className="text-text-primary text-sm font-inter">{selectedField.crop}</span>
-                </div>
-              </div>
-            </div>
-          )}
-          {selectedCrop && (
-            <div className="space-y-3 py-2">
-              <div className="rounded-xl p-4" style={{ backgroundColor: `${selectedCrop.color}10` }}>
-                <h4 className="font-poppins font-semibold text-base text-text-primary">{selectedCrop.name}</h4>
-                <p className="text-text-muted text-sm font-inter">{selectedCrop.variety} • {selectedCrop.field}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-bg-primary rounded-xl p-3">
-                  <p className="text-text-muted text-xs font-inter">Growth</p>
-                  <p className="text-text-primary text-sm font-medium font-inter">{selectedCrop.growthPercent}%</p>
-                </div>
-                <div className="bg-bg-primary rounded-xl p-3">
-                  <p className="text-text-muted text-xs font-inter">Stage</p>
-                  <p className="text-text-primary text-sm font-medium font-inter">{selectedCrop.stage}</p>
-                </div>
-                <div className="bg-bg-primary rounded-xl p-3">
-                  <p className="text-text-muted text-xs font-inter">Health</p>
-                  <p className="text-text-primary text-sm font-medium font-inter">{selectedCrop.health}</p>
-                </div>
-                <div className="bg-bg-primary rounded-xl p-3">
-                  <p className="text-text-muted text-xs font-inter">Days Remaining</p>
-                  <p className="text-text-primary text-sm font-medium font-inter">{selectedCrop.daysRemaining}</p>
-                </div>
-              </div>
-              <div className="bg-bg-primary rounded-xl p-3">
-                <p className="text-text-muted text-xs font-inter mb-1">Growth Progress</p>
-                <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: `${selectedCrop.growthPercent}%`, backgroundColor: selectedCrop.color }}
-                  />
-                </div>
-                <p className="text-text-muted text-xs mt-1 font-inter">{selectedCrop.plantedDays} of {selectedCrop.totalDays} days planted</p>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* ── Log Activity Dialog ── */}
-      <Dialog open={logActivityOpen} onOpenChange={setLogActivityOpen}>
-        <DialogContent className="sm:max-w-[460px] rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
-              <ClipboardList className="w-5 h-5 text-krishiva-green" /> Log Activity
-            </DialogTitle>
-            <DialogDescription className="text-text-muted text-sm font-inter">
-              Record a farming activity for your records.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div>
-              <Label className="text-sm font-medium font-inter">Activity Type</Label>
-              <Select value={activityType} onValueChange={setActivityType}>
-                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
-                  <SelectValue placeholder="Select activity type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="irrigation">Irrigation</SelectItem>
-                  <SelectItem value="fertilizing">Fertilizing</SelectItem>
-                  <SelectItem value="pest_control">Pest Control</SelectItem>
-                  <SelectItem value="weeding">Weeding</SelectItem>
-                  <SelectItem value="harvesting">Harvesting</SelectItem>
-                  <SelectItem value="sowing">Sowing</SelectItem>
-                  <SelectItem value="pruning">Pruning</SelectItem>
-                  <SelectItem value="inspection">Inspection</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Field</Label>
-              <Select value={activityField} onValueChange={setActivityField}>
-                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
-                  <SelectValue placeholder="Select field" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Field A">Field A</SelectItem>
-                  <SelectItem value="Field B">Field B</SelectItem>
-                  <SelectItem value="Field C">Field C</SelectItem>
-                  <SelectItem value="Field D">Field D</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Date</Label>
-              <Input
-                value={activityDate}
-                onChange={(e) => setActivityDate(e.target.value)}
-                type="date"
-                className="mt-1.5 rounded-xl font-inter"
-              />
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Description</Label>
-              <Textarea
-                value={activityDescription}
-                onChange={(e) => setActivityDescription(e.target.value)}
-                placeholder="Describe the activity..."
-                className="mt-1.5 rounded-xl font-inter"
-                rows={3}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <button
-              onClick={handleLogActivity}
-              className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
-            >
-              <ClipboardList className="w-4 h-4" /> Log Activity
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* ── Add Note Dialog ── */}
-      <Dialog open={addNoteOpen} onOpenChange={setAddNoteOpen}>
-        <DialogContent className="sm:max-w-[460px] rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
-              <FileText className="w-5 h-5 text-krishiva-green" /> Add Note
-            </DialogTitle>
-            <DialogDescription className="text-text-muted text-sm font-inter">
-              {selectedCrop ? `Add a note for ${selectedCrop.name} (${selectedCrop.field})` : 'Add a note for your records.'}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div>
-              <Label className="text-sm font-medium font-inter">Note Content</Label>
-              <Textarea
-                value={noteContent}
-                onChange={(e) => setNoteContent(e.target.value)}
-                placeholder="Write your note here..."
-                className="mt-1.5 rounded-xl font-inter"
-                rows={5}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <button
-              onClick={handleAddNote}
-              className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
-            >
-              <FileText className="w-4 h-4" /> Add Note
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* ── Mark Issue Dialog ── */}
-      <Dialog open={markIssueOpen} onOpenChange={setMarkIssueOpen}>
-        <DialogContent className="sm:max-w-[460px] rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="font-poppins text-lg flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-error-red" /> Report Issue
-            </DialogTitle>
-            <DialogDescription className="text-text-muted text-sm font-inter">
-              {selectedCrop ? `Report an issue for ${selectedCrop.name} (${selectedCrop.field})` : 'Report a farm issue.'}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div>
-              <Label className="text-sm font-medium font-inter">Issue Type</Label>
-              <Select value={issueType} onValueChange={setIssueType}>
-                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
-                  <SelectValue placeholder="Select issue type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pest">Pest Infestation</SelectItem>
-                  <SelectItem value="disease">Plant Disease</SelectItem>
-                  <SelectItem value="water">Water Problem</SelectItem>
-                  <SelectItem value="soil">Soil Issue</SelectItem>
-                  <SelectItem value="weather">Weather Damage</SelectItem>
-                  <SelectItem value="equipment">Equipment Failure</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Severity</Label>
-              <Select value={issueSeverity} onValueChange={setIssueSeverity}>
-                <SelectTrigger className="mt-1.5 rounded-xl font-inter">
-                  <SelectValue placeholder="Select severity" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low — Minor concern</SelectItem>
-                  <SelectItem value="medium">Medium — Needs attention</SelectItem>
-                  <SelectItem value="high">High — Urgent action needed</SelectItem>
-                  <SelectItem value="critical">Critical — Immediate action required</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-sm font-medium font-inter">Description</Label>
-              <Textarea
-                value={issueDescription}
-                onChange={(e) => setIssueDescription(e.target.value)}
-                placeholder="Describe the issue in detail..."
-                className="mt-1.5 rounded-xl font-inter"
-                rows={4}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <button
-              onClick={handleMarkIssue}
-              className="flex items-center gap-2 bg-error-red hover:bg-red-700 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors shadow-button"
-            >
-              <AlertCircle className="w-4 h-4" /> Report Issue
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </DashboardLayout>
   );
 }
+

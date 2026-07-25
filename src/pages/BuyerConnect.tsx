@@ -19,6 +19,7 @@ import {
   Clock,
   ChevronRight,
   Check,
+  Bell,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -428,311 +429,332 @@ export default function BuyerConnect() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-5">
-        {/* Hero Banner */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
-        >
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-2">
-              <Users className="w-5 h-5 text-white/90" />
-              <span className="text-white/80 text-sm font-medium">Direct Trade</span>
+      <div className="min-h-full">
+        {/* Sticky Header */}
+        <header className="sticky top-0 z-30 bg-[#F8F9FA]/80 backdrop-blur-md border-b border-[#E5E7EB]">
+          <div className="max-w-[1400px] mx-auto h-14 flex items-center justify-between px-6">
+            <div className="flex items-center gap-3">
+              <h1 className="font-poppins font-bold text-xl text-[#111827]">Buyer Connect</h1>
+              <span className="text-[#9CA3AF] text-sm">/</span>
+              <span className="text-[#6B7280] text-sm">Overview</span>
             </div>
-            <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
-              Buyer Connect
-            </h1>
-            <p className="text-white/85 text-base max-w-lg">
-              {role === 'farmer'
-                ? 'Manage incoming offers from buyers and respond to them directly.'
-                : 'Discover crops from verified farmers and send offers seamlessly.'}
-            </p>
+            <div className="flex items-center gap-2">
+              <button className="p-2 rounded-lg hover:bg-[#E5E7EB]/50 transition-colors relative">
+                <Bell className="w-[18px] h-[18px] text-[#6B7280]" strokeWidth={1.5} />
+                <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-[#F8F9FA]" />
+              </button>
+              <div className="w-8 h-8 rounded-full bg-[#2E7D32] flex items-center justify-center text-white font-medium text-xs">RP</div>
+            </div>
           </div>
-        </motion.div>
-
-        {/* Role Toggle */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="flex bg-white rounded-xl border border-border-light p-1.5 w-fit"
-        >
-          <button
-            onClick={() => setRole('farmer')}
-            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-              role === 'farmer'
-                ? 'bg-krishiva-green text-white shadow-button'
-                : 'text-text-secondary hover:text-text-primary'
-            }`}
+        </header>
+        {/* Main Content */}
+        <div className="max-w-[1400px] mx-auto px-6 py-5 space-y-5">
+          {/* Hero Banner */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
           >
-            <UserCheck className="w-4 h-4" />
-            I am a Farmer
-          </button>
-          <button
-            onClick={() => setRole('buyer')}
-            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-              role === 'buyer'
-                ? 'bg-krishiva-green text-white shadow-button'
-                : 'text-text-secondary hover:text-text-primary'
-            }`}
-          >
-            <ShoppingBag className="w-4 h-4" />
-            I am a Buyer
-          </button>
-        </motion.div>
-
-        <AnimatePresence mode="wait">
-          {role === 'farmer' ? (
-            <motion.div
-              key="farmer-view"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-6"
-            >
-              {/* Incoming Offers */}
-              <div>
-                <h3 className="font-poppins font-semibold text-heading-md text-text-primary mb-4 flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5 text-krishiva-green" />
-                  Incoming Offers
-                </h3>
-                <div className="space-y-3">
-                  {offers.map((offer, i) => (
-                    <motion.div
-                      key={offer.id}
-                      custom={i}
-                      variants={cardVariants}
-                      initial="hidden"
-                      animate="visible"
-                      className="bg-white rounded-2xl border border-border-light shadow-card p-4 sm:p-5"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                        {/* Company Info */}
-                        <div className="flex items-center gap-3 flex-1">
-                          <div className={`w-12 h-12 rounded-full ${offer.avatarColor} flex items-center justify-center text-white font-semibold text-sm shrink-0`}>
-                            {offer.initials}
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <h4 className="font-semibold text-text-primary">{offer.company}</h4>
-                              <StatusBadge status={offer.status} />
-                            </div>
-                            <p className="text-sm text-text-muted mt-0.5">
-                              Wants <span className="font-medium text-text-primary">{offer.crop}</span> —{' '}
-                              {offer.quantity}q @{' '}
-                              <span className="font-semibold text-krishiva-green">
-                                ₹{offer.pricePerQ.toLocaleString('en-IN')}/q
-                              </span>
-                            </p>
-                            <p className="text-xs text-text-muted mt-0.5 flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {offer.date}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="flex items-center gap-2 flex-wrap">
-                          {offer.status === 'New' && (
-                            <>
-                              <Button
-                                onClick={() => handleAccept(offer.id)}
-                                className="h-10 px-4 bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl text-sm font-medium shadow-button"
-                              >
-                                <Check className="w-4 h-4 mr-1.5" />
-                                Accept
-                              </Button>
-                              <Button
-                                onClick={() => handleDecline(offer.id)}
-                                variant="outline"
-                                className="h-10 px-4 border-2 border-error-red text-error-red hover:bg-error-red/5 rounded-xl text-sm font-medium"
-                              >
-                                <XCircle className="w-4 h-4 mr-1.5" />
-                                Decline
-                              </Button>
-                            </>
-                          )}
-                          {offer.status === 'Negotiating' && (
-                            <>
-                              <Button
-                                variant="outline"
-                                className="h-10 px-4 border-2 border-krishiva-green text-krishiva-green hover:bg-krishiva-green/5 rounded-xl text-sm font-medium"
-                              >
-                                <ChevronRight className="w-4 h-4 mr-1.5" />
-                                Counter
-                              </Button>
-                              <Button
-                                onClick={() => handleAccept(offer.id)}
-                                className="h-10 px-4 bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl text-sm font-medium shadow-button"
-                              >
-                                <Check className="w-4 h-4 mr-1.5" />
-                                Accept
-                              </Button>
-                              <Button
-                                onClick={() => handleDecline(offer.id)}
-                                variant="outline"
-                                className="h-10 px-4 border-2 border-error-red text-error-red hover:bg-error-red/5 rounded-xl text-sm font-medium"
-                              >
-                                <XCircle className="w-4 h-4 mr-1.5" />
-                                Decline
-                              </Button>
-                            </>
-                          )}
-                          {offer.status === 'Accepted' && (
-                            <Button className="h-10 px-4 bg-harvest-gold hover:bg-[#FBC02D] text-text-primary rounded-xl text-sm font-medium shadow-gold">
-                              <Phone className="w-4 h-4 mr-1.5" />
-                              Contact Buyer
-                            </Button>
-                          )}
-                          {offer.status === 'Declined' && (
-                            <span className="text-sm text-text-muted px-3 py-2">Offer declined</span>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="w-5 h-5 text-white/90" />
+                <span className="text-white/80 text-sm font-medium">Direct Trade</span>
               </div>
+              <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
+                Buyer Connect
+              </h1>
+              <p className="text-white/85 text-base max-w-lg">
+                {role === 'farmer'
+                  ? 'Manage incoming offers from buyers and respond to them directly.'
+                  : 'Discover crops from verified farmers and send offers seamlessly.'}
+              </p>
+            </div>
+          </motion.div>
 
-              {/* How It Works */}
-              <HowItWorks />
-
-              {/* My Crop Listings */}
-              <FarmerCropListings />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="buyer-view"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-6"
+          {/* Role Toggle */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="flex bg-white rounded-xl border border-border-light p-1.5 w-fit"
+          >
+            <button
+              onClick={() => setRole('farmer')}
+              className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                role === 'farmer'
+                  ? 'bg-krishiva-green text-white shadow-button'
+                  : 'text-text-secondary hover:text-text-primary'
+              }`}
             >
-              {/* Available Crop Listings */}
-              <div>
-                <h3 className="font-poppins font-semibold text-heading-md text-text-primary mb-4 flex items-center gap-2">
-                  <Wheat className="w-5 h-5 text-krishiva-green" />
-                  Available Crop Listings
-                </h3>
-                <motion.div
-                  variants={staggerContainer}
-                  initial="hidden"
-                  animate="visible"
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-                >
-                  {FARMER_LISTINGS.map((listing, i) => (
-                    <motion.div
-                      key={listing.id}
-                      custom={i}
-                      variants={cardVariants}
-                      initial="hidden"
-                      animate="visible"
-                      className="bg-white rounded-2xl border border-border-light shadow-card hover:shadow-card-hover transition-all duration-200 overflow-hidden"
-                    >
-                      <div className="p-5">
-                        {/* Farmer header */}
-                        <div className="flex items-start gap-3 mb-4">
-                          <div className={`w-12 h-12 rounded-full ${listing.avatarColor} flex items-center justify-center text-white font-semibold text-sm shrink-0`}>
-                            {listing.initials}
+              <UserCheck className="w-4 h-4" />
+              I am a Farmer
+            </button>
+            <button
+              onClick={() => setRole('buyer')}
+              className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                role === 'buyer'
+                  ? 'bg-krishiva-green text-white shadow-button'
+                  : 'text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              <ShoppingBag className="w-4 h-4" />
+              I am a Buyer
+            </button>
+          </motion.div>
+
+          <AnimatePresence mode="wait">
+            {role === 'farmer' ? (
+              <motion.div
+                key="farmer-view"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
+              >
+                {/* Incoming Offers */}
+                <div>
+                  <h3 className="font-poppins font-semibold text-heading-md text-text-primary mb-4 flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5 text-krishiva-green" />
+                    Incoming Offers
+                  </h3>
+                  <div className="space-y-3">
+                    {offers.map((offer, i) => (
+                      <motion.div
+                        key={offer.id}
+                        custom={i}
+                        variants={cardVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="bg-white rounded-2xl border border-border-light shadow-card p-4 sm:p-5"
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                          {/* Company Info */}
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className={`w-12 h-12 rounded-full ${offer.avatarColor} flex items-center justify-center text-white font-semibold text-sm shrink-0`}>
+                              {offer.initials}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <h4 className="font-semibold text-text-primary">{offer.company}</h4>
+                                <StatusBadge status={offer.status} />
+                              </div>
+                              <p className="text-sm text-text-muted mt-0.5">
+                                Wants <span className="font-medium text-text-primary">{offer.crop}</span> —{' '}
+                                {offer.quantity}q @{' '}
+                                <span className="font-semibold text-krishiva-green">
+                                  ₹{offer.pricePerQ.toLocaleString('en-IN')}/q
+                                </span>
+                              </p>
+                              <p className="text-xs text-text-muted mt-0.5 flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {offer.date}
+                              </p>
+                            </div>
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-poppins font-semibold text-text-primary truncate">{listing.farmerName}</h4>
-                            <div className="flex items-center gap-1 text-text-muted text-xs mt-0.5">
-                              <MapPin className="w-3 h-3" />
-                              {listing.location}
-                            </div>
-                            <div className="flex items-center gap-1 mt-1">
-                              <Star className="w-3.5 h-3.5 fill-harvest-gold text-harvest-gold" />
-                              <span className="text-xs font-medium text-text-primary">{listing.rating}</span>
-                            </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {offer.status === 'New' && (
+                              <>
+                                <Button
+                                  onClick={() => handleAccept(offer.id)}
+                                  className="h-10 px-4 bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl text-sm font-medium shadow-button"
+                                >
+                                  <Check className="w-4 h-4 mr-1.5" />
+                                  Accept
+                                </Button>
+                                <Button
+                                  onClick={() => handleDecline(offer.id)}
+                                  variant="outline"
+                                  className="h-10 px-4 border-2 border-error-red text-error-red hover:bg-error-red/5 rounded-xl text-sm font-medium"
+                                >
+                                  <XCircle className="w-4 h-4 mr-1.5" />
+                                  Decline
+                                </Button>
+                              </>
+                            )}
+                            {offer.status === 'Negotiating' && (
+                              <>
+                                <Button
+                                  variant="outline"
+                                  className="h-10 px-4 border-2 border-krishiva-green text-krishiva-green hover:bg-krishiva-green/5 rounded-xl text-sm font-medium"
+                                >
+                                  <ChevronRight className="w-4 h-4 mr-1.5" />
+                                  Counter
+                                </Button>
+                                <Button
+                                  onClick={() => handleAccept(offer.id)}
+                                  className="h-10 px-4 bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl text-sm font-medium shadow-button"
+                                >
+                                  <Check className="w-4 h-4 mr-1.5" />
+                                  Accept
+                                </Button>
+                                <Button
+                                  onClick={() => handleDecline(offer.id)}
+                                  variant="outline"
+                                  className="h-10 px-4 border-2 border-error-red text-error-red hover:bg-error-red/5 rounded-xl text-sm font-medium"
+                                >
+                                  <XCircle className="w-4 h-4 mr-1.5" />
+                                  Decline
+                                </Button>
+                              </>
+                            )}
+                            {offer.status === 'Accepted' && (
+                              <Button className="h-10 px-4 bg-harvest-gold hover:bg-[#FBC02D] text-text-primary rounded-xl text-sm font-medium shadow-gold">
+                                <Phone className="w-4 h-4 mr-1.5" />
+                                Contact Buyer
+                              </Button>
+                            )}
+                            {offer.status === 'Declined' && (
+                              <span className="text-sm text-text-muted px-3 py-2">Offer declined</span>
+                            )}
                           </div>
                         </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
 
-                        {/* Crop details */}
-                        <div className="mb-4">
-                          <div className="flex items-center gap-2 mb-1">
-                            <Package className="w-4 h-4 text-krishiva-green" />
-                            <span className="font-semibold text-text-primary">{listing.crop}</span>
-                          </div>
-                          <div className="flex items-center justify-between mt-2">
-                            <div>
-                              <span className="text-xs text-text-muted">Available</span>
-                              <p className="font-semibold text-text-primary">{listing.quantity} quintals</p>
+                {/* How It Works */}
+                <HowItWorks />
+
+                {/* My Crop Listings */}
+                <FarmerCropListings />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="buyer-view"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
+              >
+                {/* Available Crop Listings */}
+                <div>
+                  <h3 className="font-poppins font-semibold text-heading-md text-text-primary mb-4 flex items-center gap-2">
+                    <Wheat className="w-5 h-5 text-krishiva-green" />
+                    Available Crop Listings
+                  </h3>
+                  <motion.div
+                    variants={staggerContainer}
+                    initial="hidden"
+                    animate="visible"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                  >
+                    {FARMER_LISTINGS.map((listing, i) => (
+                      <motion.div
+                        key={listing.id}
+                        custom={i}
+                        variants={cardVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="bg-white rounded-2xl border border-border-light shadow-card hover:shadow-card-hover transition-all duration-200 overflow-hidden"
+                      >
+                        <div className="p-5">
+                          {/* Farmer header */}
+                          <div className="flex items-start gap-3 mb-4">
+                            <div className={`w-12 h-12 rounded-full ${listing.avatarColor} flex items-center justify-center text-white font-semibold text-sm shrink-0`}>
+                              {listing.initials}
                             </div>
-                            <div className="text-right">
-                              <span className="text-xs text-text-muted">Price</span>
-                              <p className="font-bold text-krishiva-green text-lg">
-                                {listing.price ? `₹${listing.price.toLocaleString('en-IN')}/q` : 'Contact for Price'}
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-poppins font-semibold text-text-primary truncate">{listing.farmerName}</h4>
+                              <div className="flex items-center gap-1 text-text-muted text-xs mt-0.5">
+                                <MapPin className="w-3 h-3" />
+                                {listing.location}
+                              </div>
+                              <div className="flex items-center gap-1 mt-1">
+                                <Star className="w-3.5 h-3.5 fill-harvest-gold text-harvest-gold" />
+                                <span className="text-xs font-medium text-text-primary">{listing.rating}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Crop details */}
+                          <div className="mb-4">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Package className="w-4 h-4 text-krishiva-green" />
+                              <span className="font-semibold text-text-primary">{listing.crop}</span>
+                            </div>
+                            <div className="flex items-center justify-between mt-2">
+                              <div>
+                                <span className="text-xs text-text-muted">Available</span>
+                                <p className="font-semibold text-text-primary">{listing.quantity} quintals</p>
+                              </div>
+                              <div className="text-right">
+                                <span className="text-xs text-text-muted">Price</span>
+                                <p className="font-bold text-krishiva-green text-lg">
+                                  {listing.price ? `₹${listing.price.toLocaleString('en-IN')}/q` : 'Contact for Price'}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Send Offer Button */}
+                          <Button
+                            onClick={() => handleOpenSendOffer(listing)}
+                            className="w-full h-11 bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl font-medium shadow-button"
+                          >
+                            <Send className="w-4 h-4 mr-2" />
+                            Send Offer
+                          </Button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </div>
+
+                {/* My Sent Offers */}
+                <div>
+                  <h3 className="font-poppins font-semibold text-heading-md text-text-primary mb-4 flex items-center gap-2">
+                    <Send className="w-5 h-5 text-krishiva-green" />
+                    My Sent Offers
+                  </h3>
+                  <div className="space-y-3">
+                    {INITIAL_SENT_OFFERS.map((offer, i) => (
+                      <motion.div
+                        key={offer.id}
+                        custom={i}
+                        variants={cardVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="bg-white rounded-2xl border border-border-light shadow-card p-4 sm:p-5"
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="w-10 h-10 rounded-full bg-krishiva-green/10 flex items-center justify-center">
+                              <Wheat className="w-5 h-5 text-krishiva-green" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <h4 className="font-semibold text-text-primary">{offer.farmerName}</h4>
+                                <StatusBadge status={offer.status} />
+                              </div>
+                              <p className="text-sm text-text-muted mt-0.5">
+                                {offer.crop} — {offer.quantity}q @ ₹{offer.pricePerQ.toLocaleString('en-IN')}/q
+                              </p>
+                              <p className="text-xs text-text-muted mt-0.5 flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                Sent {offer.date}
                               </p>
                             </div>
                           </div>
                         </div>
-
-                        {/* Send Offer Button */}
-                        <Button
-                          onClick={() => handleOpenSendOffer(listing)}
-                          className="w-full h-11 bg-krishiva-green hover:bg-[#1B5E20] text-white rounded-xl font-medium shadow-button"
-                        >
-                          <Send className="w-4 h-4 mr-2" />
-                          Send Offer
-                        </Button>
-                      </div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
-
-              {/* My Sent Offers */}
-              <div>
-                <h3 className="font-poppins font-semibold text-heading-md text-text-primary mb-4 flex items-center gap-2">
-                  <Send className="w-5 h-5 text-krishiva-green" />
-                  My Sent Offers
-                </h3>
-                <div className="space-y-3">
-                  {INITIAL_SENT_OFFERS.map((offer, i) => (
-                    <motion.div
-                      key={offer.id}
-                      custom={i}
-                      variants={cardVariants}
-                      initial="hidden"
-                      animate="visible"
-                      className="bg-white rounded-2xl border border-border-light shadow-card p-4 sm:p-5"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                        <div className="flex items-center gap-3 flex-1">
-                          <div className="w-10 h-10 rounded-full bg-krishiva-green/10 flex items-center justify-center">
-                            <Wheat className="w-5 h-5 text-krishiva-green" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <h4 className="font-semibold text-text-primary">{offer.farmerName}</h4>
-                              <StatusBadge status={offer.status} />
-                            </div>
-                            <p className="text-sm text-text-muted mt-0.5">
-                              {offer.crop} — {offer.quantity}q @ ₹{offer.pricePerQ.toLocaleString('en-IN')}/q
-                            </p>
-                            <p className="text-xs text-text-muted mt-0.5 flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              Sent {offer.date}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        {/* Send Offer Dialog */}
-        <SendOfferDialog open={sendOfferOpen} onClose={() => setSendOfferOpen(false)} listing={selectedListing} />
+          {/* Send Offer Dialog */}
+          <SendOfferDialog open={sendOfferOpen} onClose={() => setSendOfferOpen(false)} listing={selectedListing} />
+        </div>
       </div>
     </DashboardLayout>
   );
 }
+
