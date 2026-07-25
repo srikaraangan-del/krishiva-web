@@ -455,7 +455,7 @@ export default function Dashboard() {
                   <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center"><Zap className="w-6 h-6 text-[#6B7280]" strokeWidth={2} /></div>
                   <h3 className="font-poppins font-semibold text-base text-[#111827]">{t('quickActionsTitle')}</h3>
                 </div>
-                <div className="grid grid-cols-4 gap-6">
+                <div className="flex flex-nowrap gap-3 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
                   {[
                     { icon: ShoppingCart, label: 'Sell Crop', action: () => navigate('/dashboard/produce'), color: 'text-green-600', bg: 'bg-green-50' },
                     { icon: Tractor, label: 'Farm OS', action: () => navigate('/dashboard/farm'), color: 'text-blue-600', bg: 'bg-blue-50' },
@@ -466,9 +466,9 @@ export default function Dashboard() {
                     { icon: GraduationCap, label: 'Experts', action: () => navigate('/dashboard/experts'), color: 'text-indigo-600', bg: 'bg-indigo-50' },
                     { icon: Wallet, label: 'Wallet', action: () => navigate('/dashboard/wallet'), color: 'text-rose-600', bg: 'bg-rose-50' },
                   ].map(action => (
-                    <button key={action.label} onClick={action.action} className="flex flex-col items-center gap-2 p-6 bg-white rounded-xl border border-[#E5E7EB] hover:shadow-sm hover:border-[#2E7D32]/30 transition-all group">
-                      <div className={`w-11 h-11 rounded-lg ${action.bg} ${action.color} flex items-center justify-center`}><action.icon className="w-6 h-6" strokeWidth={2} /></div>
-                      <span className="text-sm font-medium text-[#6B7280] group-hover:text-[#111827]">{action.label}</span>
+                    <button key={action.label} onClick={action.action} className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-[#E5E7EB] hover:shadow-sm hover:border-[#2E7D32]/30 transition-all group min-w-[72px] flex-1">
+                      <div className={`w-10 h-10 rounded-lg ${action.bg} ${action.color} flex items-center justify-center`}><action.icon className="w-5 h-5" strokeWidth={2} /></div>
+                      <span className="text-xs font-medium text-[#6B7280] group-hover:text-[#111827] whitespace-nowrap">{action.label}</span>
                     </button>
                   ))}
                 </div>
