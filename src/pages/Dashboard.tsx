@@ -430,6 +430,25 @@ export default function Dashboard() {
                 </div>
               </motion.div>
 
+              {/* Government Schemes */}
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22, duration: 0.3 }}>
+                <div className="flex items-center gap-6 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center"><Landmark className="w-5 h-5 text-orange-500" strokeWidth={2} /></div>
+                  <h3 className="font-poppins font-semibold text-base text-[#111827]">{t('schemesTitle')}</h3>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {SCHEMES.map(scheme => (
+                    <a key={scheme.name} href={scheme.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-4 p-6 bg-white rounded-xl border border-[#E5E7EB] hover:shadow-sm hover:border-[#2E7D32]/20 transition-all group">
+                      <div className={`w-10 h-10 rounded-lg ${scheme.bgColor} flex items-center justify-center shrink-0`}><scheme.icon className="w-5 h-5 text-[#111827]" strokeWidth={1.5} /></div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between"><h4 className="font-medium text-base text-[#111827]">{scheme.name}</h4><ExternalLink className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#2E7D32]" /></div>
+                        <p className="text-xs text-[#6B7280] mt-0.5">{scheme.description}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+
               {/* Quick Actions */}
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.3 }}>
                 <div className="flex items-center gap-6 mb-4">
@@ -492,25 +511,6 @@ export default function Dashboard() {
                     ))}
                   </CardContent>
                 </Card>
-              </motion.div>
-
-              {/* Government Schemes */}
-              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22, duration: 0.3 }}>
-                <div className="flex items-center gap-6 mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center"><Landmark className="w-4 h-4 text-orange-500" strokeWidth={2} /></div>
-                  <h3 className="font-poppins font-semibold text-base text-[#111827]">{t('schemesTitle')}</h3>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {SCHEMES.map(scheme => (
-                    <a key={scheme.name} href={scheme.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-6.5 p-6 bg-white rounded-xl border border-[#E5E7EB] hover:shadow-sm hover:border-[#2E7D32]/20 transition-all group">
-                      <div className={`w-10 h-10 rounded-lg ${scheme.bgColor} flex items-center justify-center shrink-0`}><scheme.icon className="w-6 h-6 text-[#111827]" strokeWidth={1.5} /></div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between"><h4 className="font-medium text-base text-[#111827]">{scheme.name}</h4><ExternalLink className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#2E7D32]" /></div>
-                        <p className="text-xs text-[#6B7280] mt-0.5">{scheme.description}</p>
-                      </div>
-                    </a>
-                  ))}
-                </div>
               </motion.div>
 
               {/* Buyer Connections */}
