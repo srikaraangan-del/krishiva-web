@@ -429,20 +429,27 @@ export default function BuyerConnect() {
   return (
     <DashboardLayout>
       <div className="space-y-5">
-        {/* Header */}
+        {/* Hero Banner */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
         >
-          <h1 className="font-poppins font-bold text-2xl sm:text-3xl text-text-primary mb-2">
-            Buyer Connect
-          </h1>
-          <p className="text-text-secondary text-sm sm:text-base max-w-lg">
-            {role === 'farmer'
-              ? 'Manage incoming offers from buyers and respond to them directly.'
-              : 'Discover crops from verified farmers and send offers seamlessly.'}
-          </p>
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <Users className="w-5 h-5 text-white/90" />
+              <span className="text-white/80 text-sm font-medium">Direct Trade</span>
+            </div>
+            <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
+              Buyer Connect
+            </h1>
+            <p className="text-white/85 text-base max-w-lg">
+              {role === 'farmer'
+                ? 'Manage incoming offers from buyers and respond to them directly.'
+                : 'Discover crops from verified farmers and send offers seamlessly.'}
+            </p>
+          </div>
         </motion.div>
 
         {/* Role Toggle */}

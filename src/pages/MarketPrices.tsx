@@ -260,21 +260,34 @@ export default function MarketPrices() {
   return (
     <DashboardLayout>
       <div className="space-y-5">
-        {/* Top Bar */}
+        {/* Hero Banner */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="flex flex-col sm:flex-row sm:items-center gap-4"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
         >
-          <div className="flex-1">
-            <h1 className="font-poppins font-bold text-2xl sm:text-3xl text-text-primary mb-1">
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <BarChart3 className="w-5 h-5 text-white/90" />
+              <span className="text-white/80 text-sm font-medium">Live Market Data</span>
+            </div>
+            <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
               Market Prices
             </h1>
-            <p className="text-text-secondary text-sm">
+            <p className="text-white/85 text-base max-w-lg">
               Real-time mandi prices across India. Track trends and make informed decisions.
             </p>
           </div>
+        </motion.div>
+
+        {/* Search Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="flex flex-col sm:flex-row sm:items-center gap-4"
+        >
           <div className="flex gap-2 flex-wrap">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />

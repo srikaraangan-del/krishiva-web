@@ -432,14 +432,25 @@ export default function Feed() {
   return (
     <DashboardLayout>
       <div className="space-y-5">
-        {/* Page Header */}
+        {/* Hero Banner */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
         >
-          <h1 className="font-poppins font-bold text-2xl sm:text-3xl text-text-primary">Smart Feed</h1>
-          <p className="text-text-secondary text-sm mt-1">Stay updated with what matters for your farm</p>
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <Newspaper className="w-5 h-5 text-white/90" />
+              <span className="text-white/80 text-sm font-medium">Latest Updates</span>
+            </div>
+            <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
+              Smart Feed
+            </h1>
+            <p className="text-white/85 text-base max-w-lg">
+              Stay updated with what matters for your farm — weather alerts, market trends, expert tips, and government announcements.
+            </p>
+          </div>
         </motion.div>
 
         {/* Category Filters */}

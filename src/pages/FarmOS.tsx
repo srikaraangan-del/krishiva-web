@@ -915,20 +915,37 @@ export default function FarmOS() {
   return (
     <DashboardLayout>
       <div className="space-y-5">
-        {/* Page Header */}
+        {/* Hero Banner */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-krishiva-green via-leaf-green to-border-green p-8 sm:p-10"
+        >
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <Tractor className="w-5 h-5 text-white/90" />
+              <span className="text-white/80 text-sm font-medium">Farm Management</span>
+            </div>
+            <h1 className="font-poppins font-bold text-[28px] sm:text-[36px] text-white leading-tight mb-2">
+              Farm OS
+            </h1>
+            <p className="text-white/85 text-base max-w-lg">
+              Manage your fields, track crops, monitor expenses, and analyze yields — all in one place.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Add Field Button */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="flex justify-end"
         >
-          <div>
-            <h1 className="font-poppins font-bold text-2xl sm:text-3xl text-text-primary">Farm OS</h1>
-            <p className="text-text-secondary text-sm mt-1">Manage your farm</p>
-          </div>
           <button
             onClick={openAddField}
-            className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors self-start sm:self-auto shadow-button"
+            className="flex items-center gap-2 bg-krishiva-green hover:bg-[#1B5E20] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors shadow-button"
           >
             <Plus className="w-4 h-4" />
             Add Field
