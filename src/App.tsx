@@ -11,6 +11,7 @@ import Community from './pages/Community'
 import Experts from './pages/Experts'
 import Wallet from './pages/Wallet'
 import Profile from './pages/Profile'
+import AdminDashboard from './pages/AdminDashboard'
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
       <Route path="/dashboard/experts" element={<Experts />} />
       <Route path="/dashboard/wallet" element={<Wallet />} />
       <Route path="/dashboard/profile" element={<Profile />} />
+      <Route path="/admin" element={<AdminDashboard />} />
     </Routes>
   )
 }
